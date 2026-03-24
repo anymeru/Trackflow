@@ -318,6 +318,21 @@ export const mockConversations: Conversation[] = [
       { id: "m8", senderId: "user3", senderName: "Sophie Martin", senderRole: "client", content: "Parfait, merci beaucoup !", timestamp: "2024-03-13T14:00:00Z", read: true },
     ],
   },
+  {
+    id: "conv5",
+    trackingId: "5",
+    trackingNumber: "TRK-2024-005789",
+    subject: "Frais de douane - Import Japon",
+    status: "open",
+    priority: "high",
+    lastMessage: "Pourquoi les frais de douane sont si élevés ?",
+    lastMessageTime: "2024-03-18T15:00:00Z",
+    unreadCount: 1,
+    clientName: "Jean Dupont",
+    messages: [
+      { id: "m9", senderId: "user1", senderName: "Jean Dupont", senderRole: "client", content: "Bonjour, je vois que des frais de douane de 15 000 FCFA sont demandés pour mon colis. Pourquoi le montant est-il si élevé ?", timestamp: "2024-03-18T15:00:00Z", read: false },
+    ],
+  },
 ];
 
 export const mockUsers: User[] = [
