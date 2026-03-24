@@ -102,6 +102,18 @@ const TrackingDetailPage = () => {
               )}
             </Card>
 
+            {/* Customs Fees Block */}
+            {tracking.fees && (
+              <FeePaymentBlock
+                fees={tracking.fees}
+                trackingNumber={tracking.trackingNumber}
+                onContactSupport={() => {
+                  const chatSection = document.getElementById("chat-section");
+                  chatSection?.scrollIntoView({ behavior: "smooth" });
+                }}
+              />
+            )}
+
             {/* Timeline */}
             <Card className="p-5">
               <h2 className="font-display font-semibold mb-4">Historique des statuts</h2>
