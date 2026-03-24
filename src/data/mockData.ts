@@ -1,9 +1,24 @@
+export interface FeeItem {
+  label: string;
+  amount: number;
+}
+
+export interface TrackingFees {
+  totalAmount: number;
+  currency: string;
+  items: FeeItem[];
+  status: "pending" | "paid" | "refused" | "investigating" | "expired";
+  deadline?: string;
+  paidAt?: string;
+  explanation: string;
+}
+
 export interface TrackingItem {
   id: string;
   trackingNumber: string;
   name: string;
   type: "colis" | "vehicule" | "objet";
-  status: "created" | "picked_up" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "lost";
+  status: "created" | "picked_up" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "lost" | "customs_hold" | "fees_pending" | "fees_paid" | "returned";
   origin: string;
   destination: string;
   carrier: string;
@@ -18,6 +33,7 @@ export interface TrackingItem {
   owner: string;
   statusHistory: StatusEvent[];
   positions: PositionRecord[];
+  fees?: TrackingFees;
 }
 
 export interface StatusEvent {
