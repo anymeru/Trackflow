@@ -6,8 +6,12 @@ import TrackingMap from "@/components/tracking/TrackingMap";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import StatusBadge from "@/components/tracking/StatusBadge";
 import FeePaymentBlock from "@/components/tracking/FeePaymentBlock";
+import ETABlock from "@/components/tracking/ETABlock";
+import ProofOfDeliveryBlock from "@/components/tracking/ProofOfDeliveryBlock";
+import IncidentBlock from "@/components/tracking/IncidentBlock";
+import ReturnRequestBlock from "@/components/tracking/ReturnRequestBlock";
 import ChatBox from "@/components/messaging/ChatBox";
-import { mockTrackings, mockConversations } from "@/data/mockData";
+import { mockTrackings, mockConversations, mockIncidents, mockReturnRequests } from "@/data/mockData";
 import { ArrowLeft, MapPin, Truck, Calendar, Thermometer, Gauge, Battery } from "lucide-react";
 
 const TrackingDetailPage = () => {
@@ -15,6 +19,8 @@ const TrackingDetailPage = () => {
   const navigate = useNavigate();
   const tracking = mockTrackings.find((t) => t.id === id);
   const conversation = mockConversations.find((c) => c.trackingId === id);
+  const incidents = mockIncidents.filter((i) => i.trackingId === id);
+  const returns = mockReturnRequests.filter((r) => r.trackingId === id);
 
   if (!tracking) {
     return (
@@ -26,6 +32,8 @@ const TrackingDetailPage = () => {
       </DashboardLayout>
     );
   }
+
+  const canReturn = ["delivered"].includes(tracking.status);
 
   return (
     <DashboardLayout role="client">
@@ -47,6 +55,11 @@ const TrackingDetailPage = () => {
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Map + Info */}
           <div className="lg:col-span-2 space-y-6">
+            {/* ETA Block */}
+            <Card className="p-5">
+              <ETABlock tracking={tracking} />
+            </Card>
+
             <div className="h-[400px]">
               <TrackingMap items={[tracking]} selectedId={tracking.id} showRoute className="h-full" />
             </div>
@@ -77,7 +90,6 @@ const TrackingDetailPage = () => {
                 </div>
               </div>
 
-              {/* Real-time params */}
               {(tracking.speed || tracking.battery || tracking.temperature !== undefined) && (
                 <div className="flex gap-4 pt-2 border-t border-border">
                   {tracking.speed && (
@@ -102,6 +114,9 @@ const TrackingDetailPage = () => {
               )}
             </Card>
 
+            {/* Proof of Delivery */}
+            {tracking.pod && <ProofOfDeliveryBlock pod={tracking.pod} />}
+
             {/* Customs Fees Block */}
             {tracking.fees && (
               <FeePaymentBlock
@@ -113,6 +128,12 @@ const TrackingDetailPage = () => {
                 }}
               />
             )}
+
+            {/* Incidents */}
+            <IncidentBlock incidents={incidents} trackingId={tracking.id} />
+
+            {/* Returns */}
+            <ReturnRequestBlock returns={returns} trackingId={tracking.id} canReturn={canReturn} />
 
             {/* Timeline */}
             <Card className="p-5">

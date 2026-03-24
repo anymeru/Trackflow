@@ -1,14 +1,17 @@
+import { useState } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/tracking/StatusBadge";
+import StatusChanger from "@/components/operator/StatusChanger";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import { mockTrackings, mockConversations } from "@/data/mockData";
-import { Package, MessageSquare, AlertTriangle, Eye } from "lucide-react";
+import { Package, MessageSquare, AlertTriangle, Eye, ChevronDown, ChevronUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const OperatorDashboard = () => {
   const navigate = useNavigate();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const activeTrackings = mockTrackings.filter((t) => t.status !== "delivered");
   const openConversations = mockConversations.filter((c) => c.status !== "resolved");
 
@@ -52,21 +55,34 @@ const OperatorDashboard = () => {
 
         <Card>
           <div className="p-4 border-b border-border">
-            <h2 className="font-display font-semibold">Tous les objets actifs</h2>
+            <h2 className="font-display font-semibold">Tous les objets</h2>
           </div>
           <div className="divide-y divide-border">
             {mockTrackings.map((t) => (
-              <div key={t.id} className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                <div>
-                  <p className="font-medium text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.trackingNumber} • {t.carrier}</p>
+              <div key={t.id}>
+                <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
+                  <div>
+                    <p className="font-medium text-sm">{t.name}</p>
+                    <p className="text-xs text-muted-foreground">{t.trackingNumber} • {t.carrier}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <StatusBadge status={t.status} />
+                    <Button variant="ghost" size="sm" onClick={() => setExpandedId(expandedId === t.id ? null : t.id)}>
+                      {expandedId === t.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/tracking/${t.id}`)}>
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3">
-                  <StatusBadge status={t.status} />
-                  <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/tracking/${t.id}`)}>
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                </div>
+                {expandedId === t.id && (
+                  <div className="px-4 pb-4">
+                    <StatusChanger
+                      currentStatus={t.status}
+                      trackingNumber={t.trackingNumber}
+                    />
+                  </div>
+                )}
               </div>
             ))}
           </div>

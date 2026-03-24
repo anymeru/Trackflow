@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import NotificationDropdown from "@/components/notifications/NotificationDropdown";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -85,9 +86,18 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Top bar with notifications */}
+        <header className="h-14 border-b border-border bg-card/50 flex items-center justify-end px-4 gap-2 shrink-0">
+          <NotificationDropdown />
+          <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
+            <User className="w-4 h-4 text-muted-foreground" />
+          </div>
+        </header>
+        <main className="flex-1 overflow-auto">
+          {children}
+        </main>
+      </div>
     </div>
   );
 };
