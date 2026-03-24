@@ -1,9 +1,24 @@
+export interface FeeItem {
+  label: string;
+  amount: number;
+}
+
+export interface TrackingFees {
+  totalAmount: number;
+  currency: string;
+  items: FeeItem[];
+  status: "pending" | "paid" | "refused" | "investigating" | "expired";
+  deadline?: string;
+  paidAt?: string;
+  explanation: string;
+}
+
 export interface TrackingItem {
   id: string;
   trackingNumber: string;
   name: string;
   type: "colis" | "vehicule" | "objet";
-  status: "created" | "picked_up" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "lost";
+  status: "created" | "picked_up" | "in_transit" | "out_for_delivery" | "delivered" | "delayed" | "lost" | "customs_hold" | "fees_pending" | "fees_paid" | "returned";
   origin: string;
   destination: string;
   carrier: string;
@@ -18,6 +33,7 @@ export interface TrackingItem {
   owner: string;
   statusHistory: StatusEvent[];
   positions: PositionRecord[];
+  fees?: TrackingFees;
 }
 
 export interface StatusEvent {
@@ -75,6 +91,10 @@ export const statusLabels: Record<string, string> = {
   delivered: "Livré",
   delayed: "En retard",
   lost: "Perdu",
+  customs_hold: "Bloqué en douane",
+  fees_pending: "Frais en attente",
+  fees_paid: "Frais payés",
+  returned: "Retourné",
 };
 
 export const statusColors: Record<string, string> = {
@@ -85,6 +105,10 @@ export const statusColors: Record<string, string> = {
   delivered: "bg-success text-success-foreground",
   delayed: "bg-destructive text-destructive-foreground",
   lost: "bg-destructive text-destructive-foreground",
+  customs_hold: "bg-warning text-warning-foreground",
+  fees_pending: "bg-warning text-warning-foreground",
+  fees_paid: "bg-success text-success-foreground",
+  returned: "bg-destructive text-destructive-foreground",
 };
 
 export const mockTrackings: TrackingItem[] = [
@@ -202,8 +226,47 @@ export const mockTrackings: TrackingItem[] = [
       { lat: 45.5, lng: 1.2, timestamp: "2024-03-17T09:00:00Z" },
     ],
   },
+  {
+    id: "5",
+    trackingNumber: "TRK-2024-005789",
+    name: "Pièces auto - Import Japon",
+    type: "colis",
+    status: "fees_pending",
+    origin: "Tokyo, Japon",
+    destination: "Paris, France",
+    carrier: "GlobalFreight",
+    createdAt: "2024-03-12T04:00:00Z",
+    estimatedArrival: "2024-03-22T10:00:00Z",
+    lastUpdate: "2024-03-18T14:00:00Z",
+    lat: 48.8566,
+    lng: 2.3522,
+    owner: "user1",
+    statusHistory: [
+      { status: "created", date: "2024-03-12T04:00:00Z", location: "Tokyo", description: "Colis enregistré" },
+      { status: "picked_up", date: "2024-03-12T10:00:00Z", location: "Tokyo - Narita", description: "Pris en charge" },
+      { status: "in_transit", date: "2024-03-13T02:00:00Z", location: "En vol", description: "En transit aérien" },
+      { status: "customs_hold", date: "2024-03-17T08:00:00Z", location: "Paris CDG - Douane", description: "Bloqué en douane" },
+      { status: "fees_pending", date: "2024-03-18T14:00:00Z", location: "Paris CDG - Douane", description: "Frais de douane calculés - en attente de paiement" },
+    ],
+    positions: [
+      { lat: 35.7720, lng: 140.3929, timestamp: "2024-03-12T10:00:00Z" },
+      { lat: 48.8566, lng: 2.3522, timestamp: "2024-03-17T08:00:00Z" },
+    ],
+    fees: {
+      totalAmount: 15000,
+      currency: "FCFA",
+      items: [
+        { label: "Droits de douane", amount: 8500 },
+        { label: "TVA import", amount: 4200 },
+        { label: "Frais de dossier", amount: 1500 },
+        { label: "Frais de stockage (2 jours)", amount: 800 },
+      ],
+      status: "pending",
+      deadline: "2024-03-25T23:59:00Z",
+      explanation: "La douane française exige le paiement de ces frais pour autoriser le dédouanement et poursuivre la livraison de votre colis.",
+    },
+  },
 ];
-
 export const mockConversations: Conversation[] = [
   {
     id: "conv1",
@@ -253,6 +316,21 @@ export const mockConversations: Conversation[] = [
       { id: "m6", senderId: "user3", senderName: "Sophie Martin", senderRole: "client", content: "J'ai bien reçu ma verrerie, tout est intact. Merci !", timestamp: "2024-03-13T13:00:00Z", read: true },
       { id: "m7", senderId: "op1", senderName: "Marie Support", senderRole: "support", content: "Ravie que tout soit arrivé en bon état ! N'hésitez pas si vous avez besoin de quoi que ce soit.", timestamp: "2024-03-13T13:30:00Z", read: true },
       { id: "m8", senderId: "user3", senderName: "Sophie Martin", senderRole: "client", content: "Parfait, merci beaucoup !", timestamp: "2024-03-13T14:00:00Z", read: true },
+    ],
+  },
+  {
+    id: "conv5",
+    trackingId: "5",
+    trackingNumber: "TRK-2024-005789",
+    subject: "Frais de douane - Import Japon",
+    status: "open",
+    priority: "high",
+    lastMessage: "Pourquoi les frais de douane sont si élevés ?",
+    lastMessageTime: "2024-03-18T15:00:00Z",
+    unreadCount: 1,
+    clientName: "Jean Dupont",
+    messages: [
+      { id: "m9", senderId: "user1", senderName: "Jean Dupont", senderRole: "client", content: "Bonjour, je vois que des frais de douane de 15 000 FCFA sont demandés pour mon colis. Pourquoi le montant est-il si élevé ?", timestamp: "2024-03-18T15:00:00Z", read: false },
     ],
   },
 ];

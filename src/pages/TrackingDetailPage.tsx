@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import StatusBadge from "@/components/tracking/StatusBadge";
+import FeePaymentBlock from "@/components/tracking/FeePaymentBlock";
 import ChatBox from "@/components/messaging/ChatBox";
 import { mockTrackings, mockConversations } from "@/data/mockData";
 import { ArrowLeft, MapPin, Truck, Calendar, Thermometer, Gauge, Battery } from "lucide-react";
@@ -101,6 +102,18 @@ const TrackingDetailPage = () => {
               )}
             </Card>
 
+            {/* Customs Fees Block */}
+            {tracking.fees && (
+              <FeePaymentBlock
+                fees={tracking.fees}
+                trackingNumber={tracking.trackingNumber}
+                onContactSupport={() => {
+                  const chatSection = document.getElementById("chat-section");
+                  chatSection?.scrollIntoView({ behavior: "smooth" });
+                }}
+              />
+            )}
+
             {/* Timeline */}
             <Card className="p-5">
               <h2 className="font-display font-semibold mb-4">Historique des statuts</h2>
@@ -109,7 +122,7 @@ const TrackingDetailPage = () => {
           </div>
 
           {/* Chat */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" id="chat-section">
             <Card className="h-[600px] flex flex-col">
               <div className="p-4 border-b border-border">
                 <h2 className="font-display font-semibold">Messagerie</h2>
