@@ -13,6 +13,52 @@ export interface TrackingFees {
   explanation: string;
 }
 
+export interface ProofOfDelivery {
+  signatureUrl?: string;
+  photoUrl?: string;
+  deliveredAt: string;
+  deliveredTo: string;
+  location: string;
+  lat: number;
+  lng: number;
+  notes?: string;
+}
+
+export interface Incident {
+  id: string;
+  trackingId: string;
+  type: "delay" | "damage" | "lost" | "wrong_address" | "wrong_item" | "other";
+  severity: "low" | "medium" | "high" | "critical";
+  status: "open" | "investigating" | "resolved" | "closed";
+  title: string;
+  description: string;
+  createdAt: string;
+  updatedAt: string;
+  resolution?: string;
+}
+
+export interface ReturnRequest {
+  id: string;
+  trackingId: string;
+  reason: "defective" | "wrong_item" | "not_as_described" | "no_longer_needed" | "other";
+  status: "requested" | "approved" | "in_transit" | "received" | "refunded" | "rejected";
+  description: string;
+  createdAt: string;
+  returnTrackingNumber?: string;
+}
+
+export interface AppNotification {
+  id: string;
+  userId: string;
+  type: "status_change" | "eta_update" | "delivery" | "fees" | "incident" | "return" | "message";
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: string;
+  trackingId?: string;
+  link?: string;
+}
+
 export interface TrackingItem {
   id: string;
   trackingNumber: string;
@@ -34,6 +80,10 @@ export interface TrackingItem {
   statusHistory: StatusEvent[];
   positions: PositionRecord[];
   fees?: TrackingFees;
+  pod?: ProofOfDelivery;
+  etaConfidence?: "high" | "medium" | "low";
+  etaDetails?: string;
+  progressPercent?: number;
 }
 
 export interface StatusEvent {
@@ -111,6 +161,23 @@ export const statusColors: Record<string, string> = {
   returned: "bg-destructive text-destructive-foreground",
 };
 
+export const incidentTypeLabels: Record<string, string> = {
+  delay: "Retard",
+  damage: "Colis endommagé",
+  lost: "Colis perdu",
+  wrong_address: "Adresse incorrecte",
+  wrong_item: "Mauvais article",
+  other: "Autre",
+};
+
+export const returnReasonLabels: Record<string, string> = {
+  defective: "Produit défectueux",
+  wrong_item: "Mauvais produit",
+  not_as_described: "Non conforme",
+  no_longer_needed: "Plus besoin",
+  other: "Autre",
+};
+
 export const mockTrackings: TrackingItem[] = [
   {
     id: "1",
@@ -129,6 +196,9 @@ export const mockTrackings: TrackingItem[] = [
     speed: 85,
     temperature: 22,
     owner: "user1",
+    progressPercent: 65,
+    etaConfidence: "high",
+    etaDetails: "Livraison prévue demain entre 12h et 14h",
     statusHistory: [
       { status: "created", date: "2024-03-15T08:00:00Z", location: "Paris", description: "Colis enregistré" },
       { status: "picked_up", date: "2024-03-15T10:00:00Z", location: "Paris - Centre tri", description: "Pris en charge par le transporteur" },
@@ -158,6 +228,9 @@ export const mockTrackings: TrackingItem[] = [
     speed: 110,
     battery: 78,
     owner: "user1",
+    progressPercent: 55,
+    etaConfidence: "medium",
+    etaDetails: "Arrivée estimée le 18/03 en fin de journée",
     statusHistory: [
       { status: "created", date: "2024-03-16T07:00:00Z", location: "Marseille", description: "Véhicule enregistré" },
       { status: "in_transit", date: "2024-03-16T09:00:00Z", location: "Marseille", description: "Départ effectué" },
@@ -184,6 +257,18 @@ export const mockTrackings: TrackingItem[] = [
     lng: 3.0573,
     temperature: 20,
     owner: "user1",
+    progressPercent: 100,
+    etaConfidence: "high",
+    pod: {
+      signatureUrl: "https://placehold.co/300x150/e2e8f0/475569?text=Signature",
+      photoUrl: "https://placehold.co/400x300/e2e8f0/475569?text=Photo+livraison",
+      deliveredAt: "2024-03-13T11:30:00Z",
+      deliveredTo: "Sophie Martin",
+      location: "12 Rue de la Gare, 59000 Lille",
+      lat: 50.6292,
+      lng: 3.0573,
+      notes: "Remis en main propre au destinataire",
+    },
     statusHistory: [
       { status: "created", date: "2024-03-10T09:00:00Z", location: "Strasbourg", description: "Colis enregistré" },
       { status: "picked_up", date: "2024-03-10T14:00:00Z", location: "Strasbourg", description: "Pris en charge" },
@@ -214,6 +299,9 @@ export const mockTrackings: TrackingItem[] = [
     lng: 1.2,
     temperature: 4,
     owner: "user1",
+    progressPercent: 45,
+    etaConfidence: "low",
+    etaDetails: "Retard dû aux conditions météo – nouvelle ETA en cours de calcul",
     statusHistory: [
       { status: "created", date: "2024-03-14T06:00:00Z", location: "Nantes", description: "Enregistré" },
       { status: "picked_up", date: "2024-03-14T10:00:00Z", location: "Nantes", description: "Pris en charge" },
@@ -241,6 +329,9 @@ export const mockTrackings: TrackingItem[] = [
     lat: 48.8566,
     lng: 2.3522,
     owner: "user1",
+    progressPercent: 70,
+    etaConfidence: "medium",
+    etaDetails: "En attente de paiement des frais de douane – la livraison reprendra après règlement",
     statusHistory: [
       { status: "created", date: "2024-03-12T04:00:00Z", location: "Tokyo", description: "Colis enregistré" },
       { status: "picked_up", date: "2024-03-12T10:00:00Z", location: "Tokyo - Narita", description: "Pris en charge" },
@@ -267,6 +358,7 @@ export const mockTrackings: TrackingItem[] = [
     },
   },
 ];
+
 export const mockConversations: Conversation[] = [
   {
     id: "conv1",
@@ -342,4 +434,29 @@ export const mockUsers: User[] = [
   { id: "op1", name: "Marie Support", email: "marie@trackflow.com", role: "operator", active: true, createdAt: "2023-12-01" },
   { id: "op2", name: "Pierre Duval", email: "pierre@trackflow.com", role: "operator", active: true, createdAt: "2024-01-10" },
   { id: "admin1", name: "Admin Principal", email: "admin@trackflow.com", role: "admin", active: true, createdAt: "2023-11-01" },
+];
+
+export const mockIncidents: Incident[] = [
+  {
+    id: "inc1",
+    trackingId: "4",
+    type: "delay",
+    severity: "high",
+    status: "investigating",
+    title: "Retard majeur - Conditions météo",
+    description: "Le colis est bloqué à Limoges en raison de conditions météorologiques défavorables.",
+    createdAt: "2024-03-16T18:00:00Z",
+    updatedAt: "2024-03-17T09:00:00Z",
+  },
+];
+
+export const mockReturnRequests: ReturnRequest[] = [];
+
+export const mockNotifications: AppNotification[] = [
+  { id: "n1", userId: "user1", type: "status_change", title: "Colis en transit", message: "Votre colis TRK-2024-001847 est maintenant en transit vers Lyon.", read: true, createdAt: "2024-03-16T06:00:00Z", trackingId: "1", link: "/dashboard/tracking/1" },
+  { id: "n2", userId: "user1", type: "delivery", title: "Colis livré", message: "Votre colis TRK-2024-003105 a été livré avec succès à Lille.", read: true, createdAt: "2024-03-13T11:30:00Z", trackingId: "3", link: "/dashboard/tracking/3" },
+  { id: "n3", userId: "user1", type: "eta_update", title: "Retard détecté", message: "L'ETA de votre équipement médical TRK-2024-004520 a été mise à jour suite à un retard.", read: false, createdAt: "2024-03-16T18:00:00Z", trackingId: "4", link: "/dashboard/tracking/4" },
+  { id: "n4", userId: "user1", type: "fees", title: "Frais de douane", message: "Des frais de douane de 15 000 FCFA sont requis pour votre colis TRK-2024-005789.", read: false, createdAt: "2024-03-18T14:00:00Z", trackingId: "5", link: "/dashboard/tracking/5" },
+  { id: "n5", userId: "user1", type: "incident", title: "Incident signalé", message: "Un incident a été ouvert pour votre colis TRK-2024-004520 : retard conditions météo.", read: false, createdAt: "2024-03-17T09:00:00Z", trackingId: "4", link: "/dashboard/tracking/4" },
+  { id: "n6", userId: "user1", type: "message", title: "Nouveau message", message: "Marie Support a répondu à votre question concernant le colis TRK-2024-001847.", read: true, createdAt: "2024-03-17T09:45:00Z", trackingId: "1", link: "/dashboard/tracking/1" },
 ];
