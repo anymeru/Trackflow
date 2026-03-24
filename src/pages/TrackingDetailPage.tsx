@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import StatusBadge from "@/components/tracking/StatusBadge";
+import FeePaymentBlock from "@/components/tracking/FeePaymentBlock";
 import ChatBox from "@/components/messaging/ChatBox";
 import { mockTrackings, mockConversations } from "@/data/mockData";
 import { ArrowLeft, MapPin, Truck, Calendar, Thermometer, Gauge, Battery } from "lucide-react";

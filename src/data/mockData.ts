@@ -226,8 +226,47 @@ export const mockTrackings: TrackingItem[] = [
       { lat: 45.5, lng: 1.2, timestamp: "2024-03-17T09:00:00Z" },
     ],
   },
+  {
+    id: "5",
+    trackingNumber: "TRK-2024-005789",
+    name: "Pièces auto - Import Japon",
+    type: "colis",
+    status: "fees_pending",
+    origin: "Tokyo, Japon",
+    destination: "Paris, France",
+    carrier: "GlobalFreight",
+    createdAt: "2024-03-12T04:00:00Z",
+    estimatedArrival: "2024-03-22T10:00:00Z",
+    lastUpdate: "2024-03-18T14:00:00Z",
+    lat: 48.8566,
+    lng: 2.3522,
+    owner: "user1",
+    statusHistory: [
+      { status: "created", date: "2024-03-12T04:00:00Z", location: "Tokyo", description: "Colis enregistré" },
+      { status: "picked_up", date: "2024-03-12T10:00:00Z", location: "Tokyo - Narita", description: "Pris en charge" },
+      { status: "in_transit", date: "2024-03-13T02:00:00Z", location: "En vol", description: "En transit aérien" },
+      { status: "customs_hold", date: "2024-03-17T08:00:00Z", location: "Paris CDG - Douane", description: "Bloqué en douane" },
+      { status: "fees_pending", date: "2024-03-18T14:00:00Z", location: "Paris CDG - Douane", description: "Frais de douane calculés - en attente de paiement" },
+    ],
+    positions: [
+      { lat: 35.7720, lng: 140.3929, timestamp: "2024-03-12T10:00:00Z" },
+      { lat: 48.8566, lng: 2.3522, timestamp: "2024-03-17T08:00:00Z" },
+    ],
+    fees: {
+      totalAmount: 15000,
+      currency: "FCFA",
+      items: [
+        { label: "Droits de douane", amount: 8500 },
+        { label: "TVA import", amount: 4200 },
+        { label: "Frais de dossier", amount: 1500 },
+        { label: "Frais de stockage (2 jours)", amount: 800 },
+      ],
+      status: "pending",
+      deadline: "2024-03-25T23:59:00Z",
+      explanation: "La douane française exige le paiement de ces frais pour autoriser le dédouanement et poursuivre la livraison de votre colis.",
+    },
+  },
 ];
-
 export const mockConversations: Conversation[] = [
   {
     id: "conv1",
