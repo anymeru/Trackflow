@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import StatusBadge from "@/components/tracking/StatusBadge";
 import { mockTrackings } from "@/data/mockData";
 import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 const LandingPage = () => {
   const [trackingInput, setTrackingInput] = useState("");
