@@ -91,6 +91,10 @@ export const statusLabels: Record<string, string> = {
   delivered: "Livré",
   delayed: "En retard",
   lost: "Perdu",
+  customs_hold: "Bloqué en douane",
+  fees_pending: "Frais en attente",
+  fees_paid: "Frais payés",
+  returned: "Retourné",
 };
 
 export const statusColors: Record<string, string> = {
@@ -101,6 +105,10 @@ export const statusColors: Record<string, string> = {
   delivered: "bg-success text-success-foreground",
   delayed: "bg-destructive text-destructive-foreground",
   lost: "bg-destructive text-destructive-foreground",
+  customs_hold: "bg-warning text-warning-foreground",
+  fees_pending: "bg-warning text-warning-foreground",
+  fees_paid: "bg-success text-success-foreground",
+  returned: "bg-destructive text-destructive-foreground",
 };
 
 export const mockTrackings: TrackingItem[] = [
