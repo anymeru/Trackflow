@@ -122,7 +122,7 @@ const TrackingDetailPage = () => {
           </div>
 
           {/* Chat */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1" id="chat-section">
             <Card className="h-[600px] flex flex-col">
               <div className="p-4 border-b border-border">
                 <h2 className="font-display font-semibold">Messagerie</h2>

@@ -1,5 +1,5 @@
 import { StatusEvent } from "@/data/mockData";
-import { Check, Clock, Truck, AlertTriangle, Package, MapPin } from "lucide-react";
+import { Check, Clock, Truck, AlertTriangle, Package, MapPin, ShieldAlert, CreditCard, RotateCcw } from "lucide-react";
 
 const statusIcons: Record<string, React.ReactNode> = {
   created: <Package className="w-4 h-4" />,
@@ -8,6 +8,10 @@ const statusIcons: Record<string, React.ReactNode> = {
   out_for_delivery: <Truck className="w-4 h-4" />,
   delivered: <Check className="w-4 h-4" />,
   delayed: <AlertTriangle className="w-4 h-4" />,
+  customs_hold: <ShieldAlert className="w-4 h-4" />,
+  fees_pending: <CreditCard className="w-4 h-4" />,
+  fees_paid: <Check className="w-4 h-4" />,
+  returned: <RotateCcw className="w-4 h-4" />,
 };
 
 interface TrackingTimelineProps {
