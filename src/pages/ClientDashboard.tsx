@@ -6,7 +6,7 @@ import TrackingMap from "@/components/tracking/TrackingMap";
 import { mockTrackings } from "@/data/mockData";
 import { Package, Truck, CheckCircle, AlertTriangle, Plus, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
+import { motion } from "framer-motion";
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
