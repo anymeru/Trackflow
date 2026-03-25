@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import StatusBadge from "@/components/tracking/StatusBadge";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import { mockTrackings } from "@/data/mockData";
+import ClientStatsBar from "@/components/tracking/ClientStatsBar";
 import { Package, Truck, CheckCircle, AlertTriangle, Plus, Eye } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -34,6 +35,9 @@ const ClientDashboard = () => {
             Ajouter un tracking
           </Button>
         </div>
+
+        {/* Personal stats */}
+        <ClientStatsBar />
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
