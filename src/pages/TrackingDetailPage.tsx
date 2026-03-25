@@ -12,6 +12,7 @@ import IncidentBlock from "@/components/tracking/IncidentBlock";
 import ReturnRequestBlock from "@/components/tracking/ReturnRequestBlock";
 import ChatBox from "@/components/messaging/ChatBox";
 import { mockTrackings, mockConversations, mockIncidents, mockReturnRequests } from "@/data/mockData";
+import ShareTrackingButton from "@/components/tracking/ShareTrackingButton";
 import { ArrowLeft, MapPin, Truck, Calendar, Thermometer, Gauge, Battery } from "lucide-react";
 
 const TrackingDetailPage = () => {
@@ -50,6 +51,7 @@ const TrackingDetailPage = () => {
             </div>
             <p className="text-sm text-muted-foreground font-mono mt-1">{tracking.trackingNumber}</p>
           </div>
+          <ShareTrackingButton trackingId={tracking.id} trackingNumber={tracking.trackingNumber} />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
@@ -115,7 +117,7 @@ const TrackingDetailPage = () => {
             </Card>
 
             {/* Proof of Delivery */}
-            {tracking.pod && <ProofOfDeliveryBlock pod={tracking.pod} />}
+            {tracking.pod && <ProofOfDeliveryBlock pod={tracking.pod} trackingId={tracking.id} />}
 
             {/* Customs Fees Block */}
             {tracking.fees && (

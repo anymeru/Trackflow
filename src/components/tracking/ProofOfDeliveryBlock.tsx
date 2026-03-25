@@ -1,13 +1,31 @@
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, MapPin, Clock, User, Download, Camera, PenTool } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { CheckCircle, MapPin, Clock, User, Download, Camera, PenTool, AlertTriangle } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 import type { ProofOfDelivery } from "@/data/mockData";
 
 interface ProofOfDeliveryBlockProps {
   pod: ProofOfDelivery;
+  trackingId?: string;
 }
 
-const ProofOfDeliveryBlock = ({ pod }: ProofOfDeliveryBlockProps) => {
+const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) => {
+  const [showContest, setShowContest] = useState(false);
+  const [contestReason, setContestReason] = useState("");
+  const [contested, setContested] = useState(false);
+
+  const handleContest = () => {
+    if (!contestReason.trim()) return;
+    setContested(true);
+    setShowContest(false);
+    toast({
+      title: "Contestation envoyée",
+      description: "Votre contestation a été enregistrée. Le support vous contactera sous 24h.",
+    });
+  };
+
   return (
     <Card className="p-5 space-y-4">
       <div className="flex items-center gap-2">
@@ -68,10 +86,51 @@ const ProofOfDeliveryBlock = ({ pod }: ProofOfDeliveryBlockProps) => {
         )}
       </div>
 
-      <Button variant="outline" size="sm" className="w-full">
-        <Download className="w-4 h-4 mr-2" />
-        Télécharger le reçu PDF
-      </Button>
+      <div className="flex gap-2">
+        <Button variant="outline" size="sm" className="flex-1">
+          <Download className="w-4 h-4 mr-2" />
+          Télécharger le reçu PDF
+        </Button>
+        {!contested ? (
+          <Button
+            variant="outline"
+            size="sm"
+            className="flex-1 text-destructive border-destructive/30 hover:bg-destructive/10"
+            onClick={() => setShowContest(!showContest)}
+          >
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            Contester
+          </Button>
+        ) : (
+          <Button variant="outline" size="sm" className="flex-1" disabled>
+            <CheckCircle className="w-4 h-4 mr-2 text-success" />
+            Contestation envoyée
+          </Button>
+        )}
+      </div>
+
+      {showContest && (
+        <div className="space-y-3 border border-destructive/20 rounded-lg p-4 bg-destructive/5">
+          <p className="text-sm font-medium">Contester cette livraison</p>
+          <p className="text-xs text-muted-foreground">
+            Décrivez le problème rencontré (non reçu, mauvaise adresse, colis vide, endommagé…)
+          </p>
+          <Textarea
+            value={contestReason}
+            onChange={(e) => setContestReason(e.target.value)}
+            placeholder="Décrivez votre problème..."
+            rows={3}
+          />
+          <div className="flex gap-2">
+            <Button size="sm" variant="destructive" onClick={handleContest} disabled={!contestReason.trim()}>
+              Envoyer la contestation
+            </Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowContest(false)}>
+              Annuler
+            </Button>
+          </div>
+        </div>
+      )}
     </Card>
   );
 };

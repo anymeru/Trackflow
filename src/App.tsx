@@ -12,6 +12,7 @@ import MessagingPage from "./pages/MessagingPage";
 import OperatorDashboard from "./pages/OperatorDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import ProfilePage from "./pages/ProfilePage";
+import PublicTrackingPage from "./pages/PublicTrackingPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/admin/users" element={<AdminDashboard />} />
           <Route path="/admin/trackings" element={<AdminDashboard />} />
           <Route path="/admin/settings" element={<AdminDashboard />} />
+          <Route path="/track/:id" element={<PublicTrackingPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
