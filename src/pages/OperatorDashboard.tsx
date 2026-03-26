@@ -59,11 +59,11 @@ const OperatorDashboard = () => {
 
   return (
     <DashboardLayout role="operator">
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         <h1 className="font-display text-2xl font-bold">Espace Opérateur</h1>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           <Card className="p-4 flex items-center gap-3">
             <Package className="w-7 h-7 text-accent" />
             <div>

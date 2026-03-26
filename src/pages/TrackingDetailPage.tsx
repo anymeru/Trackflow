@@ -38,7 +38,7 @@ const TrackingDetailPage = () => {
 
   return (
     <DashboardLayout role="client">
-      <div className="p-6 space-y-6">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
         {/* Header */}
         <div className="flex items-start gap-4">
           <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
@@ -46,7 +46,7 @@ const TrackingDetailPage = () => {
           </Button>
           <div className="flex-1">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="font-display text-2xl font-bold">{tracking.name}</h1>
+              <h1 className="font-display text-lg sm:text-2xl font-bold">{tracking.name}</h1>
               <StatusBadge status={tracking.status} />
             </div>
             <p className="text-sm text-muted-foreground font-mono mt-1">{tracking.trackingNumber}</p>
@@ -62,7 +62,7 @@ const TrackingDetailPage = () => {
               <ETABlock tracking={tracking} />
             </Card>
 
-            <div className="h-[400px]">
+            <div className="h-[250px] sm:h-[400px]">
               <TrackingMap items={[tracking]} selectedId={tracking.id} showRoute className="h-full" />
             </div>
 
