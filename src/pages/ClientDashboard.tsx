@@ -24,13 +24,13 @@ const ClientDashboard = () => {
 
   return (
     <DashboardLayout role="client">
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
+      <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="font-display text-2xl font-bold">Tableau de bord</h1>
+            <h1 className="font-display text-xl sm:text-2xl font-bold">Tableau de bord</h1>
             <p className="text-muted-foreground text-sm">Bienvenue, Jean Dupont</p>
           </div>
-          <Button variant="accent" onClick={() => navigate("/dashboard/trackings")}>
+          <Button variant="accent" size="sm" onClick={() => navigate("/dashboard/trackings")}>
             <Plus className="w-4 h-4 mr-2" />
             Ajouter un tracking
           </Button>
@@ -86,7 +86,7 @@ const ClientDashboard = () => {
                     <p className="text-xs text-muted-foreground font-mono">{t.trackingNumber}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                   <StatusBadge status={t.status} />
                   <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/tracking/${t.id}`)}>
                     <Eye className="w-4 h-4" />

@@ -22,9 +22,9 @@ const OperatorFilters = ({
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Filter className="w-4 h-4 text-muted-foreground" />
+      <Filter className="w-4 h-4 text-muted-foreground hidden sm:block" />
       <Select value={statusFilter} onValueChange={onStatusChange}>
-        <SelectTrigger className="w-36 h-8 text-xs">
+        <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
           <SelectValue placeholder="Statut" />
         </SelectTrigger>
         <SelectContent>
@@ -39,7 +39,7 @@ const OperatorFilters = ({
         </SelectContent>
       </Select>
       <Select value={carrierFilter} onValueChange={onCarrierChange}>
-        <SelectTrigger className="w-36 h-8 text-xs">
+        <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
           <SelectValue placeholder="Transporteur" />
         </SelectTrigger>
         <SelectContent>
@@ -50,7 +50,7 @@ const OperatorFilters = ({
         </SelectContent>
       </Select>
       <Select value={priorityFilter} onValueChange={onPriorityChange}>
-        <SelectTrigger className="w-36 h-8 text-xs">
+        <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
           <SelectValue placeholder="Priorité" />
         </SelectTrigger>
         <SelectContent>
