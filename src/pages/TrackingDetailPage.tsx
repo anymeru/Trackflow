@@ -10,6 +10,8 @@ import ETABlock from "@/components/tracking/ETABlock";
 import ProofOfDeliveryBlock from "@/components/tracking/ProofOfDeliveryBlock";
 import IncidentBlock from "@/components/tracking/IncidentBlock";
 import ReturnRequestBlock from "@/components/tracking/ReturnRequestBlock";
+import DeliveryInstructions from "@/components/tracking/DeliveryInstructions";
+import CarbonFootprint from "@/components/tracking/CarbonFootprint";
 import ChatBox from "@/components/messaging/ChatBox";
 import { mockTrackings, mockConversations, mockIncidents, mockReturnRequests } from "@/data/mockData";
 import ShareTrackingButton from "@/components/tracking/ShareTrackingButton";
@@ -65,6 +67,17 @@ const TrackingDetailPage = () => {
             <div className="h-[250px] sm:h-[400px]">
               <TrackingMap items={[tracking]} selectedId={tracking.id} showRoute className="h-full" />
             </div>
+
+            {/* Carbon Footprint */}
+            <CarbonFootprint
+              origin={tracking.origin}
+              destination={tracking.destination}
+              carrier={tracking.carrier}
+              type={tracking.type}
+            />
+
+            {/* Delivery Instructions */}
+            <DeliveryInstructions trackingId={tracking.id} status={tracking.status} />
 
             {/* Details */}
             <Card className="p-5 space-y-4">

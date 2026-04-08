@@ -2,29 +2,60 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Textarea } from "@/components/ui/textarea";
 import StatusBadge from "@/components/tracking/StatusBadge";
+import StatusGuide from "@/components/tracking/StatusGuide";
+import RecentTrackings, { addRecentTracking } from "@/components/tracking/RecentTrackings";
 import { mockTrackings } from "@/data/mockData";
 import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 
 const LandingPage = () => {
   const [trackingInput, setTrackingInput] = useState("");
-  const [searchResult, setSearchResult] = useState<typeof mockTrackings[0] | null>(null);
-  const [notFound, setNotFound] = useState(false);
+  const [searchResults, setSearchResults] = useState<typeof mockTrackings>([]);
+  const [notFoundNumbers, setNotFoundNumbers] = useState<string[]>([]);
+  const [hasSearched, setHasSearched] = useState(false);
   const navigate = useNavigate();
 
   const handleSearch = () => {
-    const found = mockTrackings.find(
-      (t) => t.trackingNumber.toLowerCase() === trackingInput.trim().toLowerCase()
+    const numbers = trackingInput
+      .split(/[\n,;]+/)
+      .map((n) => n.trim())
+      .filter((n) => n.length > 0)
+      .slice(0, 10);
+
+    if (numbers.length === 0) return;
+
+    const found: typeof mockTrackings = [];
+    const notFound: string[] = [];
+
+    numbers.forEach((num) => {
+      const match = mockTrackings.find(
+        (t) => t.trackingNumber.toLowerCase() === num.toLowerCase()
+      );
+      if (match) {
+        found.push(match);
+        addRecentTracking({ trackingNumber: match.trackingNumber, name: match.name, status: match.status });
+      } else {
+        notFound.push(num);
+      }
+    });
+
+    setSearchResults(found);
+    setNotFoundNumbers(notFound);
+    setHasSearched(true);
+  };
+
+  const handleRecentSelect = (trackingNumber: string) => {
+    setTrackingInput(trackingNumber);
+    const match = mockTrackings.find(
+      (t) => t.trackingNumber.toLowerCase() === trackingNumber.toLowerCase()
     );
-    if (found) {
-      setSearchResult(found);
-      setNotFound(false);
-    } else {
-      setSearchResult(null);
-      setNotFound(true);
+    if (match) {
+      setSearchResults([match]);
+      setNotFoundNumbers([]);
+      setHasSearched(true);
     }
   };
 
@@ -66,71 +97,105 @@ const LandingPage = () => {
               </p>
             </motion.div>
 
-            {/* Search */}
+            {/* Multi-tracking Search */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="max-w-lg mx-auto"
             >
-              <div className="glass-card rounded-2xl p-2 flex gap-2">
-                <Input
+              <div className="glass-card rounded-2xl p-3 space-y-2">
+                <Textarea
                   value={trackingInput}
                   onChange={(e) => setTrackingInput(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  placeholder="Entrez votre numéro de tracking..."
-                  className="h-12 border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                  placeholder={"Entrez vos numéros de tracking...\nJusqu'à 10 numéros (un par ligne)"}
+                  className="min-h-[48px] max-h-[120px] border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0 resize-none"
+                  rows={2}
                 />
-                <Button variant="accent" size="lg" onClick={handleSearch} className="shrink-0">
-                  <Search className="w-5 h-5 mr-2" />
-                  Suivre
-                </Button>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-primary-foreground/40 pl-1">
+                    Séparez par ligne, virgule ou point-virgule
+                  </span>
+                  <Button variant="accent" size="lg" onClick={handleSearch} className="shrink-0">
+                    <Search className="w-5 h-5 mr-2" />
+                    Suivre
+                  </Button>
+                </div>
               </div>
               <p className="text-xs text-primary-foreground/50 mt-2">
-                Essayez: TRK-2024-001847
+                Essayez: TRK-2024-001847, TRK-2024-003105
               </p>
+
+              {/* Recent Trackings */}
+              <div className="mt-4">
+                <RecentTrackings onSelect={handleRecentSelect} />
+              </div>
             </motion.div>
 
-            {/* Search Result */}
-            {searchResult && (
+            {/* Search Results */}
+            {hasSearched && searchResults.length > 0 && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="max-w-lg mx-auto"
+                className="max-w-lg mx-auto space-y-3"
               >
-                <Card className="p-5 text-left space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-mono text-sm text-muted-foreground">{searchResult.trackingNumber}</p>
-                      <p className="font-display font-semibold text-lg">{searchResult.name}</p>
+                {searchResults.length > 1 && (
+                  <p className="text-sm text-primary-foreground/60 text-left">
+                    {searchResults.length} colis trouvés
+                  </p>
+                )}
+                {searchResults.map((result) => (
+                  <Card key={result.id} className="p-4 text-left space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-mono text-sm text-muted-foreground">{result.trackingNumber}</p>
+                        <p className="font-display font-semibold">{result.name}</p>
+                      </div>
+                      <StatusBadge status={result.status} />
                     </div>
-                    <StatusBadge status={searchResult.status} />
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4" />
-                    {searchResult.origin} → {searchResult.destination}
-                  </div>
-                  <Button
-                    variant="accent"
-                    size="sm"
-                    onClick={() => navigate("/login")}
-                    className="w-full"
-                  >
-                    Connectez-vous pour plus de détails
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Card>
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <MapPin className="w-4 h-4" />
+                      {result.origin} → {result.destination}
+                    </div>
+                    <Button
+                      variant="accent"
+                      size="sm"
+                      onClick={() => navigate(`/track/${result.id}`)}
+                      className="w-full"
+                    >
+                      Voir le suivi détaillé
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Card>
+                ))}
               </motion.div>
             )}
 
-            {notFound && (
+            {hasSearched && notFoundNumbers.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Card className="max-w-lg mx-auto p-4 text-center">
-                  <p className="text-muted-foreground">Aucun résultat trouvé pour ce numéro.</p>
+                <Card className="max-w-lg mx-auto p-4 text-left space-y-2">
+                  <p className="text-sm font-medium text-destructive">Numéros non trouvés :</p>
+                  {notFoundNumbers.map((num) => (
+                    <p key={num} className="text-sm text-muted-foreground font-mono">{num}</p>
+                  ))}
+                  <p className="text-xs text-muted-foreground">Vérifiez l'orthographe ou contactez votre expéditeur.</p>
                 </Card>
               </motion.div>
             )}
           </div>
+        </div>
+      </section>
+
+      {/* Status Guide */}
+      <section className="py-16 bg-card border-b border-border">
+        <div className="container mx-auto px-4 max-w-2xl">
+          <StatusGuide />
         </div>
       </section>
 
