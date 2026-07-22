@@ -6,6 +6,7 @@ import {
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import NotificationDropdown from "@/components/notifications/NotificationDropdown";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface DashboardLayoutProps {
@@ -130,6 +131,7 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
             )}
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <NotificationDropdown />
             <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
               <User className="w-4 h-4 text-muted-foreground" />

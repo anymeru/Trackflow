@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Package, Menu, X } from "lucide-react";
 import { useState } from "react";
+import ThemeToggle from "@/components/theme/ThemeToggle";
 
 const Navbar = () => {
   const location = useLocation();
@@ -21,6 +22,7 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle variant={isLanding ? "onDark" : "default"} />
           <Link to="/login">
             <Button variant={isLanding ? "hero-outline" : "ghost"} size="sm">Se connecter</Button>
           </Link>
