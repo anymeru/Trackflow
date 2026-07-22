@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Message } from "@/data/mockData";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,16 @@ interface ChatBoxProps {
 const ChatBox = ({ messages, currentUserId = "user1" }: ChatBoxProps) => {
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState(messages);
+
+  // Sync when the parent switches to a different conversation
+  useEffect(() => {
+    setLocalMessages(messages);
+  }, [messages]);
+
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight });
+  }, [localMessages]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -32,7 +42,7 @@ const ChatBox = ({ messages, currentUserId = "user1" }: ChatBoxProps) => {
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-auto p-4 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-auto p-4 space-y-3">
         {localMessages.map((msg) => {
           const isOwn = msg.senderId === currentUserId;
           return (
