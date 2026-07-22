@@ -26,7 +26,7 @@ const AdminDashboard = () => {
   const inTransitCount = mockTrackings.filter((t) => t.status === "in_transit").length;
   const totalCount = mockTrackings.length;
   const deliveryRate = Math.round((deliveredCount / totalCount) * 100);
-  const onTimeRate = Math.round(((deliveredCount) / (deliveredCount + delayedCount || 1)) * 100);
+  const onTimeRate = Math.round((deliveredCount / ((deliveredCount + delayedCount) || 1)) * 100);
 
   const statusDistribution = Object.entries(
     mockTrackings.reduce((acc, t) => {
