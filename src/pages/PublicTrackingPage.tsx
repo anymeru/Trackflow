@@ -59,7 +59,13 @@ const PublicTrackingPage = () => {
         </div>
 
         <Card className="p-5">
-          <ETABlock tracking={tracking} />
+          <ETABlock
+            eta={tracking.eta ?? null}
+            status={tracking.status}
+            progressPercent={tracking.progressPercent}
+            originAddress={tracking.originAddress}
+            destinationAddress={tracking.destinationAddress}
+          />
         </Card>
 
         <div className="h-[300px]">
