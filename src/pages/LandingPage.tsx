@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,8 +8,13 @@ import StatusBadge from "@/components/tracking/StatusBadge";
 import StatusGuide from "@/components/tracking/StatusGuide";
 import RecentTrackings, { addRecentTracking } from "@/components/tracking/RecentTrackings";
 import { getPublicTracking, Tracking } from "@/api/trackings";
-import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe } from "lucide-react";
+import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe, Plane, Ship, Globe2, CheckCircle2, Quote } from "lucide-react";
 import { motion } from "framer-motion";
+import heroImg from "@/assets/hero-freight.jpg.asset.json";
+import airImg from "@/assets/service-air.jpg.asset.json";
+import seaImg from "@/assets/service-sea.jpg.asset.json";
+import roadImg from "@/assets/service-road.jpg.asset.json";
+import ieImg from "@/assets/service-import-export.jpg.asset.json";
 
 const LandingPage = () => {
   const [trackingInput, setTrackingInput] = useState("");
@@ -67,15 +72,29 @@ const LandingPage = () => {
     { icon: Globe, title: "National Coverage", desc: "Track your shipments anywhere in France with our carrier partners." },
   ];
 
+  const services = [
+    { icon: Plane, title: "Air Freight", desc: "Express global air cargo when hours matter — 24–72h transit to major hubs.", image: airImg.url, to: "/services#air" },
+    { icon: Ship, title: "Sea Freight", desc: "FCL & LCL ocean shipping with direct tier-1 carrier contracts.", image: seaImg.url, to: "/services#sea" },
+    { icon: Truck, title: "Road Freight", desc: "Domestic and cross-border trucking with a live-tracked modern fleet.", image: roadImg.url, to: "/services#road" },
+    { icon: Globe2, title: "Import & Export", desc: "Licensed customs brokers handling clearance, HS coding and compliance.", image: ieImg.url, to: "/services#import-export" },
+  ];
+
+  const testimonials = [
+    { name: "Amélie Rousseau", role: "Head of Ops, Maison Verte", quote: "TrackFlow turned our shipping black box into a live dashboard. Support tickets dropped 60% in a month." },
+    { name: "David Okonkwo", role: "Import Manager, Baobab Trading", quote: "Customs clearance used to be our worst headache. Their brokers handle everything — we just watch it move." },
+    { name: "Yuki Tanaka", role: "Founder, Lumen Studio", quote: "The ETA accuracy is genuinely uncanny. Our clients trust us more because we finally trust our own timeline." },
+  ];
+
   return (
     <div className="min-h-screen">
       <Navbar />
 
       {/* Hero */}
-      <section className="gradient-hero min-h-[80vh] flex items-center relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-20 left-10 w-72 h-72 bg-accent rounded-full blur-[120px]" />
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/50 rounded-full blur-[150px]" />
+      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+        <div className="absolute inset-0">
+          <img src={heroImg.url} alt="Global freight and logistics" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/50" />
+          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
         </div>
 
         <div className="container mx-auto px-4 pt-20 relative z-10">
@@ -87,14 +106,14 @@ const LandingPage = () => {
             >
               <div className="inline-flex items-center gap-2 bg-accent/20 rounded-full px-4 py-1.5 mb-6 text-sm text-accent-foreground border border-accent/20">
                 <Truck className="w-4 h-4" />
-                Professional Tracking Platform
+                Global Freight & Live Tracking
               </div>
               <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight">
-                Track your shipments <br />
-                <span className="text-gradient-accent">in real time</span>
+                Freight that moves. <br />
+                <span className="text-gradient-accent">Visibility that stays.</span>
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/70 mt-4 max-w-xl mx-auto">
-                Packages, vehicles, equipment — locate and manage all your items from a single platform.
+                Air, sea, and road freight across 120+ countries — with live tracking, real ETAs and dedicated support on every shipment.
               </p>
             </motion.div>
 
@@ -130,7 +149,7 @@ const LandingPage = () => {
                 </div>
               </div>
               <p className="text-xs text-primary-foreground/50 mt-2">
-                Essayez: TRK-2024-001847, TRK-2024-003105
+                Try: TRK-2024-001847, TRK-2024-003105
               </p>
 
               {/* Recent Trackings */}
@@ -193,6 +212,95 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Services showcase */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-14">
+            <p className="text-accent font-medium text-sm uppercase tracking-wider mb-2">Our services</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold">One partner, every mode of transport</h2>
+            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+              From urgent air cargo to full container ocean freight, we design the route that fits your goods and your deadline.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {services.map((s, i) => (
+              <motion.div
+                key={s.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08 }}
+              >
+                <Link to={s.to}>
+                  <Card className="overflow-hidden group h-full hover:shadow-xl transition-all border-border/50">
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img src={s.image} alt={s.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
+                      <div className="absolute top-3 left-3 w-10 h-10 rounded-lg gradient-accent flex items-center justify-center shadow-lg">
+                        <s.icon className="w-5 h-5 text-accent-foreground" />
+                      </div>
+                      <h3 className="absolute bottom-3 left-4 font-display text-xl font-bold text-primary-foreground">{s.title}</h3>
+                    </div>
+                    <div className="p-5">
+                      <p className="text-sm text-muted-foreground">{s.desc}</p>
+                      <div className="flex items-center gap-1 text-sm text-accent font-medium mt-3 group-hover:gap-2 transition-all">
+                        Learn more <ArrowRight className="w-4 h-4" />
+                      </div>
+                    </div>
+                  </Card>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Split: image + why */}
+      <section className="py-24 bg-muted/40">
+        <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl"
+          >
+            <img src={seaImg.url} alt="Ocean freight container ship" className="w-full h-full object-cover" loading="lazy" />
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="space-y-5"
+          >
+            <p className="text-accent font-medium text-sm uppercase tracking-wider">Why TrackFlow</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold">
+              Old-school reliability, modern visibility
+            </h2>
+            <p className="text-muted-foreground text-lg leading-relaxed">
+              Fifteen years of freight-forwarding expertise combined with a tracking platform your team will actually enjoy using.
+              No black-box shipments. No last-minute surprises.
+            </p>
+            <ul className="space-y-3 pt-2">
+              {[
+                "98.6% on-time delivery across all lanes",
+                "Dedicated account manager per client",
+                "Customs clearance & duty advisory included",
+                "Real-time ETA with confidence scoring",
+              ].map((b) => (
+                <li key={b} className="flex items-start gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                  <span>{b}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/about" className="inline-block pt-2">
+              <Button variant="accent">About our company <ArrowRight className="w-4 h-4 ml-2" /></Button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* Status Guide */}
       <section className="py-16 bg-card border-b border-border">
         <div className="container mx-auto px-4 max-w-2xl">
@@ -234,35 +342,91 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="py-20 bg-muted/40">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-12">
+            <p className="text-accent font-medium text-sm uppercase tracking-wider mb-2">Trusted worldwide</p>
+            <h2 className="font-display text-3xl md:text-4xl font-bold">What our clients say</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {testimonials.map((t, i) => (
+              <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                <Card className="p-6 h-full">
+                  <Quote className="w-8 h-8 text-accent mb-3" />
+                  <p className="text-muted-foreground italic leading-relaxed">"{t.quote}"</p>
+                  <div className="mt-5 pt-4 border-t border-border">
+                    <p className="font-display font-semibold">{t.name}</p>
+                    <p className="text-sm text-muted-foreground">{t.role}</p>
+                  </div>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-20 gradient-primary">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display text-3xl font-bold text-primary-foreground mb-4">
-            Ready to track your shipments?
+            Ready to ship smarter?
           </h2>
           <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
-            Create your account for free and start tracking your packages in minutes.
+            Create your free account or talk to our team about your next shipment.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button variant="hero" size="lg" onClick={() => navigate("/register")}>
               Create a free account
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="hero-outline" size="lg" onClick={() => navigate("/login")}>
-              Sign In
+            <Button variant="hero-outline" size="lg" onClick={() => navigate("/contact")}>
+              Talk to us
             </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t border-border py-8">
-        <div className="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Package className="w-5 h-5 text-accent" />
-            <span className="font-display font-bold">TrackFlow</span>
+      <footer className="bg-card border-t border-border py-12">
+        <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-4 gap-8">
+          <div>
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
+                <Package className="w-4 h-4 text-accent-foreground" />
+              </div>
+              <span className="font-display font-bold">TrackFlow</span>
+            </div>
+            <p className="text-sm text-muted-foreground">Freight forwarding & live tracking, everywhere.</p>
           </div>
-          <p className="text-sm text-muted-foreground">© 2024 TrackFlow. All rights reserved.</p>
+          <div>
+            <p className="font-display font-semibold mb-3 text-sm">Services</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/services#air" className="hover:text-accent">Air Freight</Link></li>
+              <li><Link to="/services#sea" className="hover:text-accent">Sea Freight</Link></li>
+              <li><Link to="/services#road" className="hover:text-accent">Road Freight</Link></li>
+              <li><Link to="/services#import-export" className="hover:text-accent">Import & Export</Link></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-display font-semibold mb-3 text-sm">Company</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li><Link to="/about" className="hover:text-accent">About</Link></li>
+              <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
+              <li><Link to="/track" className="hover:text-accent">Track Shipment</Link></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-display font-semibold mb-3 text-sm">Get in touch</p>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li>hello@trackflow.com</li>
+              <li>+33 1 84 88 42 00</li>
+              <li>Paris · Rotterdam · Lagos</li>
+            </ul>
+          </div>
+        </div>
+        <div className="container mx-auto px-4 mt-10 pt-6 border-t border-border text-sm text-muted-foreground text-center">
+          © 2026 TrackFlow. All rights reserved.
         </div>
       </footer>
     </div>
