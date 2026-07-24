@@ -21,8 +21,8 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
     setContested(true);
     setShowContest(false);
     toast({
-      title: "Contestation envoyée",
-      description: "Votre contestation a été enregistrée. Le support vous contactera sous 24h.",
+      title: "Dispute Submitted",
+      description: "Your dispute has been recorded. Support will contact you within 24h.",
     });
   };
 
@@ -33,15 +33,15 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
           <CheckCircle className="w-4 h-4 text-success" />
         </div>
         <div>
-          <h2 className="font-display font-semibold">Preuve de livraison</h2>
-          <p className="text-xs text-muted-foreground">Livraison confirmée et vérifiée</p>
+          <h2 className="font-display font-semibold">Proof of Delivery</h2>
+          <p className="text-xs text-muted-foreground">Delivery confirmed and verified</p>
         </div>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4 text-sm">
         <div className="flex items-center gap-2">
           <User className="w-4 h-4 text-muted-foreground" />
-          <span className="text-muted-foreground">Réceptionné par:</span>
+          <span className="text-muted-foreground">Received by:</span>
           <span className="font-medium">{pod.deliveredTo}</span>
         </div>
         <div className="flex items-center gap-2">
@@ -51,7 +51,7 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
         </div>
         <div className="flex items-center gap-2 sm:col-span-2">
           <MapPin className="w-4 h-4 text-muted-foreground" />
-          <span className="text-muted-foreground">Adresse:</span>
+          <span className="text-muted-foreground">Address:</span>
           <span className="font-medium">{pod.location}</span>
         </div>
         {pod.notes && (
@@ -77,10 +77,10 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
           <div className="space-y-2">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
               <Camera className="w-3 h-3" />
-              <span>Photo de livraison</span>
+              <span>Delivery Photo</span>
             </div>
             <div className="border border-border rounded-lg overflow-hidden bg-muted/30">
-              <img src={pod.photoUrl} alt="Photo livraison" className="w-full h-24 object-cover" />
+              <img src={pod.photoUrl} alt="Delivery Photo" className="w-full h-24 object-cover" />
             </div>
           </div>
         )}
@@ -89,7 +89,7 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
       <div className="flex gap-2">
         <Button variant="outline" size="sm" className="flex-1">
           <Download className="w-4 h-4 mr-2" />
-          Télécharger le reçu PDF
+          Download PDF Receipt
         </Button>
         {!contested ? (
           <Button
@@ -99,34 +99,34 @@ const ProofOfDeliveryBlock = ({ pod, trackingId }: ProofOfDeliveryBlockProps) =>
             onClick={() => setShowContest(!showContest)}
           >
             <AlertTriangle className="w-4 h-4 mr-2" />
-            Contester
+            Dispute
           </Button>
         ) : (
           <Button variant="outline" size="sm" className="flex-1" disabled>
             <CheckCircle className="w-4 h-4 mr-2 text-success" />
-            Contestation envoyée
+            Dispute Submitted
           </Button>
         )}
       </div>
 
       {showContest && (
         <div className="space-y-3 border border-destructive/20 rounded-lg p-4 bg-destructive/5">
-          <p className="text-sm font-medium">Contester cette livraison</p>
+          <p className="text-sm font-medium">Dispute This Delivery</p>
           <p className="text-xs text-muted-foreground">
-            Décrivez le problème rencontré (non reçu, mauvaise adresse, colis vide, endommagé…)
+            Describe the issue (not received, wrong address, empty package, damaged…)
           </p>
           <Textarea
             value={contestReason}
             onChange={(e) => setContestReason(e.target.value)}
-            placeholder="Décrivez votre problème..."
+            placeholder="Describe your issue..."
             rows={3}
           />
           <div className="flex gap-2">
             <Button size="sm" variant="destructive" onClick={handleContest} disabled={!contestReason.trim()}>
-              Envoyer la contestation
+              Submit Dispute
             </Button>
             <Button size="sm" variant="ghost" onClick={() => setShowContest(false)}>
-              Annuler
+              Cancel
             </Button>
           </div>
         </div>

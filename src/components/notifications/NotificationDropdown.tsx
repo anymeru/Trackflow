@@ -1,34 +1,40 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Bell, Package, Clock, CheckCircle, CreditCard, AlertTriangle, RotateCcw, MessageSquare } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Bell, Package, Clock, CheckCircle, CreditCard, AlertTriangle, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { mockNotifications, type AppNotification } from "@/data/mockData";
+import { getConversations, markAllConversationsRead, Conversation } from "@/api/conversations";
 
 const typeIcons: Record<string, React.ReactNode> = {
-  status_change: <Package className="w-4 h-4 text-accent" />,
-  eta_update: <Clock className="w-4 h-4 text-warning" />,
-  delivery: <CheckCircle className="w-4 h-4 text-success" />,
-  fees: <CreditCard className="w-4 h-4 text-warning" />,
-  incident: <AlertTriangle className="w-4 h-4 text-destructive" />,
-  return: <RotateCcw className="w-4 h-4 text-info" />,
   message: <MessageSquare className="w-4 h-4 text-info" />,
 };
 
 const NotificationDropdown = () => {
   const navigate = useNavigate();
-  const [notifications, setNotifications] = useState(mockNotifications);
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
 
-  const markAllRead = () => {
-    setNotifications(notifications.map((n) => ({ ...n, read: true })));
-  };
+  const { data: conversations = [] } = useQuery({
+    queryKey: ["conversations"],
+    queryFn: () => getConversations(),
+    refetchInterval: 10000,
+    enabled: open,
+  });
 
-  const handleClick = (notif: AppNotification) => {
-    setNotifications(notifications.map((n) => n.id === notif.id ? { ...n, read: true } : n));
-    if (notif.link) navigate(notif.link);
-  };
+  const unreadCount = conversations.reduce((sum, c) => sum + c.unreadCount, 0);
+
+  const notifications = conversations
+    .filter((c) => c.unreadCount > 0)
+    .map((c) => ({
+      id: c.id,
+      title: c.subject,
+      message: c.lastMessage,
+      time: c.lastMessageTime,
+      link: `/${window.location.pathname.includes("operator") ? "operator" : window.location.pathname.includes("admin") ? "admin" : "dashboard"}/messages`,
+      read: false,
+    }));
 
   const timeAgo = (date: string) => {
     const diff = Date.now() - new Date(date).getTime();
@@ -36,11 +42,16 @@ const NotificationDropdown = () => {
     if (mins < 60) return `${mins}min`;
     const hours = Math.floor(mins / 60);
     if (hours < 24) return `${hours}h`;
-    return `${Math.floor(hours / 24)}j`;
+    return `${Math.floor(hours / 24)}d`;
+  };
+
+  const markAllRead = async () => {
+    await markAllConversationsRead();
+    queryClient.invalidateQueries({ queryKey: ["conversations"] });
   };
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="w-5 h-5" />
@@ -56,27 +67,29 @@ const NotificationDropdown = () => {
           <h3 className="font-display font-semibold text-sm">Notifications</h3>
           {unreadCount > 0 && (
             <Button variant="ghost" size="sm" className="text-xs h-7" onClick={markAllRead}>
-              Tout marquer lu
+              Mark all read
             </Button>
           )}
         </div>
         <ScrollArea className="max-h-80">
           {notifications.length === 0 ? (
-            <p className="p-4 text-sm text-muted-foreground text-center">Aucune notification</p>
+            <p className="p-4 text-sm text-muted-foreground text-center">No notifications</p>
           ) : (
             notifications.map((notif) => (
               <button
                 key={notif.id}
-                onClick={() => handleClick(notif)}
-                className={`w-full text-left p-3 flex gap-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 ${!notif.read ? "bg-accent/5" : ""}`}
+                onClick={() => { navigate(notif.link); setOpen(false); }}
+                className="w-full text-left p-3 flex gap-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 bg-accent/5"
               >
-                <div className="shrink-0 mt-0.5">{typeIcons[notif.type]}</div>
-                <div className="min-w-0 flex-1">
-                  <p className={`text-sm ${!notif.read ? "font-medium" : ""}`}>{notif.title}</p>
-                  <p className="text-xs text-muted-foreground line-clamp-2">{notif.message}</p>
-                  <p className="text-xs text-muted-foreground mt-1">{timeAgo(notif.createdAt)}</p>
+                <div className="shrink-0 mt-0.5">
+                  <MessageSquare className="w-4 h-4 text-info" />
                 </div>
-                {!notif.read && <div className="w-2 h-2 rounded-full bg-accent shrink-0 mt-1.5" />}
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium">{notif.title}</p>
+                  <p className="text-xs text-muted-foreground line-clamp-2">{notif.message}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{timeAgo(notif.time)}</p>
+                </div>
+                <div className="w-2 h-2 rounded-full bg-accent shrink-0 mt-1.5" />
               </button>
             ))
           )}

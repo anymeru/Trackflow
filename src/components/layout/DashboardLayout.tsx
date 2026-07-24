@@ -15,23 +15,24 @@ interface DashboardLayoutProps {
 }
 
 const clientLinks = [
-  { to: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord" },
-  { to: "/dashboard/trackings", icon: Package, label: "Mes trackings" },
-  { to: "/dashboard/messages", icon: MessageSquare, label: "Messagerie" },
-  { to: "/dashboard/profile", icon: User, label: "Mon profil" },
+  { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { to: "/dashboard/trackings", icon: Package, label: "My Trackings" },
+  { to: "/dashboard/messages", icon: MessageSquare, label: "Messages / Support" },
+  { to: "/dashboard/profile", icon: User, label: "My Profile" },
 ];
 
 const operatorLinks = [
-  { to: "/operator", icon: LayoutDashboard, label: "Vue globale" },
-  { to: "/operator/trackings", icon: Map, label: "Tous les objets" },
+  { to: "/operator", icon: LayoutDashboard, label: "Overview" },
+  { to: "/operator/trackings", icon: Map, label: "All Items" },
   { to: "/operator/messages", icon: Headphones, label: "Support" },
 ];
 
 const adminLinks = [
-  { to: "/admin", icon: BarChart3, label: "Statistiques" },
-  { to: "/admin/users", icon: Users, label: "Utilisateurs" },
+  { to: "/admin", icon: BarChart3, label: "Analytics" },
+  { to: "/admin/users", icon: Users, label: "Users" },
   { to: "/admin/trackings", icon: Package, label: "Trackings" },
-  { to: "/admin/settings", icon: Settings, label: "Configuration" },
+  { to: "/admin/messages", icon: MessageSquare, label: "Messages / Support" },
+  { to: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 
 const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) => {
@@ -88,7 +89,7 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-sidebar-foreground/70 hover:bg-sidebar-accent w-full transition-colors"
         >
           <LogOut className="w-5 h-5 shrink-0" />
-          {(!collapsed || isMobile) && <span>Déconnexion</span>}
+          {(!collapsed || isMobile) && <span>Logout</span>}
         </button>
         {!isMobile && (
           <button

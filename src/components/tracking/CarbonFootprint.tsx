@@ -24,9 +24,9 @@ const getDistance = (origin: string, destination: string): number => {
 
 // gCO₂/km/kg estimates by transport mode
 const getEmissionFactor = (carrier: string, distance: number): { factor: number; mode: string } => {
-  if (distance > 3000) return { factor: 0.6, mode: "Aérien" }; // air freight
-  if (carrier.toLowerCase().includes("fleet")) return { factor: 0.12, mode: "Routier (véhicule)" };
-  return { factor: 0.1, mode: "Routier" }; // truck
+  if (distance > 3000) return { factor: 0.6, mode: "Air" }; // air freight
+  if (carrier.toLowerCase().includes("fleet")) return { factor: 0.12, mode: "Road (Vehicle)" };
+  return { factor: 0.1, mode: "Road" }; // truck
 };
 
 const CarbonFootprint = ({ origin, destination, carrier, type }: CarbonFootprintProps) => {
@@ -37,9 +37,9 @@ const CarbonFootprint = ({ origin, destination, carrier, type }: CarbonFootprint
   const co2Kg = co2Grams / 1000;
 
   const getLevel = (): { color: string; label: string } => {
-    if (co2Kg < 1) return { color: "text-success", label: "Faible impact" };
-    if (co2Kg < 10) return { color: "text-warning", label: "Impact modéré" };
-    return { color: "text-destructive", label: "Impact élevé" };
+    if (co2Kg < 1) return { color: "text-success", label: "Low Impact" };
+    if (co2Kg < 10) return { color: "text-warning", label: "Moderate Impact" };
+    return { color: "text-destructive", label: "High Impact" };
   };
 
   const { color, label } = getLevel();
@@ -51,7 +51,7 @@ const CarbonFootprint = ({ origin, destination, carrier, type }: CarbonFootprint
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
-          <span className="text-sm font-medium">Empreinte carbone</span>
+          <span className="text-sm font-medium">Carbon Footprint</span>
           <span className={`text-xs font-medium ${color}`}>{label}</span>
         </div>
         <p className="text-xs text-muted-foreground">

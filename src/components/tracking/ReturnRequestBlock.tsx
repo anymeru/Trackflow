@@ -15,12 +15,12 @@ interface ReturnRequestBlockProps {
 }
 
 const returnStatusLabels: Record<string, string> = {
-  requested: "Demandé",
-  approved: "Approuvé",
-  in_transit: "En cours de retour",
-  received: "Reçu",
-  refunded: "Remboursé",
-  rejected: "Refusé",
+  requested: "Requested",
+  approved: "Approved",
+  in_transit: "Return In Progress",
+  received: "Received",
+  refunded: "Refunded",
+  rejected: "Refused",
 };
 
 const returnStatusColors: Record<string, string> = {
@@ -40,8 +40,8 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
   const handleSubmit = () => {
     if (!reason || !description) return;
     toast({
-      title: "Demande de retour envoyée",
-      description: "Votre demande sera examinée sous 24-48h. Vous recevrez une notification.",
+      title: "Return Request Submitted",
+      description: "Your request will be reviewed within 24-48h. You will receive a notification.",
     });
     setShowForm(false);
     setReason("");
@@ -53,12 +53,12 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <RotateCcw className="w-5 h-5 text-info" />
-          <h2 className="font-display font-semibold">Retours</h2>
+          <h2 className="font-display font-semibold">Returns</h2>
         </div>
         {canReturn && !showForm && (
           <Button variant="outline" size="sm" onClick={() => setShowForm(true)}>
             <Plus className="w-4 h-4 mr-1" />
-            Demander un retour
+            Request Return
           </Button>
         )}
       </div>
@@ -77,7 +77,7 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
               {ret.returnTrackingNumber && (
                 <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                   <Package className="w-3 h-3" />
-                  <span>Retour: {ret.returnTrackingNumber}</span>
+                  <span>Return: {ret.returnTrackingNumber}</span>
                 </div>
               )}
             </div>
@@ -87,7 +87,7 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
 
       {returns.length === 0 && !showForm && (
         <p className="text-sm text-muted-foreground">
-          {canReturn ? "Aucune demande de retour." : "Le retour n'est pas disponible pour ce statut."}
+          {canReturn ? "No return requests." : "Return is not available for this status."}
         </p>
       )}
 
@@ -95,7 +95,7 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
         <div className="space-y-3 border border-border rounded-lg p-3">
           <Select value={reason} onValueChange={setReason}>
             <SelectTrigger>
-              <SelectValue placeholder="Motif du retour" />
+              <SelectValue placeholder="Return Reason" />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(returnReasonLabels).map(([key, label]) => (
@@ -104,17 +104,17 @@ const ReturnRequestBlock = ({ returns, trackingId, canReturn }: ReturnRequestBlo
             </SelectContent>
           </Select>
           <Textarea
-            placeholder="Décrivez la raison du retour..."
+            placeholder="Describe the reason for return..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={handleSubmit} disabled={!reason || !description}>
-              Envoyer la demande
+              Submit Request
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setShowForm(false)}>
-              Annuler
+              Cancel
             </Button>
           </div>
         </div>

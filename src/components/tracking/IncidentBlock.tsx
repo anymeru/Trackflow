@@ -21,10 +21,10 @@ const severityColors: Record<string, string> = {
 };
 
 const statusLabels: Record<string, string> = {
-  open: "Ouvert",
-  investigating: "En cours d'enquête",
-  resolved: "Résolu",
-  closed: "Fermé",
+  open: "Open",
+  investigating: "Investigation In Progress",
+  resolved: "Resolved",
+  closed: "Closed",
 };
 
 const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
@@ -35,8 +35,8 @@ const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
   const handleSubmit = () => {
     if (!incidentType || !description) return;
     toast({
-      title: "Incident signalé",
-      description: "Votre incident a été enregistré. Notre équipe va l'examiner rapidement.",
+      title: "Incident Reported",
+      description: "Your incident has been recorded. Our team will review it shortly.",
     });
     setShowForm(false);
     setIncidentType("");
@@ -53,7 +53,7 @@ const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
         {!showForm && (
           <Button variant="outline" size="sm" onClick={() => setShowForm(true)}>
             <Plus className="w-4 h-4 mr-1" />
-            Signaler
+            Report
           </Button>
         )}
       </div>
@@ -76,7 +76,7 @@ const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
               <p className="text-xs text-muted-foreground">{inc.description}</p>
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 <Clock className="w-3 h-3" />
-                <span>Ouvert le {new Date(inc.createdAt).toLocaleDateString("fr-FR")}</span>
+                <span>Opened on {new Date(inc.createdAt).toLocaleDateString("fr-FR")}</span>
               </div>
             </div>
           ))}
@@ -84,14 +84,14 @@ const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
       )}
 
       {incidents.length === 0 && !showForm && (
-        <p className="text-sm text-muted-foreground">Aucun incident signalé pour ce tracking.</p>
+        <p className="text-sm text-muted-foreground">No incidents reported for this tracking.</p>
       )}
 
       {showForm && (
         <div className="space-y-3 border border-border rounded-lg p-3">
           <Select value={incidentType} onValueChange={setIncidentType}>
             <SelectTrigger>
-              <SelectValue placeholder="Type d'incident" />
+              <SelectValue placeholder="Incident Type" />
             </SelectTrigger>
             <SelectContent>
               {Object.entries(incidentTypeLabels).map(([key, label]) => (
@@ -100,17 +100,17 @@ const IncidentBlock = ({ incidents, trackingId }: IncidentBlockProps) => {
             </SelectContent>
           </Select>
           <Textarea
-            placeholder="Décrivez le problème..."
+            placeholder="Describe the issue..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             rows={3}
           />
           <div className="flex gap-2">
             <Button size="sm" onClick={handleSubmit} disabled={!incidentType || !description}>
-              Envoyer
+              Submit
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setShowForm(false)}>
-              Annuler
+              Cancel
             </Button>
           </div>
         </div>

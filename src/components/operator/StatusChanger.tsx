@@ -2,35 +2,40 @@ import { useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { statusLabels } from "@/data/mockData";
-import { toast } from "@/hooks/use-toast";
+import { STATUS_LABELS } from "@/components/tracking/StatusBadge";
+import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
 
 interface StatusChangerProps {
   currentStatus: string;
   trackingNumber: string;
-  onStatusChange?: (newStatus: string) => void;
+  onStatusChange?: (newStatus: string, reason: string) => void;
 }
 
 const allowedStatuses = [
-  "created", "picked_up", "in_transit", "out_for_delivery",
-  "delivered", "delayed", "lost", "customs_hold",
-  "fees_pending", "fees_paid", "returned",
+  "in_transit",
+  "out_for_delivery",
+  "delivered",
+  "delayed",
+  "customs_hold",
+  "fees_pending",
+  "returned",
+  "lost",
 ];
 
 const StatusChanger = ({ currentStatus, trackingNumber, onStatusChange }: StatusChangerProps) => {
   const [newStatus, setNewStatus] = useState(currentStatus);
-  const [comment, setComment] = useState("");
+  const [reason, setReason] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
   const handleUpdate = () => {
-    if (newStatus === currentStatus && !comment) return;
-    toast({
-      title: "Statut mis à jour",
-      description: `Le tracking ${trackingNumber} est maintenant "${statusLabels[newStatus]}".`,
-    });
-    onStatusChange?.(newStatus);
-    setComment("");
+    if (!reason.trim()) {
+      toast.error("Reason is required");
+      return;
+    }
+    toast.success(`Status updated for ${trackingNumber}`);
+    onStatusChange?.(newStatus, reason);
+    setReason("");
     setIsOpen(false);
   };
 
@@ -38,7 +43,7 @@ const StatusChanger = ({ currentStatus, trackingNumber, onStatusChange }: Status
     return (
       <Button variant="outline" size="sm" onClick={() => setIsOpen(true)}>
         <RefreshCw className="w-4 h-4 mr-1" />
-        Changer le statut
+        Change Status
       </Button>
     );
   }
@@ -47,7 +52,7 @@ const StatusChanger = ({ currentStatus, trackingNumber, onStatusChange }: Status
     <div className="border border-border rounded-lg p-3 space-y-3 bg-muted/30">
       <div className="flex items-center gap-2">
         <RefreshCw className="w-4 h-4 text-muted-foreground" />
-        <span className="text-sm font-medium">Modifier le statut</span>
+        <span className="text-sm font-medium">Edit Status</span>
       </div>
       <Select value={newStatus} onValueChange={setNewStatus}>
         <SelectTrigger>
@@ -55,22 +60,22 @@ const StatusChanger = ({ currentStatus, trackingNumber, onStatusChange }: Status
         </SelectTrigger>
         <SelectContent>
           {allowedStatuses.map((s) => (
-            <SelectItem key={s} value={s}>{statusLabels[s]}</SelectItem>
+            <SelectItem key={s} value={s}>{STATUS_LABELS[s]}</SelectItem>
           ))}
         </SelectContent>
       </Select>
       <Textarea
-        placeholder="Commentaire interne (optionnel)..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
+        placeholder="Reason required..."
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
         rows={2}
       />
       <div className="flex gap-2">
-        <Button size="sm" onClick={handleUpdate}>
-          Mettre à jour
+        <Button size="sm" onClick={handleUpdate} disabled={!reason.trim()}>
+          Update
         </Button>
         <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
-          Annuler
+          Cancel
         </Button>
       </div>
     </div>

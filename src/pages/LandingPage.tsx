@@ -7,63 +7,64 @@ import { Textarea } from "@/components/ui/textarea";
 import StatusBadge from "@/components/tracking/StatusBadge";
 import StatusGuide from "@/components/tracking/StatusGuide";
 import RecentTrackings, { addRecentTracking } from "@/components/tracking/RecentTrackings";
-import { mockTrackings } from "@/data/mockData";
+import { getPublicTracking, Tracking } from "@/api/trackings";
 import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe } from "lucide-react";
 import { motion } from "framer-motion";
 
 const LandingPage = () => {
   const [trackingInput, setTrackingInput] = useState("");
-  const [searchResults, setSearchResults] = useState<typeof mockTrackings>([]);
+  const [searchResults, setSearchResults] = useState<Tracking[]>([]);
   const [notFoundNumbers, setNotFoundNumbers] = useState<string[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searching, setSearching] = useState(false);
   const navigate = useNavigate();
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     const numbers = trackingInput
       .split(/[\n,;]+/)
-      .map((n) => n.trim())
+      .map((n) => n.trim().toUpperCase())
       .filter((n) => n.length > 0)
       .slice(0, 10);
 
     if (numbers.length === 0) return;
 
-    const found: typeof mockTrackings = [];
+    setSearching(true);
+    const found: Tracking[] = [];
     const notFound: string[] = [];
 
-    numbers.forEach((num) => {
-      const match = mockTrackings.find(
-        (t) => t.trackingNumber.toLowerCase() === num.toLowerCase()
-      );
-      if (match) {
-        found.push(match);
-        addRecentTracking({ trackingNumber: match.trackingNumber, name: match.name, status: match.status });
-      } else {
+    for (const num of numbers) {
+      try {
+        const tracking = await getPublicTracking(num);
+        found.push(tracking);
+        addRecentTracking({ trackingNumber: tracking.trackingNumber, name: tracking.clientName, status: tracking.status });
+      } catch {
         notFound.push(num);
       }
-    });
+    }
 
     setSearchResults(found);
     setNotFoundNumbers(notFound);
     setHasSearched(true);
+    setSearching(false);
   };
 
-  const handleRecentSelect = (trackingNumber: string) => {
+  const handleRecentSelect = async (trackingNumber: string) => {
     setTrackingInput(trackingNumber);
-    const match = mockTrackings.find(
-      (t) => t.trackingNumber.toLowerCase() === trackingNumber.toLowerCase()
-    );
-    if (match) {
-      setSearchResults([match]);
+    try {
+      const tracking = await getPublicTracking(trackingNumber);
+      setSearchResults([tracking]);
       setNotFoundNumbers([]);
       setHasSearched(true);
+    } catch {
+      setNotFoundNumbers([trackingNumber]);
     }
   };
 
   const features = [
-    { icon: MapPin, title: "Suivi en temps réel", desc: "Visualisez la position exacte de vos colis et véhicules sur une carte interactive." },
-    { icon: Shield, title: "Sécurisé & fiable", desc: "Vos données sont protégées. Historique complet de chaque mouvement enregistré." },
-    { icon: Clock, title: "Mises à jour instantanées", desc: "Recevez des notifications à chaque changement de statut de vos envois." },
-    { icon: Globe, title: "Couverture nationale", desc: "Suivez vos expéditions partout en France avec nos partenaires transporteurs." },
+    { icon: MapPin, title: "Real-time Tracking", desc: "View the exact location of your packages and vehicles on an interactive map." },
+    { icon: Shield, title: "Secure & Reliable", desc: "Your data is protected. Complete history of every movement recorded." },
+    { icon: Clock, title: "Instant Updates", desc: "Receive notifications at every status change of your shipments." },
+    { icon: Globe, title: "National Coverage", desc: "Track your shipments anywhere in France with our carrier partners." },
   ];
 
   return (
@@ -86,14 +87,14 @@ const LandingPage = () => {
             >
               <div className="inline-flex items-center gap-2 bg-accent/20 rounded-full px-4 py-1.5 mb-6 text-sm text-accent-foreground border border-accent/20">
                 <Truck className="w-4 h-4" />
-                Plateforme de tracking professionnelle
+                Professional Tracking Platform
               </div>
               <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight">
-                Suivez vos envois <br />
-                <span className="text-gradient-accent">en temps réel</span>
+                Track your shipments <br />
+                <span className="text-gradient-accent">in real time</span>
               </h1>
               <p className="text-lg md:text-xl text-primary-foreground/70 mt-4 max-w-xl mx-auto">
-                Colis, véhicules, équipements — localisez et gérez tous vos objets depuis une seule plateforme.
+                Packages, vehicles, equipment — locate and manage all your items from a single platform.
               </p>
             </motion.div>
 
@@ -114,17 +115,17 @@ const LandingPage = () => {
                       handleSearch();
                     }
                   }}
-                  placeholder={"Entrez vos numéros de tracking...\nJusqu'à 10 numéros (un par ligne)"}
+                  placeholder={"Enter your tracking numbers...\nUp to 10 numbers (one per line)"}
                   className="min-h-[48px] max-h-[120px] border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0 resize-none"
                   rows={2}
                 />
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-primary-foreground/40 pl-1">
-                    Séparez par ligne, virgule ou point-virgule
+                    Separate by line, comma, or semicolon
                   </span>
                   <Button variant="accent" size="lg" onClick={handleSearch} className="shrink-0">
                     <Search className="w-5 h-5 mr-2" />
-                    Suivre
+                    Track
                   </Button>
                 </div>
               </div>
@@ -147,7 +148,7 @@ const LandingPage = () => {
               >
                 {searchResults.length > 1 && (
                   <p className="text-sm text-primary-foreground/60 text-left">
-                    {searchResults.length} colis trouvés
+                    {searchResults.length} packages found
                   </p>
                 )}
                 {searchResults.map((result) => (
@@ -155,13 +156,13 @@ const LandingPage = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="font-mono text-sm text-muted-foreground">{result.trackingNumber}</p>
-                        <p className="font-display font-semibold">{result.name}</p>
+                        <p className="font-display font-semibold">{result.clientName}</p>
                       </div>
                       <StatusBadge status={result.status} />
                     </div>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <MapPin className="w-4 h-4" />
-                      {result.origin} → {result.destination}
+                      {(result.originAddress || "Origin")} → {(result.destinationAddress || "Destination")}
                     </div>
                     <Button
                       variant="accent"
@@ -169,7 +170,7 @@ const LandingPage = () => {
                       onClick={() => navigate(`/track/${result.id}`)}
                       className="w-full"
                     >
-                      Voir le suivi détaillé
+                      View detailed tracking
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Card>
@@ -180,11 +181,11 @@ const LandingPage = () => {
             {hasSearched && notFoundNumbers.length > 0 && (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Card className="max-w-lg mx-auto p-4 text-left space-y-2">
-                  <p className="text-sm font-medium text-destructive">Numéros non trouvés :</p>
+                  <p className="text-sm font-medium text-destructive">Numbers not found:</p>
                   {notFoundNumbers.map((num) => (
                     <p key={num} className="text-sm text-muted-foreground font-mono">{num}</p>
                   ))}
-                  <p className="text-xs text-muted-foreground">Vérifiez l'orthographe ou contactez votre expéditeur.</p>
+                  <p className="text-xs text-muted-foreground">Check the spelling or contact your sender.</p>
                 </Card>
               </motion.div>
             )}
@@ -204,10 +205,10 @@ const LandingPage = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="font-display text-3xl md:text-4xl font-bold">
-              Tout ce dont vous avez besoin
+              Everything you need
             </h2>
             <p className="text-muted-foreground mt-3 max-w-md mx-auto">
-              Une solution complète pour le suivi de vos expéditions et véhicules.
+              A complete solution for tracking your shipments and vehicles.
             </p>
           </div>
 
@@ -237,18 +238,18 @@ const LandingPage = () => {
       <section className="py-20 gradient-primary">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display text-3xl font-bold text-primary-foreground mb-4">
-            Prêt à suivre vos envois ?
+            Ready to track your shipments?
           </h2>
           <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
-            Créez votre compte gratuitement et commencez à suivre vos colis en quelques minutes.
+            Create your account for free and start tracking your packages in minutes.
           </p>
           <div className="flex gap-4 justify-center flex-wrap">
             <Button variant="hero" size="lg" onClick={() => navigate("/register")}>
-              Créer un compte gratuit
+              Create a free account
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <Button variant="hero-outline" size="lg" onClick={() => navigate("/login")}>
-              Se connecter
+              Sign In
             </Button>
           </div>
         </div>
@@ -261,7 +262,7 @@ const LandingPage = () => {
             <Package className="w-5 h-5 text-accent" />
             <span className="font-display font-bold">TrackFlow</span>
           </div>
-          <p className="text-sm text-muted-foreground">© 2024 TrackFlow. Tous droits réservés.</p>
+          <p className="text-sm text-muted-foreground">© 2024 TrackFlow. All rights reserved.</p>
         </div>
       </footer>
     </div>

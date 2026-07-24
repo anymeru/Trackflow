@@ -12,10 +12,10 @@ interface DeliveryInstructionsProps {
 }
 
 const instructionOptions = [
-  { value: "door", label: "Déposer à la porte", icon: Home, desc: "Le livreur laissera le colis devant votre porte" },
-  { value: "neighbor", label: "Laisser chez un voisin", icon: User, desc: "Indiquez le nom du voisin dans les notes" },
-  { value: "safe_place", label: "Lieu sûr", icon: MapPin, desc: "Boîte aux lettres, garage, abri de jardin..." },
-  { value: "reschedule", label: "Reporter la livraison", icon: Clock, desc: "Choisir un autre jour de livraison" },
+  { value: "door", label: "Leave at Door", icon: Home, desc: "The driver will leave the package at your door" },
+  { value: "neighbor", label: "Leave with Neighbor", icon: User, desc: "Enter the neighbor's name in the notes" },
+  { value: "safe_place", label: "Safe Place", icon: MapPin, desc: "Mailbox, garage, garden shed..." },
+  { value: "reschedule", label: "Reschedule Delivery", icon: Clock, desc: "Choose a different delivery day" },
 ];
 
 const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps) => {
@@ -29,11 +29,11 @@ const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps)
 
   const handleSubmit = () => {
     if (!selected) {
-      toast.error("Veuillez sélectionner une option de livraison");
+      toast.error("Please select a delivery option");
       return;
     }
     setSubmitted(true);
-    toast.success("Instructions de livraison enregistrées !");
+    toast.success("Delivery instructions saved!");
   };
 
   if (submitted) {
@@ -44,7 +44,7 @@ const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps)
             <Check className="w-4 h-4 text-success" />
           </div>
           <div>
-            <h2 className="font-display font-semibold">Instructions enregistrées</h2>
+            <h2 className="font-display font-semibold">Instructions Saved</h2>
             <p className="text-xs text-muted-foreground">
               {instructionOptions.find((o) => o.value === selected)?.label}
               {notes && ` — ${notes}`}
@@ -52,7 +52,7 @@ const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps)
           </div>
         </div>
         <Button variant="outline" size="sm" onClick={() => setSubmitted(false)}>
-          Modifier
+          Edit
         </Button>
       </Card>
     );
@@ -62,10 +62,10 @@ const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps)
     <Card className="p-5 space-y-4">
       <div className="flex items-center gap-2">
         <MessageSquare className="w-5 h-5 text-accent" />
-        <h2 className="font-display font-semibold">Instructions de livraison</h2>
+        <h2 className="font-display font-semibold">Delivery Instructions</h2>
       </div>
       <p className="text-sm text-muted-foreground">
-        Indiquez au livreur comment procéder à la livraison.
+        Tell the driver how to handle the delivery.
       </p>
 
       <div className="grid sm:grid-cols-2 gap-3">
@@ -95,14 +95,14 @@ const DeliveryInstructions = ({ trackingId, status }: DeliveryInstructionsProps)
       <Textarea
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
-        placeholder="Notes supplémentaires (nom du voisin, code d'accès, emplacement...)"
+        placeholder="Additional notes (neighbor name, access code, location...)"
         className="resize-none"
         maxLength={200}
         rows={2}
       />
 
       <Button variant="accent" onClick={handleSubmit} className="w-full sm:w-auto">
-        Enregistrer les instructions
+        Save Instructions
       </Button>
     </Card>
   );

@@ -24,10 +24,10 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3">
           <ThemeToggle variant={isLanding ? "onDark" : "default"} />
           <Link to="/login">
-            <Button variant={isLanding ? "hero-outline" : "ghost"} size="sm">Se connecter</Button>
+            <Button variant={isLanding ? "hero-outline" : "ghost"} size="sm">Sign In</Button>
           </Link>
           <Link to="/register">
-            <Button variant={isLanding ? "hero" : "accent"} size="sm">Créer un compte</Button>
+            <Button variant={isLanding ? "hero" : "accent"} size="sm">Create Account</Button>
           </Link>
         </div>
 
@@ -43,10 +43,10 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="md:hidden bg-card border-b border-border p-4 flex flex-col gap-2 animate-slide-up">
           <Link to="/login" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start">Se connecter</Button>
+            <Button variant="ghost" className="w-full justify-start">Sign In</Button>
           </Link>
           <Link to="/register" onClick={() => setMobileOpen(false)}>
-            <Button variant="accent" className="w-full">Créer un compte</Button>
+            <Button variant="accent" className="w-full">Create Account</Button>
           </Link>
         </div>
       )}

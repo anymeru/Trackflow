@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("client") // admin | operator | client
+  phone     String?
+  createdAt DateTime @default(now())
+  messages  Message[]
+}
+
+model Tracking {
+  id                 String   @id @default(uuid())
+  trackingNumber     String   @unique
+  clientName         String
+  clientEmail        String
+  packageDescription String?
+  weight             Float?
+  originLat          Float
+  originLng          Float
+  originAddress      String?
+  destLat            Float
+  destLng            Float
+  destinationAddress String?
+  currentLat         Float
+  currentLng         Float
+  status             String   @default("in_transit")
+  carrierRef         String?
+  avgSpeedKmh        Float    @default(60)
+  eta                DateTime?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  statusHistory StatusHistory[]
+  messages      Message[]
+  disputes      Dispute[]
+  notificationLogs NotificationLog[]
+}
+
+model StatusHistory {
+  id         String   @id @default(uuid())
+  trackingId String
+  tracking   Tracking @relation(fields: [trackingId], references: [id])
+  oldStatus  String?
+  newStatus  String
+  reason     String?
+  changedAt  DateTime @default(now())
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  trackingId String
+  tracking   Tracking @relation(fields: [trackingId], references: [id])
+  senderId   String?
+  sender     User?    @relation(fields: [senderId], references: [id])
+  senderRole String   // admin | client
+  body       String
+  createdAt  DateTime @default(now())
+  readAt     DateTime?
+}
+
+model Dispute {
+  id            String    @id @default(uuid())
+  trackingId    String
+  tracking      Tracking  @relation(fields: [trackingId], references: [id])
+  clientId      String?
+  reason        String    // damaged_package | lost_package | wrong_item | delivery_delay | other
+  description   String
+  status        String    @default("open") // open | resolved
+  adminResponse String?
+  createdAt     DateTime  @default(now())
+  resolvedAt    DateTime?
+}
+
+model NotificationLog {
+  id             String   @id @default(uuid())
+  trackingId     String
+  tracking       Tracking @relation(fields: [trackingId], references: [id])
+  recipientEmail String
+  type           String   // status_change | dispute_opened | dispute_resolved
+  subject        String
+  body           String
+  sentAt         DateTime @default(now())
+}

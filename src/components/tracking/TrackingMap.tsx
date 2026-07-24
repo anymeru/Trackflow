@@ -1,9 +1,8 @@
 import { useEffect, useRef } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { TrackingItem } from "@/data/mockData";
+import type { Tracking } from "@/api/trackings";
 
-// Fix default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
@@ -11,25 +10,32 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
 });
 
-const statusToColor: Record<string, string> = {
-  in_transit: "#f97316",
-  delivered: "#22c55e",
-  delayed: "#ef4444",
-  out_for_delivery: "#eab308",
-  created: "#3b82f6",
-  picked_up: "#3b82f6",
+const STATUS_COLORS: Record<string, string> = {
+  in_transit: "#06B6D4",
+  out_for_delivery: "#3B82F6",
+  delivered: "#22C55E",
+  delayed: "#F59E0B",
+  customs_hold: "#F97316",
+  fees_pending: "#D97706",
+  returned: "#8B5CF6",
+  lost: "#EF4444",
 };
+
+const FREEZE_STATUSES = ["delayed", "customs_hold", "fees_pending"];
 
 const createColorIcon = (color: string) =>
   new L.DivIcon({
-    html: `<div style="background:${color};width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
+    html: `<div style="position:relative;width:20px;height:20px;">
+      <div style="position:absolute;width:20px;height:20px;border-radius:50%;border:2px solid ${color};opacity:0;animation:marker-pulse 2s ease-in-out infinite;"></div>
+      <div style="background:${color};width:14px;height:14px;border-radius:50%;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);position:absolute;top:3px;left:3px;"></div>
+    </div>`,
     className: "",
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
   });
 
 interface TrackingMapProps {
-  items: TrackingItem[];
+  items: Tracking[];
   selectedId?: string;
   onSelect?: (id: string) => void;
   showRoute?: boolean;
@@ -43,7 +49,9 @@ const TrackingMap = ({ items, selectedId, onSelect, showRoute = false, className
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
-    const center: [number, number] = items.length === 1 ? [items[0].lat, items[0].lng] : [46.6, 2.5];
+    const center: [number, number] = items.length === 1
+      ? [items[0].currentLat, items[0].currentLng]
+      : [46.6, 2.5];
     const zoom = items.length === 1 ? 8 : 6;
 
     const map = L.map(containerRef.current).setView(center, zoom);
@@ -63,42 +71,80 @@ const TrackingMap = ({ items, selectedId, onSelect, showRoute = false, className
     const map = mapRef.current;
     if (!map) return;
 
-    // Clear existing layers (except tile layer)
     map.eachLayer((layer) => {
       if (!(layer instanceof L.TileLayer)) map.removeLayer(layer);
     });
 
-    // Add markers
     items.forEach((item) => {
-      const marker = L.marker([item.lat, item.lng], {
-        icon: createColorIcon(statusToColor[item.status] || "#6b7280"),
+      const color = STATUS_COLORS[item.status] || "#6b7280";
+      const marker = L.marker([item.currentLat, item.currentLng], {
+        icon: createColorIcon(color),
       }).addTo(map);
+
+      const freezeLabel = FREEZE_STATUSES.includes(item.status)
+        ? `<p style="font-size:11px;color:#D97706;margin:2px 0 0;">⏸ Pending</p>`
+        : "";
 
       marker.bindPopup(`
         <div style="font-size:13px;">
-          <p style="font-weight:600;margin:0;">${item.name}</p>
+          <p style="font-weight:600;margin:0;">${item.clientName}</p>
           <p style="font-size:11px;margin:2px 0 0;color:#666;">${item.trackingNumber}</p>
+          ${freezeLabel}
         </div>
       `);
 
       if (onSelect) {
         marker.on("click", () => onSelect(item.id));
       }
+
+      // Draw route from origin → current → destination
+      if (showRoute && item.id === selectedId) {
+        const origin: [number, number] = [item.originLat, item.originLng];
+        const current: [number, number] = [item.currentLat, item.currentLng];
+        const dest: [number, number] = [item.destLat, item.destLng];
+
+        // Completed path (origin → current)
+        L.polyline([origin, current], {
+          color: color,
+          weight: 3,
+          opacity: 0.8,
+        }).addTo(map);
+
+        // Future path (current → destination) - dashed
+        L.polyline([current, dest], {
+          color: "#9ca3af",
+          weight: 2,
+          dashArray: "8 4",
+          opacity: 0.5,
+        }).addTo(map);
+
+        // Origin marker (smaller)
+        L.circleMarker(origin, {
+          radius: 6,
+          color: "#6b7280",
+          fillColor: "#6b7280",
+          fillOpacity: 0.5,
+          weight: 2,
+        }).addTo(map);
+
+        // Destination marker
+        L.circleMarker(dest, {
+          radius: 6,
+          color: color,
+          fillColor: color,
+          fillOpacity: 0.5,
+          weight: 2,
+        }).addTo(map);
+      }
     });
 
-    // Fit bounds
     if (items.length > 1) {
-      const bounds = L.latLngBounds(items.map((t) => [t.lat, t.lng] as [number, number]));
+      const bounds = L.latLngBounds(
+        items.map((t) => [t.currentLat, t.currentLng] as [number, number])
+      );
       map.fitBounds(bounds, { padding: [50, 50], maxZoom: 8 });
-    }
-
-    // Draw route
-    if (showRoute && selectedId) {
-      const selectedItem = items.find((t) => t.id === selectedId);
-      if (selectedItem?.positions && selectedItem.positions.length > 1) {
-        const routePositions = selectedItem.positions.map((p) => [p.lat, p.lng] as [number, number]);
-        L.polyline(routePositions, { color: "#f97316", weight: 3, dashArray: "8 4" }).addTo(map);
-      }
+    } else if (items.length === 1) {
+      map.setView([items[0].currentLat, items[0].currentLng], 8);
     }
   }, [items, selectedId, showRoute, onSelect]);
 

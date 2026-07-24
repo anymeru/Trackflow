@@ -17,16 +17,16 @@ const ShareTrackingButton = ({ trackingId, trackingNumber }: ShareTrackingButton
   const handleCopy = async () => {
     await navigator.clipboard.writeText(publicUrl);
     setCopied(true);
-    toast({ title: "Lien copié", description: "Le lien de suivi a été copié dans le presse-papiers." });
+    toast({ title: "Link Copied", description: "The tracking link has been copied to your clipboard." });
     setTimeout(() => setCopied(false), 2000);
   };
 
   const handleShareWhatsApp = () => {
-    window.open(`https://wa.me/?text=${encodeURIComponent(`Suivez votre colis ${trackingNumber} ici : ${publicUrl}`)}`, "_blank");
+    window.open(`https://wa.me/?text=${encodeURIComponent(`Track your package ${trackingNumber} here: ${publicUrl}`)}`, "_blank");
   };
 
   const handleShareEmail = () => {
-    window.open(`mailto:?subject=${encodeURIComponent(`Suivi colis ${trackingNumber}`)}&body=${encodeURIComponent(`Bonjour,\n\nVous pouvez suivre votre colis ici :\n${publicUrl}\n\nCordialement`)}`, "_blank");
+    window.open(`mailto:?subject=${encodeURIComponent(`Package Tracking ${trackingNumber}`)}&body=${encodeURIComponent(`Hello,\n\nYou can track your package here:\n${publicUrl}\n\nBest regards`)}`, "_blank");
   };
 
   return (
@@ -34,15 +34,15 @@ const ShareTrackingButton = ({ trackingId, trackingNumber }: ShareTrackingButton
       <DialogTrigger asChild>
         <Button variant="outline" size="sm">
           <Share2 className="w-4 h-4 mr-2" />
-          Partager le suivi
+          Share Tracking
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle className="font-display">Partager le lien de suivi</DialogTitle>
+          <DialogTitle className="font-display">Share Tracking Link</DialogTitle>
         </DialogHeader>
         <p className="text-sm text-muted-foreground">
-          Envoyez ce lien au destinataire pour qu'il puisse suivre le colis sans compte.
+          Send this link to the recipient so they can track the package without an account.
         </p>
         <div className="flex gap-2">
           <Input value={publicUrl} readOnly className="font-mono text-xs" />

@@ -59,11 +59,11 @@ const RecentTrackings = ({ onSelect }: { onSelect?: (trackingNumber: string) => 
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-medium text-muted-foreground">Recherches récentes</span>
+          <span className="text-sm font-medium text-muted-foreground">Recent Searches</span>
         </div>
         <Button variant="ghost" size="sm" onClick={handleClear} className="text-xs text-muted-foreground h-auto py-1">
           <X className="w-3 h-3 mr-1" />
-          Effacer
+          Clear
         </Button>
       </div>
       <div className="flex flex-wrap gap-2">

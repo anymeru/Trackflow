@@ -1,3 +1,3 @@
-# Welcome to your Lovable project
+# TrackConnect
 
-TODO: Document your project here
+Real-time package and vehicle tracking platform with integrated messaging.

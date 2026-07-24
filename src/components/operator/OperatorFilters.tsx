@@ -25,25 +25,26 @@ const OperatorFilters = ({
       <Filter className="w-4 h-4 text-muted-foreground hidden sm:block" />
       <Select value={statusFilter} onValueChange={onStatusChange}>
         <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
-          <SelectValue placeholder="Statut" />
+          <SelectValue placeholder="Status" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tous les statuts</SelectItem>
-          <SelectItem value="in_transit">En transit</SelectItem>
-          <SelectItem value="delayed">En retard</SelectItem>
-          <SelectItem value="out_for_delivery">En livraison</SelectItem>
-          <SelectItem value="delivered">Livré</SelectItem>
-          <SelectItem value="fees_pending">Frais en attente</SelectItem>
-          <SelectItem value="customs_hold">Douane</SelectItem>
-          <SelectItem value="lost">Perdu</SelectItem>
+          <SelectItem value="all">All Statuses</SelectItem>
+          <SelectItem value="in_transit">In Transit</SelectItem>
+          <SelectItem value="delayed">Delayed</SelectItem>
+          <SelectItem value="out_for_delivery">Out for Delivery</SelectItem>
+          <SelectItem value="delivered">Delivered</SelectItem>
+          <SelectItem value="fees_pending">Fees Pending</SelectItem>
+          <SelectItem value="customs_hold">Customs Hold</SelectItem>
+          <SelectItem value="returned">Returned</SelectItem>
+          <SelectItem value="lost">Lost</SelectItem>
         </SelectContent>
       </Select>
       <Select value={carrierFilter} onValueChange={onCarrierChange}>
         <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
-          <SelectValue placeholder="Transporteur" />
+          <SelectValue placeholder="Carrier" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Tous</SelectItem>
+          <SelectItem value="all">All</SelectItem>
           {carriers.map((c) => (
             <SelectItem key={c} value={c}>{c}</SelectItem>
           ))}
@@ -51,18 +52,18 @@ const OperatorFilters = ({
       </Select>
       <Select value={priorityFilter} onValueChange={onPriorityChange}>
         <SelectTrigger className="w-full sm:w-36 h-8 text-xs">
-          <SelectValue placeholder="Priorité" />
+          <SelectValue placeholder="Priority" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Toutes</SelectItem>
-          <SelectItem value="critical">Critique</SelectItem>
-          <SelectItem value="at_risk">À risque</SelectItem>
+          <SelectItem value="all">All</SelectItem>
+          <SelectItem value="critical">Critical</SelectItem>
+          <SelectItem value="at_risk">At Risk</SelectItem>
           <SelectItem value="normal">Normal</SelectItem>
         </SelectContent>
       </Select>
       {hasFilters && (
         <Button variant="ghost" size="sm" onClick={onReset} className="h-8 text-xs">
-          <X className="w-3 h-3 mr-1" /> Réinitialiser
+          <X className="w-3 h-3 mr-1" /> Reset
         </Button>
       )}
     </div>
