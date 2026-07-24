@@ -9,6 +9,10 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ServicesPage from "./pages/ServicesPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
+import TrackShipmentPage from "./pages/TrackShipmentPage";
 import ClientDashboard from "./pages/ClientDashboard";
 import TrackingDetailPage from "./pages/TrackingDetailPage";
 import MessagingPage from "./pages/MessagingPage";
@@ -38,6 +42,10 @@ const App = () => (
               <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/services" element={<ServicesPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/track" element={<TrackShipmentPage />} />
               <Route path="/track/:id" element={<PublicTrackingPage />} />
               <Route path="/email-preview" element={<EmailPreviewPage />} />
 
