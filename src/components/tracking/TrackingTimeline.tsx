@@ -53,7 +53,7 @@ const TrackingTimeline = ({ events }: TrackingTimelineProps) => {
     visible: {
       opacity: 1,
       x: 0,
-      transition: { duration: 0.4, ease: "easeOut" },
+      transition: { duration: 0.4, ease: "easeOut" as const },
     },
   };
 
@@ -62,7 +62,7 @@ const TrackingTimeline = ({ events }: TrackingTimelineProps) => {
     visible: {
       scale: 1,
       opacity: 1,
-      transition: { duration: 0.3, ease: "easeOut" },
+      transition: { duration: 0.3, ease: "easeOut" as const },
     },
   };
 
