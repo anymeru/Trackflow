@@ -62,9 +62,8 @@ const PublicTrackingPage = () => {
           <ETABlock
             eta={tracking.eta ?? null}
             status={tracking.status}
-            progressPercent={tracking.progressPercent}
-            originAddress={tracking.originAddress}
-            destinationAddress={tracking.destinationAddress}
+            originAddress={tracking.originAddress ?? undefined}
+            destinationAddress={tracking.destinationAddress ?? undefined}
           />
         </Card>
 
