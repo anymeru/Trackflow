@@ -9,6 +9,14 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const isLanding = location.pathname === "/";
 
+  const navLinks = [
+    { to: "/", label: "Home" },
+    { to: "/services", label: "Services" },
+    { to: "/track", label: "Track Shipment" },
+    { to: "/about", label: "About" },
+    { to: "/contact", label: "Contact" },
+  ];
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isLanding ? "bg-transparent" : "bg-card/90 backdrop-blur-md border-b border-border/50"}`}>
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
@@ -21,7 +29,26 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden md:flex items-center gap-1">
+          {navLinks.map((l) => {
+            const active = location.pathname === l.to;
+            return (
+              <Link
+                key={l.to}
+                to={l.to}
+                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                  isLanding
+                    ? `text-primary-foreground/80 hover:text-primary-foreground ${active ? "text-primary-foreground" : ""}`
+                    : `text-foreground/70 hover:text-foreground ${active ? "text-accent" : ""}`
+                }`}
+              >
+                {l.label}
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="hidden md:flex items-center gap-3 ml-4">
           <ThemeToggle variant={isLanding ? "onDark" : "default"} />
           <Link to="/login">
             <Button variant={isLanding ? "hero-outline" : "ghost"} size="sm">Sign In</Button>
@@ -42,6 +69,12 @@ const Navbar = () => {
 
       {mobileOpen && (
         <div className="md:hidden bg-card border-b border-border p-4 flex flex-col gap-2 animate-slide-up">
+          {navLinks.map((l) => (
+            <Link key={l.to} to={l.to} onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start">{l.label}</Button>
+            </Link>
+          ))}
+          <div className="h-px bg-border my-1" />
           <Link to="/login" onClick={() => setMobileOpen(false)}>
             <Button variant="ghost" className="w-full justify-start">Sign In</Button>
           </Link>
