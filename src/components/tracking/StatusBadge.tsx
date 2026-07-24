@@ -39,7 +39,7 @@ const StatusBadge = ({ status, animate = true, showGlow = false }: StatusBadgePr
     animate: {
       scale: 1,
       opacity: 1,
-      transition: { duration: 0.3, ease: "easeOut" }
+      transition: { duration: 0.3, ease: "easeOut" as const }
     },
     exit: {
       scale: 0.8,
@@ -53,7 +53,7 @@ const StatusBadge = ({ status, animate = true, showGlow = false }: StatusBadgePr
     animate: {
       scale: [1, 1.3, 1],
       opacity: [0.5, 0.8, 0],
-      transition: { duration: 0.6, ease: "easeOut" }
+      transition: { duration: 0.6, ease: "easeOut" as const }
     },
   };
 

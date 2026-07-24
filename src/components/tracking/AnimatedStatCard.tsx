@@ -51,7 +51,7 @@ const AnimatedStatCard = ({
       transition: {
         duration: 0.5,
         delay: delay,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
@@ -64,7 +64,7 @@ const AnimatedStatCard = ({
       transition: {
         duration: 0.6,
         delay: delay + 0.1,
-        ease: "easeOut",
+        ease: "easeOut" as const,
       },
     },
   };
