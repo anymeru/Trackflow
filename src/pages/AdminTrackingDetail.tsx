@@ -76,14 +76,16 @@ function ChatPanel({
 
   if (!["delayed", "customs_hold", "fees_pending", "lost"].includes(status)) {
     return (
-      <Card className="p-4 text-muted-foreground text-sm">
-        Messaging is available when the shipment requires special attention.
-      </Card>
+      <div className="bg-white border border-black/[0.04] rounded-[1rem] p-4">
+        <p className="text-gray-500 text-sm">
+          Messaging is available when the shipment requires special attention.
+        </p>
+      </div>
     );
   }
 
   return (
-    <Card className="p-4">
+    <div className="bg-white border border-black/[0.04] rounded-[1rem] p-4">
       <h3 className="font-semibold mb-3 flex items-center gap-2">
         <MessageSquare className="h-4 w-4" />
         Messages
@@ -92,13 +94,13 @@ function ChatPanel({
         {messages?.map((msg: Message) => (
           <div
             key={msg.id}
-            className={`p-2 rounded-lg text-sm ${
+            className={`p-2 rounded-xl text-sm ${
               msg.senderRole === "admin" || msg.senderRole === "operator"
                 ? "bg-primary/10 ml-4"
-                : "bg-muted mr-4"
+                : "bg-black/5 mr-4"
             }`}
           >
-            <p className="font-medium text-xs text-muted-foreground">
+            <p className="font-medium text-xs text-gray-500">
               {msg.senderRole === "admin" ? "Admin" : "Client"}
             </p>
             <p>{msg.body}</p>
@@ -112,11 +114,11 @@ function ChatPanel({
           placeholder="Your message..."
           onKeyDown={(e) => e.key === "Enter" && sendMsg.mutate()}
         />
-        <Button size="sm" onClick={() => sendMsg.mutate()} disabled={!newMsg}>
+        <Button size="sm" onClick={() => sendMsg.mutate()} disabled={!newMsg} className="rounded-full transition-all duration-500 ease-out-expo">
           Send
         </Button>
       </div>
-    </Card>
+    </div>
   );
 }
 
@@ -156,46 +158,49 @@ function DisputePanel({ trackingId }: { trackingId: string }) {
   });
 
   return (
-    <Card className="p-4">
+    <div className="bg-white border border-black/[0.04] rounded-[1rem] p-4">
       <h3 className="font-semibold mb-3 flex items-center gap-2">
         <AlertTriangle className="h-4 w-4" />
         Disputes
       </h3>
 
       {disputes?.map((d: Dispute) => (
-        <div key={d.id} className="mb-3 p-3 border rounded-lg">
-          <div className="flex justify-between items-start mb-2">
-            <Badge variant={d.status === "open" ? "destructive" : "default"}>
-              {d.status === "open" ? "Open" : "Resolved"}
-            </Badge>
+        <div key={d.id} className="mb-3 p-[1px] rounded-[2rem] bg-black/[0.03]">
+          <div className="rounded-[calc(2rem-1px)] bg-white p-3 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+            <div className="flex justify-between items-start mb-2">
+              <Badge variant={d.status === "open" ? "destructive" : "default"}>
+                {d.status === "open" ? "Open" : "Resolved"}
+              </Badge>
+            </div>
+            <p className="font-medium text-sm">{d.reason}</p>
+            <p className="text-sm text-gray-500">{d.description}</p>
+            {d.status === "open" && (
+              <div className="mt-2 space-y-2">
+                <Textarea
+                  placeholder="Admin response..."
+                  value={response}
+                  onChange={(e) => setResponse(e.target.value)}
+                />
+                <Button
+                  size="sm"
+                  onClick={() => resolve.mutate(d.id)}
+                  disabled={!response || resolve.isPending}
+                  className="rounded-full transition-all duration-500 ease-out-expo"
+                >
+                  Resolve Dispute
+                </Button>
+              </div>
+            )}
+            {d.adminResponse && (
+              <div className="mt-2 p-2 bg-black/5 rounded-xl text-sm">
+                <span className="font-medium">Response: </span>
+                {d.adminResponse}
+              </div>
+            )}
           </div>
-          <p className="font-medium text-sm">{d.reason}</p>
-          <p className="text-sm text-muted-foreground">{d.description}</p>
-          {d.status === "open" && (
-            <div className="mt-2 space-y-2">
-              <Textarea
-                placeholder="Admin response..."
-                value={response}
-                onChange={(e) => setResponse(e.target.value)}
-              />
-              <Button
-                size="sm"
-                onClick={() => resolve.mutate(d.id)}
-                disabled={!response || resolve.isPending}
-              >
-                Resolve Dispute
-              </Button>
-            </div>
-          )}
-          {d.adminResponse && (
-            <div className="mt-2 p-2 bg-muted rounded text-sm">
-              <span className="font-medium">Response: </span>
-              {d.adminResponse}
-            </div>
-          )}
         </div>
       ))}
-    </Card>
+    </div>
   );
 }
 
@@ -258,12 +263,12 @@ export default function AdminTrackingDetail() {
     <DashboardLayout role="admin">
       <div className="space-y-6 p-6">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/admin/trackings")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/admin/trackings")} className="rounded-full transition-all duration-500 ease-out-expo">
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">{tracking.trackingNumber}</h1>
-            <p className="text-muted-foreground">{tracking.clientName}</p>
+            <h1 className="text-2xl font-bold tracking-tight">{tracking.trackingNumber}</h1>
+            <p className="text-gray-500">{tracking.clientName}</p>
           </div>
           <Badge
             className={`${STATUS_COLORS[tracking.status] || "bg-gray-500"} text-white ml-auto`}
@@ -274,45 +279,47 @@ export default function AdminTrackingDetail() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-6">
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3 flex items-center gap-2">
-                <MapPin className="h-4 w-4" />
-                Position
-              </h3>
-              <div className="h-[300px] rounded-lg overflow-hidden mb-4">
-                <TrackingMap
-                  items={[tracking]}
-                  selectedId={tracking.id}
-                  showRoute={true}
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  Progress: {position}%
-                </label>
-                <Slider
-                  value={[position]}
-                  onValueChange={([val]) => {
-                    setPosition(val);
-                    updatePosMutation.mutate(val);
-                  }}
-                  min={0}
-                  max={100}
-                  step={1}
-                />
-                <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>{tracking.originAddress || "Origin"}</span>
-                  <span>{tracking.destinationAddress || "Destination"}</span>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <Card className="border-0 bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] rounded-[calc(2rem-1px)] p-4">
+                <h3 className="font-semibold mb-3 flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  Position
+                </h3>
+                <div className="h-[300px] rounded-xl overflow-hidden mb-4">
+                  <TrackingMap
+                    items={[tracking]}
+                    selectedId={tracking.id}
+                    showRoute={true}
+                  />
                 </div>
-              </div>
-            </Card>
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">
+                    Progress: {position}%
+                  </label>
+                  <Slider
+                    value={[position]}
+                    onValueChange={([val]) => {
+                      setPosition(val);
+                      updatePosMutation.mutate(val);
+                    }}
+                    min={0}
+                    max={100}
+                    step={1}
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>{tracking.originAddress || "Origin"}</span>
+                    <span>{tracking.destinationAddress || "Destination"}</span>
+                  </div>
+                </div>
+              </Card>
+            </div>
 
             <ChatPanel trackingId={tracking.id} status={tracking.status} />
             <DisputePanel trackingId={tracking.id} />
           </div>
 
           <div className="space-y-6">
-            <Card className="p-4">
+            <div className="bg-white border border-black/[0.04] rounded-[1rem] p-4">
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <Clock className="h-4 w-4" />
                 Status Control
@@ -342,7 +349,7 @@ export default function AdminTrackingDetail() {
                   />
                 </div>
                 <Button
-                  className="w-full"
+                  className="w-full rounded-full transition-all duration-500 ease-out-expo"
                   onClick={() => updateStatusMutation.mutate()}
                   disabled={
                     !newStatus || !statusReason || updateStatusMutation.isPending
@@ -351,42 +358,42 @@ export default function AdminTrackingDetail() {
                   Update Status
                 </Button>
               </div>
-            </Card>
+            </div>
 
-            <Card className="p-4">
-              <h3 className="font-semibold mb-3">Information</h3>
+            <div className="bg-white border border-black/[0.04] rounded-[1rem] p-4">
+              <h3 className="font-semibold mb-3 tracking-tight">Information</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Client</span>
+                  <span className="text-gray-500">Client</span>
                   <span>{tracking.clientName}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Email</span>
+                  <span className="text-gray-500">Email</span>
                   <span>{tracking.clientEmail}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Origin</span>
+                  <span className="text-gray-500">Origin</span>
                   <span className="text-right">{tracking.originAddress}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Destination</span>
+                  <span className="text-gray-500">Destination</span>
                   <span className="text-right">{tracking.destinationAddress}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Description</span>
+                  <span className="text-gray-500">Description</span>
                   <span>{tracking.packageDescription || "—"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Weight</span>
+                  <span className="text-gray-500">Weight</span>
                   <span>{tracking.weight ? `${tracking.weight} kg` : "—"}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Speed</span>
+                  <span className="text-gray-500">Speed</span>
                   <span>{tracking.avgSpeedKmh} km/h</span>
                 </div>
                 {tracking.eta && (
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">ETA</span>
+                    <span className="text-gray-500">ETA</span>
                     <span>
                       {new Date(tracking.eta).toLocaleDateString("fr-FR", {
                         day: "numeric",
@@ -398,7 +405,7 @@ export default function AdminTrackingDetail() {
                   </div>
                 )}
               </div>
-            </Card>
+            </div>
           </div>
         </div>
       </div>

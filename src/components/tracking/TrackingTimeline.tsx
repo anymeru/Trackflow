@@ -84,7 +84,7 @@ const TrackingTimeline = ({ events }: TrackingTimelineProps) => {
             <div className="flex flex-col items-center">
               <motion.div
                 className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                  isLast ? "gradient-accent text-accent-foreground" : "bg-muted text-muted-foreground"
+                  isLast ? "bg-gray-900 text-white" : "bg-black/5 text-gray-500"
                 }`}
                 variants={iconVariants}
                 whileHover={{ scale: 1.2 }}

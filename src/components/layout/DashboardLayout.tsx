@@ -50,18 +50,17 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
     navigate("/login");
   };
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
 
   const sidebarContent = (
     <>
-      <div className="h-16 flex items-center px-4 gap-2.5 border-b border-sidebar-border">
-        <img src="/trace-logo.svg" alt="TRACE" className="h-8 shrink-0" />
-        {(!collapsed || isMobile) && <span className="font-display font-bold text-lg tracking-wide">TRACE</span>}
+      <div className="h-16 flex items-center px-4 gap-2.5 border-b border-black/[0.04]">
+        <img src="/trace-logo.svg" alt="TRACE" className="h-7 w-auto" />
+        {(!collapsed || isMobile) && <span className="font-display font-bold text-lg tracking-wide text-black">TRACE</span>}
         {isMobile && (
-          <button onClick={() => setMobileOpen(false)} className="ml-auto text-sidebar-foreground/70">
+          <button onClick={() => setMobileOpen(false)} className="ml-auto text-black/40">
             <X className="w-5 h-5" />
           </button>
         )}
@@ -74,36 +73,29 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
             <Link
               key={link.to}
               to={link.to}
-              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-150 ${
+              className={`relative flex items-center gap-3 px-3 py-2.5 rounded-full text-sm transition-all duration-500 ease-out-expo ${
                 isActive
-                  ? "text-sidebar-primary-foreground bg-sidebar-accent/60 before:absolute before:left-0 before:top-1/2 before:-translate-y-1/2 before:w-0.5 before:h-5 before:rounded-full before:bg-[#00b4d8]"
-                  : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/40"
+                  ? "bg-black/5 text-black"
+                  : "text-black/40 hover:text-black hover:bg-black/[0.02]"
               }`}
             >
-              <span className={`relative shrink-0 ${isActive ? "text-[#00b4d8]" : ""}`}>
-                <link.icon className="w-5 h-5" />
-                {isActive && (
-                  <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-[#00b4d8]">
-                    <span className="absolute inset-0 rounded-full bg-[#00b4d8] animate-ping opacity-40" />
-                  </span>
-                )}
-              </span>
+              <link.icon className="w-5 h-5 shrink-0" />
               {(!collapsed || isMobile) && <span>{link.label}</span>}
             </Link>
           );
         })}
       </nav>
 
-      <div className="border-t border-sidebar-border">
+      <div className="border-t border-black/[0.04]">
         {(!collapsed || isMobile) && (
           <div className="px-4 py-3">
-            <p className="text-[10px] text-sidebar-foreground/30 tracking-widest uppercase">Everything in view.</p>
+            <p className="text-[10px] text-black/20 tracking-widest uppercase">Everything in view.</p>
           </div>
         )}
         <div className="p-2 space-y-0.5">
           <button
             onClick={handleLogout}
-            className="flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-sidebar-foreground/50 hover:text-sidebar-foreground hover:bg-sidebar-accent/40 w-full transition-colors"
+            className="flex items-center gap-3 px-3 py-2 rounded-full text-sm text-black/40 hover:text-black hover:bg-black/[0.02] w-full transition-all duration-500 ease-out-expo"
           >
             <LogOut className="w-4 h-4 shrink-0" />
             {(!collapsed || isMobile) && <span>Logout</span>}
@@ -111,7 +103,7 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
           {!isMobile && (
             <button
               onClick={() => setCollapsed(!collapsed)}
-              className="flex items-center justify-center w-full py-2 text-sidebar-foreground/30 hover:text-sidebar-foreground/70 transition-colors"
+              className="flex items-center justify-center w-full py-2 text-black/20 hover:text-black/50 transition-all duration-500 ease-out-expo"
             >
               {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
             </button>
@@ -123,36 +115,34 @@ const DashboardLayout = ({ children, role = "client" }: DashboardLayoutProps) =>
 
   return (
     <div className="flex h-screen bg-background">
-      {/* Desktop sidebar */}
       {!isMobile && (
-        <aside className={`${collapsed ? "w-16" : "w-64"} bg-sidebar text-sidebar-foreground flex flex-col transition-all duration-300 border-r border-sidebar-border shrink-0 trace-sidebar-grid`}>
+        <aside className={`${collapsed ? "w-16" : "w-64"} bg-[#FAFAFA] text-black flex flex-col transition-all duration-500 ease-out-expo border-r border-black/[0.04] shrink-0`}>
           {sidebarContent}
         </aside>
       )}
 
-      {/* Mobile overlay */}
       {isMobile && mobileOpen && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setMobileOpen(false)} />
-          <aside className="fixed inset-y-0 left-0 w-64 bg-sidebar text-sidebar-foreground flex flex-col z-50 shadow-xl trace-sidebar-grid">
+          <div className="fixed inset-0 bg-black/20 z-40" onClick={() => setMobileOpen(false)} />
+          <aside className="fixed inset-y-0 left-0 w-64 bg-[#FAFAFA] text-black flex flex-col z-50 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
             {sidebarContent}
           </aside>
         </>
       )}
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="h-14 border-b border-border bg-card/50 flex items-center justify-between px-4 gap-2 shrink-0">
+        <header className="h-14 border-b border-black/[0.04] bg-white/80 backdrop-blur-2xl flex items-center justify-between px-4 gap-2 shrink-0">
           <div className="flex items-center gap-2">
             {isMobile && (
               <button onClick={() => setMobileOpen(true)}>
-                <Menu className="w-5 h-5 text-foreground" />
+                <Menu className="w-5 h-5 text-black/60" />
               </button>
             )}
           </div>
           <div className="flex items-center gap-2">
             <NotificationDropdown />
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-              <User className="w-4 h-4 text-muted-foreground" />
+            <div className="w-8 h-8 rounded-full bg-black/[0.03] flex items-center justify-center">
+              <User className="w-4 h-4 text-black/40" />
             </div>
           </div>
         </header>

@@ -67,30 +67,38 @@ export default function ClientTrackingsPage() {
   return (
     <DashboardLayout role="client">
       <div className="p-6 space-y-6">
-        <h1 className="font-display text-2xl font-bold">My Trackings</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight">My Trackings</h1>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-4">
-            <p className="text-2xl font-display font-bold">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">Total</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-2xl font-display font-bold text-cyan-500">{stats.inTransit}</p>
-            <p className="text-xs text-muted-foreground">In Transit</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-2xl font-display font-bold text-green-500">{stats.delivered}</p>
-            <p className="text-xs text-muted-foreground">Delivered</p>
-          </Card>
-          <Card className="p-4">
-            <p className="text-2xl font-display font-bold text-destructive">{stats.attention}</p>
-            <p className="text-xs text-muted-foreground">Attention</p>
-          </Card>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-4 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+              <p className="text-2xl font-display font-bold">{stats.total}</p>
+              <p className="text-xs text-gray-500">Total</p>
+            </div>
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-4 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+              <p className="text-2xl font-display font-bold text-gray-900">{stats.inTransit}</p>
+              <p className="text-xs text-gray-500">In Transit</p>
+            </div>
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-4 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+              <p className="text-2xl font-display font-bold text-green-500">{stats.delivered}</p>
+              <p className="text-xs text-gray-500">Delivered</p>
+            </div>
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-4 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+              <p className="text-2xl font-display font-bold text-red-400">{stats.attention}</p>
+              <p className="text-xs text-gray-500">Attention</p>
+            </div>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <Input
               placeholder="Search by number, name, address..."
               className="pl-9"
@@ -100,59 +108,61 @@ export default function ClientTrackingsPage() {
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-44">
-                  <SelectValue placeholder="All Statuses" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="in_transit">In Transit</SelectItem>
-                  <SelectItem value="out_for_delivery">Out for Delivery</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="delayed">Delayed</SelectItem>
-                  <SelectItem value="customs_hold">Customs Hold</SelectItem>
-                  <SelectItem value="fees_pending">Fees Pending</SelectItem>
-                  <SelectItem value="returned">Returned</SelectItem>
-                  <SelectItem value="lost">Lost</SelectItem>
+              <SelectValue placeholder="All Statuses" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="in_transit">In Transit</SelectItem>
+              <SelectItem value="out_for_delivery">Out for Delivery</SelectItem>
+              <SelectItem value="delivered">Delivered</SelectItem>
+              <SelectItem value="delayed">Delayed</SelectItem>
+              <SelectItem value="customs_hold">Customs Hold</SelectItem>
+              <SelectItem value="fees_pending">Fees Pending</SelectItem>
+              <SelectItem value="returned">Returned</SelectItem>
+              <SelectItem value="lost">Lost</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <Card>
-          <div className="divide-y divide-border">
-            {sorted.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground">
-                <Package className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                <p>No trackings found</p>
-              </div>
-            )}
-            {sorted.map((t) => (
-              <div
-                key={t.id}
-                className="p-4 flex items-center justify-between hover:bg-muted/50 cursor-pointer transition-colors"
-                onClick={() => navigate(`/dashboard/tracking/${t.id}`)}
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm truncate">{t.clientName}</p>
-                    <span className="text-xs text-muted-foreground font-mono">{t.trackingNumber}</span>
+        <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+          <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+            <div className="divide-y divide-black/[0.04]">
+              {sorted.length === 0 && (
+                <div className="p-8 text-center text-gray-500">
+                  <Package className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                  <p>No trackings found</p>
+                </div>
+              )}
+              {sorted.map((t) => (
+                <div
+                  key={t.id}
+                  className="p-4 flex items-center justify-between hover:bg-black/5 cursor-pointer transition-all duration-500 ease-out-expo"
+                  onClick={() => navigate(`/dashboard/tracking/${t.id}`)}
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="font-medium text-sm truncate">{t.clientName}</p>
+                      <span className="text-xs text-gray-500 font-mono">{t.trackingNumber}</span>
+                    </div>
+                    <p className="text-xs text-gray-500 truncate mt-0.5">
+                      {t.originAddress || ""}{t.originAddress && t.destinationAddress ? " → " : ""}{t.destinationAddress || ""}
+                      {t.eta && ` • ETA: ${new Date(t.eta).toLocaleDateString("fr-FR")}`}
+                    </p>
+                    {t.weight && (
+                      <p className="text-xs text-gray-500 mt-0.5">{t.weight} kg</p>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {t.originAddress || ""}{t.originAddress && t.destinationAddress ? " → " : ""}{t.destinationAddress || ""}
-                    {t.eta && ` • ETA: ${new Date(t.eta).toLocaleDateString("fr-FR")}`}
-                  </p>
-                  {t.weight && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{t.weight} kg</p>
-                  )}
+                  <div className="flex items-center gap-2 shrink-0 ml-4">
+                    <StatusBadge status={t.status} />
+                    <Button variant="ghost" size="icon" className="rounded-full transition-all duration-500 ease-out-expo">
+                      <Eye className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 ml-4">
-                  <StatusBadge status={t.status} />
-                  <Button variant="ghost" size="icon">
-                    <Eye className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </Card>
+        </div>
       </div>
     </DashboardLayout>
   );

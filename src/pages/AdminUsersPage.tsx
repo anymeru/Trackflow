@@ -38,9 +38,9 @@ import {
 } from "lucide-react";
 
 const ROLE_BADGES: Record<string, string> = {
-  admin: "bg-[#ff6b6b]/10 text-[#ff6b6b] border-0",
+  admin: "bg-black/5 text-gray-600 border-0",
   operator: "bg-[#f59e0b]/10 text-warning border-0",
-  client: "bg-[#00b4d8]/10 text-[#00b4d8] border-0",
+  client: "bg-black/5 text-gray-600 border-0",
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -115,22 +115,22 @@ export default function AdminUsersPage() {
         {/* Header */}
         <div>
           <h1 className="font-display text-2xl font-bold tracking-tight">Users</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Manage administrators, operators, and clients</p>
+          <p className="text-sm text-gray-500 mt-0.5">Manage administrators, operators, and clients</p>
         </div>
 
         {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
             <Input
               placeholder="Search by name or email..."
-              className="pl-9"
+              className="pl-9 rounded-xl"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <Select value={roleFilter} onValueChange={setRoleFilter}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-40 rounded-full">
                 <SelectValue placeholder="All Roles" />
               </SelectTrigger>
               <SelectContent>
@@ -143,69 +143,71 @@ export default function AdminUsersPage() {
         </div>
 
         {/* User list */}
-        <Card className="border-border/50 overflow-hidden">
-          <div className="divide-y divide-border/30">
-            {filtered.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground">
-                <UserCog className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                <p className="text-sm">No users found</p>
-              </div>
-            )}
-            {filtered.map((user) => (
-              <div
-                key={user.id}
-                className="px-5 py-3.5 flex items-center justify-between hover:bg-muted/20 transition-colors cursor-pointer"
-                onClick={() => { setSelectedUser(user); setDetailOpen(true); }}
-              >
-                <div className="flex items-center gap-3 min-w-0 flex-1">
-                  <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/50">
-                    <span className="font-display font-bold text-xs text-muted-foreground">
-                      {user.name.charAt(0).toUpperCase()}
-                    </span>
-                  </div>
-                  <div className="min-w-0">
-                    <p className="text-sm font-medium truncate">{user.name}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {user.email}
+        <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+          <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+            <div className="divide-y divide-black/[0.02]">
+              {filtered.length === 0 && (
+                <div className="p-8 text-center text-gray-500">
+                  <UserCog className="w-8 h-8 mx-auto mb-2 opacity-30 text-gray-500" />
+                  <p className="text-sm">No users found</p>
+                </div>
+              )}
+              {filtered.map((user) => (
+                <div
+                  key={user.id}
+                  className="px-5 py-3.5 flex items-center justify-between hover:bg-black/5 transition-all duration-500 ease-out-expo cursor-pointer"
+                  onClick={() => { setSelectedUser(user); setDetailOpen(true); }}
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div className="w-9 h-9 rounded-full bg-black/5 flex items-center justify-center shrink-0 ring-1 ring-black/[0.04]">
+                      <span className="font-display font-bold text-xs text-gray-500">
+                        {user.name.charAt(0).toUpperCase()}
                       </span>
-                      {user.phone && (
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium truncate">{user.name}</p>
+                      <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
                         <span className="flex items-center gap-1">
-                          <Phone className="w-3 h-3" />
-                          {user.phone}
+                          <Mail className="w-3 h-3" />
+                          {user.email}
                         </span>
-                      )}
+                        {user.phone && (
+                          <span className="flex items-center gap-1">
+                            <Phone className="w-3 h-3" />
+                            {user.phone}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2 shrink-0 ml-3">
+                    <Badge className={ROLE_BADGES[user.role] || "bg-black/5 text-gray-500 border-0"}>
+                      {ROLE_LABELS[user.role] || user.role}
+                    </Badge>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => { e.stopPropagation(); handleEdit(user); }}
+                      title="Change role"
+                      className="text-gray-500 hover:text-foreground rounded-full"
+                    >
+                      <Shield className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => { e.stopPropagation(); handleDelete(user); }}
+                      className="text-gray-500 hover:text-destructive rounded-full"
+                      title="Delete"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0 ml-3">
-                  <Badge className={ROLE_BADGES[user.role] || "bg-muted text-muted-foreground border-0"}>
-                    {ROLE_LABELS[user.role] || user.role}
-                  </Badge>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => { e.stopPropagation(); handleEdit(user); }}
-                    title="Change role"
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Shield className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={(e) => { e.stopPropagation(); handleDelete(user); }}
-                    className="text-muted-foreground hover:text-destructive"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
@@ -216,15 +218,15 @@ export default function AdminUsersPage() {
           {selectedUser && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/50">
-                  <span className="font-display font-bold text-xl text-muted-foreground">
+                <div className="w-14 h-14 rounded-full bg-black/5 flex items-center justify-center shrink-0 ring-1 ring-black/[0.04]">
+                  <span className="font-display font-bold text-xl text-gray-500">
                     {selectedUser.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
                 <div>
                   <p className="font-display font-semibold text-lg">{selectedUser.name}</p>
                   <Badge
-                    className={`${ROLE_BADGES[selectedUser.role] || "bg-muted text-muted-foreground"} border-0 mt-1`}
+                    className={`${ROLE_BADGES[selectedUser.role] || "bg-black/5 text-gray-500"} border-0 mt-1`}
                   >
                     {ROLE_LABELS[selectedUser.role] || selectedUser.role}
                   </Badge>
@@ -233,25 +235,25 @@ export default function AdminUsersPage() {
               <Separator />
               <div className="space-y-3">
                 <div>
-                  <Label className="text-xs text-muted-foreground">Email</Label>
+                  <Label className="text-xs text-gray-500">Email</Label>
                   <p className="text-sm flex items-center gap-2 mt-0.5">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <Mail className="w-4 h-4 text-gray-500" />
                     {selectedUser.email}
                   </p>
                 </div>
                 {selectedUser.phone && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">Phone</Label>
+                    <Label className="text-xs text-gray-500">Phone</Label>
                     <p className="text-sm flex items-center gap-2 mt-0.5">
-                      <Phone className="w-4 h-4 text-muted-foreground" />
+                      <Phone className="w-4 h-4 text-gray-500" />
                       {selectedUser.phone}
                     </p>
                   </div>
                 )}
                 <div>
-                  <Label className="text-xs text-muted-foreground">Registration date</Label>
+                  <Label className="text-xs text-gray-500">Registration date</Label>
                   <p className="text-sm flex items-center gap-2 mt-0.5">
-                    <Calendar className="w-4 h-4 text-muted-foreground" />
+                    <Calendar className="w-4 h-4 text-gray-500" />
                     {new Date(selectedUser.createdAt).toLocaleDateString("fr-FR", {
                       year: "numeric", month: "long", day: "numeric",
                     })}
@@ -259,9 +261,9 @@ export default function AdminUsersPage() {
                 </div>
                 {selectedUser._count !== undefined && (
                   <div>
-                    <Label className="text-xs text-muted-foreground">Messages sent</Label>
+                    <Label className="text-xs text-gray-500">Messages sent</Label>
                     <p className="text-sm flex items-center gap-2 mt-0.5">
-                      <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                      <MessageSquare className="w-4 h-4 text-gray-500" />
                       {selectedUser._count.messages} messages
                     </p>
                   </div>
@@ -270,7 +272,7 @@ export default function AdminUsersPage() {
               <div className="flex gap-2 pt-2">
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 rounded-full"
                   onClick={() => { setDetailOpen(false); handleEdit(selectedUser); }}
                 >
                   <Shield className="w-4 h-4 mr-2" />
@@ -278,7 +280,7 @@ export default function AdminUsersPage() {
                 </Button>
                 <Button
                   variant="destructive"
-                  className="flex-1"
+                  className="flex-1 rounded-full"
                   onClick={() => { setDetailOpen(false); handleDelete(selectedUser); }}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
@@ -299,7 +301,7 @@ export default function AdminUsersPage() {
             <div className="space-y-4">
               <div>
                 <p className="text-sm font-medium">{selectedUser.name}</p>
-                <p className="text-xs text-muted-foreground">{selectedUser.email}</p>
+                <p className="text-xs text-gray-500">{selectedUser.email}</p>
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">Role</label>
@@ -314,14 +316,13 @@ export default function AdminUsersPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <Button
-                className="w-full"
-                variant="accent"
+              <button
                 onClick={handleSaveRole}
                 disabled={editRole === selectedUser.role}
+                className="w-full rounded-full bg-gray-900 text-white px-6 py-2.5 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
               >
                 Save
-              </Button>
+              </button>
             </div>
           )}
         </DialogContent>

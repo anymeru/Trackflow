@@ -68,7 +68,7 @@ const ProfilePage = () => {
 
         <Card className="p-6 space-y-4">
           <h2 className="font-display font-semibold flex items-center gap-2">
-            <User className="w-5 h-5 text-accent" /> Personal Information
+            <User className="w-5 h-5 text-gray-700" /> Personal Information
           </h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="space-y-2">
@@ -84,14 +84,18 @@ const ProfilePage = () => {
               <Input value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" />
             </div>
           </div>
-          <Button variant="accent" size="sm" onClick={handleSaveProfile} disabled={saving}>
+          <button
+            onClick={handleSaveProfile}
+            disabled={saving}
+            className="rounded-full bg-gray-900 text-white px-6 py-2 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+          >
             {saving ? "Saving..." : "Save"}
-          </Button>
+          </button>
         </Card>
 
         <Card className="p-6 space-y-4">
           <h2 className="font-display font-semibold flex items-center gap-2">
-            <Lock className="w-5 h-5 text-accent" /> Security
+            <Lock className="w-5 h-5 text-gray-700" /> Security
           </h2>
           <div className="space-y-4">
             <div className="space-y-2">
@@ -107,9 +111,13 @@ const ProfilePage = () => {
               <Input type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} placeholder="••••••••" />
             </div>
           </div>
-          <Button variant="accent" size="sm" onClick={handleChangePassword} disabled={changing || !currentPassword || !newPassword}>
+          <button
+            onClick={handleChangePassword}
+            disabled={changing || !currentPassword || !newPassword}
+            className="rounded-full bg-gray-900 text-white px-6 py-2 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+          >
             {changing ? "Changing..." : "Change password"}
-          </Button>
+          </button>
         </Card>
       </div>
     </DashboardLayout>

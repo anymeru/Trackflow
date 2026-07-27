@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -30,13 +29,13 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 const PIE_COLORS = [
-  "#06B6D4",
-  "#3B82F6",
-  "#22C55E",
-  "#F59E0B",
-  "#F97316",
-  "#D97706",
-  "#8B5CF6",
+  "#6B7280",
+  "#9CA3AF",
+  "#4B5563",
+  "#374151",
+  "#D1D5DB",
+  "#111827",
+  "#1F2937",
   "#EF4444",
 ];
 
@@ -133,11 +132,11 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-tight">Administration</h1>
-            <p className="text-sm text-muted-foreground mt-0.5">System overview and oversight</p>
+            <p className="text-sm text-gray-500 mt-0.5">System overview and oversight</p>
           </div>
           <Dialog open={createOpen} onOpenChange={setCreateOpen}>
             <DialogTrigger asChild>
-              <Button variant="accent" className="gap-1.5">
+              <Button className="gap-1.5 rounded-full bg-gray-900 text-white hover:bg-gray-800">
                 <Plus className="w-4 h-4" />
                 Create Tracking
               </Button>
@@ -177,7 +176,7 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
                   <Label>Destination address</Label>
                   <Input value={createForm.destinationAddress} onChange={(e) => setCreateForm({ ...createForm, destinationAddress: e.target.value })} placeholder="Ex: Douala, Cameroun" />
                 </div>
-                <Button className="w-full" onClick={handleCreate} disabled={!createForm.clientName || !createForm.clientEmail || !createForm.originAddress || !createForm.destinationAddress}>
+                <Button className="w-full rounded-full bg-gray-900 text-white hover:bg-gray-800" onClick={handleCreate} disabled={!createForm.clientName || !createForm.clientEmail || !createForm.originAddress || !createForm.destinationAddress}>
                   <Plus className="w-4 h-4 mr-2" />
                   Create Tracking
                 </Button>
@@ -188,212 +187,230 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
 
         {/* Stat cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/10 flex items-center justify-center">
-                <Activity className="w-5 h-5 text-[#00b4d8]" />
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03] hover:bg-black/5 transition-all duration-500 ease-out-expo">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center">
+                  <Activity className="w-5 h-5 text-gray-700" />
+                </div>
+                <span className="text-[10px] text-gray-400 tracking-wider uppercase">Total</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Total</span>
+              <p className="text-2xl font-display font-bold tracking-tight">{totalCount}</p>
+              <div className="mt-1.5 w-8 h-0.5 rounded-full bg-black/5" />
+              <p className="text-xs text-gray-500 mt-2">Active trackings</p>
             </div>
-            <p className="text-2xl font-display font-bold tracking-tight">{totalCount}</p>
-            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#00b4d8]/40" />
-            <p className="text-xs text-muted-foreground mt-2">Active trackings</p>
-          </Card>
-          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#4ecdc4]/10 flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-[#4ecdc4]" />
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03] hover:bg-black/5 transition-all duration-500 ease-out-expo">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-gray-700" />
+                </div>
+                <span className="text-[10px] text-gray-400 tracking-wider uppercase">Rate</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Rate</span>
+              <p className="text-2xl font-display font-bold tracking-tight">{deliveryRate}%</p>
+              <div className="mt-1.5 w-8 h-0.5 rounded-full bg-black/5" />
+              <p className="text-xs text-gray-500 mt-2">Delivery rate</p>
             </div>
-            <p className="text-2xl font-display font-bold tracking-tight">{deliveryRate}%</p>
-            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#4ecdc4]/40" />
-            <p className="text-xs text-muted-foreground mt-2">Delivery rate</p>
-          </Card>
-          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/10 flex items-center justify-center">
-                <Clock className="w-5 h-5 text-[#00b4d8]" />
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03] hover:bg-black/5 transition-all duration-500 ease-out-expo">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center">
+                  <Clock className="w-5 h-5 text-gray-700" />
+                </div>
+                <span className="text-[10px] text-gray-400 tracking-wider uppercase">In transit</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">In transit</span>
+              <p className="text-2xl font-display font-bold tracking-tight">{trackings.filter((t) => t.status === "in_transit" || t.status === "out_for_delivery").length}</p>
+              <div className="mt-1.5 w-8 h-0.5 rounded-full bg-black/5" />
+              <p className="text-xs text-gray-500 mt-2">Currently moving</p>
             </div>
-            <p className="text-2xl font-display font-bold tracking-tight">{trackings.filter((t) => t.status === "in_transit" || t.status === "out_for_delivery").length}</p>
-            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#00b4d8]/40" />
-            <p className="text-xs text-muted-foreground mt-2">Currently moving</p>
-          </Card>
-          <Card className="p-5 bg-card border-border/50 hover:border-destructive/20 transition-colors">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-lg bg-[#ff6b6b]/10 flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-[#ff6b6b]" />
+          </div>
+          <div className="p-[1px] rounded-[2rem] bg-black/[0.03] hover:bg-black/5 transition-all duration-500 ease-out-expo">
+            <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+              <div className="flex items-center justify-between mb-3">
+                <div className="w-10 h-10 rounded-full bg-black/5 flex items-center justify-center">
+                  <AlertTriangle className="w-5 h-5 text-red-400" />
+                </div>
+                <span className="text-[10px] text-gray-400 tracking-wider uppercase">Issues</span>
               </div>
-              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Issues</span>
+              <p className="text-2xl font-display font-bold tracking-tight">{disputesOpen}</p>
+              <div className="mt-1.5 w-8 h-0.5 rounded-full bg-black/5" />
+              <p className="text-xs text-gray-500 mt-2">Open disputes</p>
             </div>
-            <p className="text-2xl font-display font-bold tracking-tight">{disputesOpen}</p>
-            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#ff6b6b]/40" />
-            <p className="text-xs text-muted-foreground mt-2">Open disputes</p>
-          </Card>
+          </div>
         </div>
 
         {/* Tabs */}
         <Tabs value={tab} onValueChange={setTab} className="space-y-4">
-          <TabsList className="bg-muted/50 p-0.5 gap-0">
-            <TabsTrigger value="analytics" className="data-[state=active]:bg-card data-[state=active]:text-[#00b4d8] data-[state=active]:shadow-sm rounded-md mx-0.5">Analytics</TabsTrigger>
-            <TabsTrigger value="trackings" className="data-[state=active]:bg-card data-[state=active]:text-[#00b4d8] data-[state=active]:shadow-sm rounded-md mx-0.5">Trackings</TabsTrigger>
-            <TabsTrigger value="map" className="data-[state=active]:bg-card data-[state=active]:text-[#00b4d8] data-[state=active]:shadow-sm rounded-md mx-0.5">Map</TabsTrigger>
-            <TabsTrigger value="notifications" className="data-[state=active]:bg-card data-[state=active]:text-[#00b4d8] data-[state=active]:shadow-sm rounded-md mx-0.5">Notifications</TabsTrigger>
+          <TabsList className="bg-black/5 p-0.5 gap-0 rounded-full">
+            <TabsTrigger value="analytics" className="data-[state=active]:bg-gray-900 data-[state=active]:text-white rounded-full mx-0.5">Analytics</TabsTrigger>
+            <TabsTrigger value="trackings" className="data-[state=active]:bg-gray-900 data-[state=active]:text-white rounded-full mx-0.5">Trackings</TabsTrigger>
+            <TabsTrigger value="map" className="data-[state=active]:bg-gray-900 data-[state=active]:text-white rounded-full mx-0.5">Map</TabsTrigger>
+            <TabsTrigger value="notifications" className="data-[state=active]:bg-gray-900 data-[state=active]:text-white rounded-full mx-0.5">Notifications</TabsTrigger>
           </TabsList>
 
           <TabsContent value="analytics" className="space-y-6">
             <div className="grid lg:grid-cols-2 gap-6">
-              <Card className="p-5 border-border/50">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
-                  <h3 className="font-display font-semibold text-sm">Daily Volume</h3>
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                    <h3 className="font-display font-semibold text-sm tracking-tight">Daily Volume</h3>
+                  </div>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={volumeByDay}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="black" strokeOpacity={0.06} />
+                        <XAxis dataKey="day" tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 12, fill: '#6B7280' }} axisLine={false} tickLine={false} />
+                        <Tooltip
+                          contentStyle={{
+                            background: 'white',
+                            border: '1px solid rgba(0,0,0,0.04)',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 40px -12px rgba(0,0,0,0.06)',
+                          }}
+                        />
+                        <Bar dataKey="colis" name="Packages" fill="#6B7280" radius={[3, 3, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={volumeByDay}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="day" tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                      <YAxis tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }} axisLine={false} tickLine={false} />
-                      <Tooltip
-                        contentStyle={{
-                          background: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                        }}
-                      />
-                      <Bar dataKey="colis" name="Packages" fill="#00b4d8" radius={[3, 3, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
+              </div>
 
-              <Card className="p-5 border-border/50">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#4ecdc4]" />
-                  <h3 className="font-display font-semibold text-sm">Status Distribution</h3>
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <div className="rounded-[calc(2rem-1px)] bg-white p-5">
+                  <div className="flex items-center gap-2 mb-5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                    <h3 className="font-display font-semibold text-sm tracking-tight">Status Distribution</h3>
+                  </div>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={statusDistribution}
+                          cx="50%" cy="50%"
+                          innerRadius={50} outerRadius={90}
+                          dataKey="value" nameKey="name"
+                          label={({ name, value }) => `${name}: ${value}`}
+                          labelLine={false}
+                        >
+                          {statusDistribution.map((_, i) => (
+                            <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{
+                            background: 'white',
+                            border: '1px solid rgba(0,0,0,0.04)',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 40px -12px rgba(0,0,0,0.06)',
+                          }}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={statusDistribution}
-                        cx="50%" cy="50%"
-                        innerRadius={50} outerRadius={90}
-                        dataKey="value" nameKey="name"
-                        label={({ name, value }) => `${name}: ${value}`}
-                        labelLine={false}
-                      >
-                        {statusDistribution.map((_, i) => (
-                          <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        contentStyle={{
-                          background: 'hsl(var(--card))',
-                          border: '1px solid hsl(var(--border))',
-                          borderRadius: '8px',
-                          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-                        }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </Card>
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="trackings">
-            <Card className="border-border/50 overflow-hidden">
-              <div className="px-5 py-4 border-b border-border/50 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
-                  <h2 className="font-display font-semibold text-sm">All Trackings</h2>
-                  <span className="text-xs text-muted-foreground">({trackings.length})</span>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <div className="rounded-[calc(2rem-1px)] bg-white">
+                <div className="px-5 py-4 border-b border-black/[0.04] flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                    <h2 className="font-display font-semibold text-sm tracking-tight">All Trackings</h2>
+                    <span className="text-xs text-gray-500">({trackings.length})</span>
+                  </div>
+                </div>
+                <div className="divide-y divide-black/[0.04]">
+                  {trackings.length === 0 && (
+                    <div className="p-8 text-center">
+                      <Package className="w-8 h-8 mx-auto mb-2 text-gray-400" />
+                      <p className="text-sm text-gray-500">No trackings yet</p>
+                    </div>
+                  )}
+                  {trackings.map((t, i) => (
+                    <div
+                      key={t.id}
+                      className="px-5 py-3.5 flex items-center justify-between hover:bg-black/5 cursor-pointer transition-all duration-500 ease-out-expo"
+                      onClick={() => navigate(`/admin/trackings/${t.id}`)}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="flex flex-col items-center gap-0.5 shrink-0">
+                          <div className={`w-1.5 h-1.5 rounded-full ${i > 0 ? 'bg-black/5' : 'bg-gray-900'}`} />
+                          {i < trackings.length - 1 && <div className="w-px h-4 bg-black/[0.04]" />}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{t.clientName}</p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {t.trackingNumber}
+                            {t.originAddress && t.destinationAddress
+                              ? ` · ${t.originAddress} → ${t.destinationAddress}`
+                              : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <StatusBadge status={t.status} />
+                    </div>
+                  ))}
                 </div>
               </div>
-              <div className="divide-y divide-border/30">
-                {trackings.length === 0 && (
-                  <div className="p-8 text-center">
-                    <Package className="w-8 h-8 mx-auto mb-2 text-muted-foreground/30" />
-                    <p className="text-sm text-muted-foreground">No trackings yet</p>
-                  </div>
-                )}
-                {trackings.map((t, i) => (
-                  <div
-                    key={t.id}
-                    className="px-5 py-3.5 flex items-center justify-between hover:bg-muted/30 cursor-pointer transition-colors"
-                    onClick={() => navigate(`/admin/trackings/${t.id}`)}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="flex flex-col items-center gap-0.5 shrink-0">
-                        <div className={`w-1.5 h-1.5 rounded-full ${i > 0 ? 'bg-border' : 'bg-[#00b4d8]'}`} />
-                        {i < trackings.length - 1 && <div className="w-px h-4 bg-border/50" />}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{t.clientName}</p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {t.trackingNumber}
-                          {t.originAddress && t.destinationAddress
-                            ? ` · ${t.originAddress} → ${t.destinationAddress}`
-                            : ""}
-                        </p>
-                      </div>
-                    </div>
-                    <StatusBadge status={t.status} />
-                  </div>
-                ))}
-              </div>
-            </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="map">
-            <Card className="border-border/50 overflow-hidden">
-              <div className="px-5 py-4 border-b border-border/50">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
-                  <h2 className="font-display font-semibold text-sm">Global Map</h2>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <div className="rounded-[calc(2rem-1px)] bg-white">
+                <div className="px-5 py-4 border-b border-black/[0.04]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                    <h2 className="font-display font-semibold text-sm tracking-tight">Global Map</h2>
+                  </div>
+                </div>
+                <div className="h-[400px]">
+                  <TrackingMap items={trackings} showRoute={false} />
                 </div>
               </div>
-              <div className="h-[400px]">
-                <TrackingMap items={trackings} showRoute={false} />
-              </div>
-            </Card>
+            </div>
           </TabsContent>
 
           <TabsContent value="notifications">
-            <Card className="border-border/50 overflow-hidden">
-              <div className="px-5 py-4 border-b border-border/50 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
-                  <h2 className="font-display font-semibold text-sm">Notification History</h2>
-                  <span className="text-xs text-muted-foreground">({notifLog?.pagination.total ?? 0})</span>
-                </div>
-                <Button variant="ghost" size="sm" onClick={() => refetchNotifs()} className="text-xs text-muted-foreground">
-                  Refresh
-                </Button>
-              </div>
-              <div className="divide-y divide-border/30">
-                {(notifLog?.data ?? []).length === 0 && (
-                  <div className="p-8 text-center text-sm text-muted-foreground">No notifications sent yet</div>
-                )}
-                {(notifLog?.data ?? []).map((n) => (
-                  <div key={n.id} className="px-5 py-3.5">
-                    <div className="flex items-center justify-between">
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{n.subject}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {n.recipientEmail} · {new Date(n.sentAt).toLocaleDateString("fr-FR")}
-                        </p>
-                      </div>
-                      <Badge variant="outline" className="shrink-0 ml-3 text-[10px] uppercase tracking-wider border-border/50">{n.type}</Badge>
-                    </div>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <div className="rounded-[calc(2rem-1px)] bg-white">
+                <div className="px-5 py-4 border-b border-black/[0.04] flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-gray-900" />
+                    <h2 className="font-display font-semibold text-sm tracking-tight">Notification History</h2>
+                    <span className="text-xs text-gray-500">({notifLog?.pagination.total ?? 0})</span>
                   </div>
-                ))}
+                  <Button variant="ghost" size="sm" onClick={() => refetchNotifs()} className="text-xs text-gray-500 rounded-full">
+                    Refresh
+                  </Button>
+                </div>
+                <div className="divide-y divide-black/[0.04]">
+                  {(notifLog?.data ?? []).length === 0 && (
+                    <div className="p-8 text-center text-sm text-gray-500">No notifications sent yet</div>
+                  )}
+                  {(notifLog?.data ?? []).map((n) => (
+                    <div key={n.id} className="px-5 py-3.5">
+                      <div className="flex items-center justify-between">
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium truncate">{n.subject}</p>
+                          <p className="text-xs text-gray-500">
+                            {n.recipientEmail} · {new Date(n.sentAt).toLocaleDateString("fr-FR")}
+                          </p>
+                        </div>
+                        <Badge variant="outline" className="shrink-0 ml-3 text-[10px] uppercase tracking-wider border-black/[0.04]">{n.type}</Badge>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </Card>
+            </div>
           </TabsContent>
         </Tabs>
       </div>

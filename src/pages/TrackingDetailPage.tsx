@@ -54,16 +54,18 @@ function WhatsAppModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="bg-white border border-black/[0.04] rounded-[1rem]">
         <DialogHeader>
           <DialogTitle>Contact Support</DialogTitle>
         </DialogHeader>
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm space-y-2">
-          <p className="font-medium">Contact admin support via:</p>
-          <p> WhatsApp : <span className="text-muted-foreground">{phone}</span></p>
-          <p> Telegram : <span className="text-muted-foreground">{telegram}</span></p>
+        <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+          <div className="rounded-[calc(2rem-1px)] bg-gray-50 p-5 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] text-sm space-y-2">
+            <p className="font-medium">Contact admin support via:</p>
+            <p> WhatsApp : <span className="text-gray-500">{phone}</span></p>
+            <p> Telegram : <span className="text-gray-500">{telegram}</span></p>
+          </div>
         </div>
-        <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
+        <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-full transition-all duration-500 ease-out-expo">Close</Button>
       </DialogContent>
     </Dialog>
   );
@@ -111,16 +113,16 @@ function DisputeDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent className="bg-white border border-black/[0.04] rounded-[1rem]">
         <DialogHeader>
           <DialogTitle>Open a Dispute</DialogTitle>
         </DialogHeader>
         <div className="space-y-3">
           <div>
-                <label className="text-sm font-medium">Reason</label>
-                <Select value={reason} onValueChange={setReason}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a reason" />
+            <label className="text-sm font-medium">Reason</label>
+            <Select value={reason} onValueChange={setReason}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a reason" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="damaged_package">Damaged package</SelectItem>
@@ -141,7 +143,7 @@ function DisputeDialog({
             />
           </div>
           <Button
-            className="w-full"
+            className="w-full rounded-full transition-all duration-500 ease-out-expo"
             onClick={() => mutation.mutate()}
             disabled={!reason || description.length < 10 || mutation.isPending}
           >
@@ -200,54 +202,50 @@ export default function TrackingDetailPage() {
     return (
       <DashboardLayout role="client">
         <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-          {/* Header Skeleton */}
           <div className="flex items-start gap-4">
-            <Skeleton className="w-10 h-10 rounded" />
+            <Skeleton className="w-10 h-10 rounded-xl" />
             <div className="flex-1">
               <Skeleton className="w-48 h-8 mb-2" />
               <Skeleton className="w-32 h-4" />
             </div>
           </div>
 
-          {/* Main Content */}
           <div className="grid lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              {/* ETA Skeleton */}
-              <Card className="p-5">
-                <Skeleton className="w-full h-20" />
-              </Card>
-
-              {/* Map Skeleton */}
-              <MapSkeleton />
-
-              {/* Buttons Skeleton */}
-              <div className="space-y-3">
-                <Skeleton className="w-full h-10" />
-                <Skeleton className="w-full h-10" />
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <div className="rounded-[calc(2rem-1px)] bg-white p-5 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+                  <Skeleton className="w-full h-20" />
+                </div>
               </div>
 
-              {/* Info Skeleton */}
-              <Card className="p-5 space-y-4">
-                <Skeleton className="w-24 h-6" />
-                <div className="space-y-3">
-                  <Skeleton className="w-full h-4" />
-                  <Skeleton className="w-full h-4" />
-                  <Skeleton className="w-full h-4" />
-                </div>
-              </Card>
+              <MapSkeleton />
 
-              {/* Timeline Skeleton */}
-              <Card className="p-5">
-                <Skeleton className="w-32 h-6 mb-4" />
-                <TimelineSkeleton />
-              </Card>
+              <div className="space-y-3">
+                <Skeleton className="w-full h-10 rounded-full" />
+                <Skeleton className="w-full h-10 rounded-full" />
+              </div>
+
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <div className="rounded-[calc(2rem-1px)] bg-white p-5 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] space-y-4">
+                  <Skeleton className="w-24 h-6" />
+                  <div className="space-y-3">
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-full h-4" />
+                    <Skeleton className="w-full h-4" />
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <div className="rounded-[calc(2rem-1px)] bg-white p-5 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+                  <Skeleton className="w-32 h-6 mb-4" />
+                  <TimelineSkeleton />
+                </div>
+              </div>
             </div>
 
-            {/* Sidebar Skeleton */}
             <div className="space-y-6">
-              <Card className="p-5">
-                <Skeleton className="w-full h-40" />
-              </Card>
+              <Skeleton className="h-40 rounded-[1rem]" />
             </div>
           </div>
         </div>
@@ -259,10 +257,13 @@ export default function TrackingDetailPage() {
     return (
       <DashboardLayout>
         <div className="p-6 text-center">
-          <p className="text-muted-foreground">Tracking not found.</p>
-          <Button variant="accent" onClick={() => navigate("/dashboard")} className="mt-4">
+          <p className="text-gray-500">Tracking not found.</p>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="mt-4 rounded-full bg-gray-900 text-white px-6 py-2 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97]"
+          >
             Back
-          </Button>
+          </button>
         </div>
       </DashboardLayout>
     );
@@ -274,43 +275,40 @@ export default function TrackingDetailPage() {
   return (
     <DashboardLayout role="client">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        {/* Header */}
         <div className="flex items-start gap-4">
-          <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")}>
+          <Button variant="ghost" size="icon" onClick={() => navigate("/dashboard")} className="rounded-full transition-all duration-500 ease-out-expo">
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="flex-1">
             <div className="flex items-center gap-3 flex-wrap">
-              <h1 className="font-display text-lg sm:text-2xl font-bold">{tracking.clientName}</h1>
+              <h1 className="font-display text-lg sm:text-2xl font-bold tracking-tight">{tracking.clientName}</h1>
               <StatusBadge status={tracking.status} />
             </div>
-            <p className="text-sm text-muted-foreground font-mono mt-1">{tracking.trackingNumber}</p>
+            <p className="text-sm text-gray-500 font-mono mt-1">{tracking.trackingNumber}</p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* ETA Block */}
-            <Card className="p-5">
-              <ETABlock
-                eta={tracking.eta}
-                status={tracking.status}
-                progressPercent={computeProgress(tracking)}
-              />
-            </Card>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <Card className="border-0 bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] rounded-[calc(2rem-1px)] p-5">
+                <ETABlock
+                  eta={tracking.eta}
+                  status={tracking.status}
+                  progressPercent={computeProgress(tracking)}
+                />
+              </Card>
+            </div>
 
-            {/* Map */}
-            <div className="h-[250px] sm:h-[400px] rounded-lg overflow-hidden">
+            <div className="h-[250px] sm:h-[400px] rounded-xl overflow-hidden">
               <TrackingMap items={[tracking]} selectedId={tracking.id} showRoute className="h-full" />
             </div>
 
-            {/* WhatsApp / Telegram buttons */}
             {whatsappVisible && (
               <div className="flex gap-3">
                 <Button
                   variant="outline"
-                  className="flex-1 border-green-500 text-green-600 hover:bg-green-50"
+                  className="flex-1 border-green-500 text-green-600 hover:bg-green-50 rounded-full transition-all duration-500 ease-out-expo"
                   onClick={() => setShowContact(true)}
                 >
                   <Smartphone className="w-4 h-4 mr-2" />
@@ -318,7 +316,7 @@ export default function TrackingDetailPage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="flex-1 border-blue-500 text-blue-600 hover:bg-blue-50"
+                  className="flex-1 border-blue-500 text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-500 ease-out-expo"
                   onClick={() => setShowContact(true)}
                 >
                   <Send className="w-4 h-4 mr-2" />
@@ -327,79 +325,80 @@ export default function TrackingDetailPage() {
               </div>
             )}
 
-            {/* Dispute Button */}
             <Button
               variant="outline"
-              className="w-full border-red-300 text-red-600 hover:bg-red-50"
+              className="w-full border-red-300 text-red-600 hover:bg-red-50 rounded-full transition-all duration-500 ease-out-expo"
               onClick={() => setShowDispute(true)}
             >
               <AlertTriangle className="w-4 h-4 mr-2" />
               Open a Dispute
             </Button>
 
-            {/* Shipment Info */}
-            <Card className="p-5 space-y-4">
-              <h2 className="font-display font-semibold">Information</h2>
-              <div className="grid sm:grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Origin:</span>
-                  <span className="font-medium">{tracking.originAddress || "—"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-cyan-500" />
-                  <span className="text-muted-foreground">Destination:</span>
-                  <span className="font-medium">{tracking.destinationAddress || "—"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Truck className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Description:</span>
-                  <span className="font-medium">{tracking.packageDescription || "—"}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-muted-foreground">Weight:</span>
-                  <span className="font-medium">{tracking.weight ? `${tracking.weight} kg` : "—"}</span>
-                </div>
-              </div>
-            </Card>
-
-            {/* Past Disputes */}
-            {disputes.length > 0 && (
-              <Card className="p-5">
-                  <h2 className="font-display font-semibold mb-4 flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-red-500" />
-                    Disputes
-                  </h2>
-                <div className="space-y-3">
-                  {disputes.map((d: Dispute) => (
-                    <div key={d.id} className="p-3 border rounded-lg">
-                      <p className="font-medium text-sm">{d.reason}</p>
-                      <p className="text-sm text-muted-foreground">{d.description}</p>
-                      {d.adminResponse && (
-                        <div className="mt-2 p-2 bg-muted rounded text-sm">
-                          <span className="font-medium">Response: </span>
-                          {d.adminResponse}
-                        </div>
-                      )}
-                    </div>
-                  ))}
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <Card className="border-0 bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] rounded-[calc(2rem-1px)] p-5 space-y-4">
+                <h2 className="font-display font-semibold tracking-tight">Information</h2>
+                <div className="grid sm:grid-cols-2 gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-500">Origin:</span>
+                    <span className="font-medium">{tracking.originAddress || "—"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-gray-900" />
+                    <span className="text-gray-500">Destination:</span>
+                    <span className="font-medium">{tracking.destinationAddress || "—"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-500">Description:</span>
+                    <span className="font-medium">{tracking.packageDescription || "—"}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-500">Weight:</span>
+                    <span className="font-medium">{tracking.weight ? `${tracking.weight} kg` : "—"}</span>
+                  </div>
                 </div>
               </Card>
+            </div>
+
+            {disputes.length > 0 && (
+              <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+                <Card className="border-0 bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] rounded-[calc(2rem-1px)] p-5">
+                  <h2 className="font-display font-semibold mb-4 flex items-center gap-2 tracking-tight">
+                    <AlertTriangle className="w-4 h-4 text-red-400" />
+                    Disputes
+                  </h2>
+                  <div className="space-y-3">
+                    {disputes.map((d: Dispute) => (
+                      <div key={d.id} className="p-3 border border-black/[0.04] rounded-xl">
+                        <p className="font-medium text-sm">{d.reason}</p>
+                        <p className="text-sm text-gray-500">{d.description}</p>
+                        {d.adminResponse && (
+                          <div className="mt-2 p-2 bg-black/5 rounded-xl text-sm">
+                            <span className="font-medium">Response: </span>
+                            {d.adminResponse}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              </div>
             )}
 
-            {/* Timeline */}
-            <Card className="p-5">
-              <h2 className="font-display font-semibold mb-4">Status History</h2>
-              <TrackingTimeline events={tracking.statusHistory || []} />
-            </Card>
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <Card className="border-0 bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] rounded-[calc(2rem-1px)] p-5">
+                <h2 className="font-display font-semibold mb-4 tracking-tight">Status History</h2>
+                <TrackingTimeline events={tracking.statusHistory || []} />
+              </Card>
+            </div>
           </div>
 
-          {/* Sidebar - Chat */}
           <div className="lg:col-span-1 space-y-6">
-            <Card className="h-[500px] flex flex-col">
-              <div className="p-4 border-b border-border">
-                <h2 className="font-display font-semibold flex items-center gap-2">
+            <Card className="bg-white border border-black/[0.04] rounded-[1rem] h-[500px] flex flex-col">
+              <div className="p-4 border-b border-black/[0.04]">
+                <h2 className="font-display font-semibold flex items-center gap-2 tracking-tight">
                   <MessageSquare className="w-4 h-4" />
                   Messaging
                 </h2>
@@ -420,7 +419,7 @@ export default function TrackingDetailPage() {
                       currentUserId={user?.id || ""}
                     />
                   </div>
-                  <div className="p-4 border-t border-border flex gap-2">
+                  <div className="p-4 border-t border-black/[0.04] flex gap-2">
                     <Input
                       value={newMsg}
                       onChange={(e) => setNewMsg(e.target.value)}
@@ -431,13 +430,14 @@ export default function TrackingDetailPage() {
                       size="icon"
                       onClick={() => sendMsg.mutate()}
                       disabled={!newMsg || sendMsg.isPending}
+                      className="rounded-full transition-all duration-500 ease-out-expo"
                     >
                       <Send className="w-4 h-4" />
                     </Button>
                   </div>
                 </>
               ) : (
-                <div className="flex-1 flex items-center justify-center p-6 text-center text-muted-foreground text-sm">
+                <div className="flex-1 flex items-center justify-center p-6 text-center text-gray-500 text-sm">
                   Messaging is available when your shipment requires special attention.
                 </div>
               )}

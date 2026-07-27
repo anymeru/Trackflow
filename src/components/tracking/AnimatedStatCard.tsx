@@ -79,10 +79,10 @@ const AnimatedStatCard = ({
         transition: { duration: 0.2 },
       }}
     >
-      <Card className="p-4 group cursor-default transition-all duration-300 hover:shadow-lg hover:border-accent/30">
+      <Card className="p-4 group cursor-default transition-all duration-500 ease-out-expo hover:shadow-[0_8px_60px_-16px_rgba(0,0,0,0.12)]">
         <div className="flex items-center justify-between">
           <motion.div
-            className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 gradient-accent group-hover:scale-110 transition-transform duration-300 ${iconColor}`}
+            className={`w-10 h-10 rounded-full bg-black/5 flex items-center justify-center shrink-0 group-hover:scale-110 transition-all duration-500 ease-out-expo ${iconColor}`}
             variants={iconVariants}
           >
             {icon}

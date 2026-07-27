@@ -14,8 +14,11 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Space Grotesk", "system-ui", "sans-serif"],
+        sans: ["Plus Jakarta Sans", "system-ui", "sans-serif"],
+        display: ["Clash Display", "system-ui", "sans-serif"],
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.32, 0.72, 0, 1)",
       },
       colors: {
         border: "hsl(var(--border))",

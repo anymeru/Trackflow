@@ -2,11 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getSettings } from "@/api/settings";
 import Navbar from "@/components/layout/Navbar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Textarea } from "@/components/ui/textarea";
 import StatusBadge from "@/components/tracking/StatusBadge";
-import StatusGuide from "@/components/tracking/StatusGuide";
 import RecentTrackings, { addRecentTracking } from "@/components/tracking/RecentTrackings";
 import { getPublicTracking, Tracking } from "@/api/trackings";
 import { Search, Truck, MapPin, Shield, ArrowRight, Clock, Globe, Plane, Ship, Globe2, CheckCircle2, Quote } from "lucide-react";
@@ -16,6 +12,15 @@ import airImg from "@/assets/service-air.jpg.asset.json";
 import seaImg from "@/assets/service-sea.jpg.asset.json";
 import roadImg from "@/assets/service-road.jpg.asset.json";
 import ieImg from "@/assets/service-import-export.jpg.asset.json";
+
+const springEase = [0.32, 0.72, 0, 1] as const;
+
+const fadeUpBlur = {
+  initial: { opacity: 0, y: 64, filter: "blur(8px)" },
+  whileInView: { opacity: 1, y: 0, filter: "blur(0px)" },
+  viewport: { once: true },
+  transition: { duration: 0.7, ease: springEase },
+};
 
 const LandingPage = () => {
   const [trackingInput, setTrackingInput] = useState("");
@@ -96,352 +101,426 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-white font-sans">
       <Navbar />
 
-      {/* Hero */}
-      <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* ─── Hero ─── */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         <div className="absolute inset-0">
-          <img src={heroImg.url} alt="Global freight and logistics" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/95 via-primary/85 to-primary/50" />
-          <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
+          <img src={heroImg.url} alt="" className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
         </div>
 
-        <div className="container mx-auto px-4 pt-20 relative z-10">
-          <div className="max-w-3xl mx-auto text-center space-y-8">
+        <div className="container mx-auto px-6 pt-32 relative z-10">
+          <div className="max-w-4xl mx-auto text-center space-y-12">
             <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
+              initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.7, ease: springEase }}
             >
-              <div className="inline-flex items-center gap-2 bg-accent/20 rounded-full px-4 py-1.5 mb-6 text-sm text-accent-foreground border border-accent/20">
-                <Truck className="w-4 h-4" />
+              <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-white/10 text-white/80 mb-8">
                 Global Freight & Live Tracking
-              </div>
-              <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight">
-                Freight that moves. <br />
-                <span className="text-gradient-accent">Visibility that stays.</span>
+              </span>
+              <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[0.95] tracking-tight">
+                Freight that moves.<br />
+                <span className="text-white/75">Visibility that stays.</span>
               </h1>
-              <p className="text-lg md:text-xl text-primary-foreground/70 mt-4 max-w-xl mx-auto">
+              <p className="text-lg md:text-xl text-white/60 mt-6 max-w-2xl mx-auto leading-relaxed">
                 Air, sea, and road freight across 120+ countries — with live tracking, real ETAs and dedicated support on every shipment.
               </p>
             </motion.div>
 
-            {/* Multi-tracking Search */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="max-w-lg mx-auto"
+              initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.7, delay: 0.2, ease: springEase }}
+              className="max-w-xl mx-auto"
             >
-              <div className="glass-card rounded-2xl p-3 space-y-2">
-                <Textarea
-                  value={trackingInput}
-                  onChange={(e) => setTrackingInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSearch();
-                    }
-                  }}
-                  placeholder={"Enter your tracking numbers...\nUp to 10 numbers (one per line)"}
-                  className="min-h-[48px] max-h-[120px] border-0 bg-transparent text-foreground placeholder:text-muted-foreground focus-visible:ring-0 resize-none"
-                  rows={2}
-                />
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-primary-foreground/40 pl-1">
-                    Separate by line, comma, or semicolon
-                  </span>
-                  <Button variant="accent" size="lg" onClick={handleSearch} className="shrink-0">
-                    <Search className="w-5 h-5 mr-2" />
-                    Track
-                  </Button>
+              <div className="p-[1px] rounded-[2rem] bg-white/[0.08]">
+                <div className="rounded-[calc(2rem-1px)] bg-white/95 shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] backdrop-blur-xl p-6 space-y-5">
+                  <textarea
+                    value={trackingInput}
+                    onChange={(e) => setTrackingInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSearch();
+                      }
+                    }}
+                    placeholder={"Enter your tracking numbers...\nUp to 10 numbers (one per line)"}
+                    className="w-full min-h-[48px] max-h-[120px] bg-transparent text-gray-900 placeholder:text-gray-400 focus:outline-none resize-none text-sm leading-relaxed"
+                    rows={2}
+                  />
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] uppercase tracking-[0.15em] text-gray-400 font-medium">
+                      Separate by line, comma, or semicolon
+                    </span>
+                    <button
+                      onClick={handleSearch}
+                      disabled={searching}
+                      className="rounded-full text-sm font-medium bg-gray-900 text-white inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] disabled:opacity-50"
+                    >
+                      <span>Track</span>
+                      <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        <Search className="w-4 h-4" />
+                      </span>
+                    </button>
+                  </div>
                 </div>
               </div>
-              <p className="text-xs text-primary-foreground/50 mt-2">
+              <p className="text-[10px] uppercase tracking-[0.15em] text-white/40 mt-3">
                 Try: TRK-2024-001847, TRK-2024-003105
               </p>
-
-              {/* Recent Trackings */}
-              <div className="mt-4">
-                <RecentTrackings onSelect={handleRecentSelect} />
-              </div>
             </motion.div>
 
-            {/* Search Results */}
-            {hasSearched && searchResults.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="max-w-lg mx-auto space-y-3"
-              >
-                {searchResults.length > 1 && (
-                  <p className="text-sm text-primary-foreground/60 text-left">
-                    {searchResults.length} packages found
-                  </p>
-                )}
-                {searchResults.map((result) => (
-                  <Card key={result.id} className="p-4 text-left space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-mono text-sm text-muted-foreground">{result.trackingNumber}</p>
-                        <p className="font-display font-semibold">{result.clientName}</p>
-                      </div>
-                      <StatusBadge status={result.status} />
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4" />
-                      {(result.originAddress || "Origin")} → {(result.destinationAddress || "Destination")}
-                    </div>
-                    <Button
-                      variant="accent"
-                      size="sm"
-                      onClick={() => navigate(`/track/${result.id}`)}
-                      className="w-full"
-                    >
-                      View detailed tracking
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Card>
-                ))}
-              </motion.div>
-            )}
+            <motion.div
+              initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+              transition={{ duration: 0.7, delay: 0.35, ease: springEase }}
+              className="max-w-xl mx-auto"
+            >
+              <RecentTrackings onSelect={handleRecentSelect} />
+            </motion.div>
 
-            {hasSearched && notFoundNumbers.length > 0 && (
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Card className="max-w-lg mx-auto p-4 text-left space-y-2">
-                  <p className="text-sm font-medium text-destructive">Numbers not found:</p>
-                  {notFoundNumbers.map((num) => (
-                    <p key={num} className="text-sm text-muted-foreground font-mono">{num}</p>
-                  ))}
-                  <p className="text-xs text-muted-foreground">Check the spelling or contact your sender.</p>
-                </Card>
+            {hasSearched && (
+              <motion.div
+                initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+                animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                transition={{ duration: 0.7, ease: springEase }}
+                className="max-w-xl mx-auto space-y-4"
+              >
+                {searchResults.length > 0 && (
+                  <>
+                    {searchResults.length > 1 && (
+                      <p className="text-sm text-white/60 text-left font-medium">
+                        {searchResults.length} packages found
+                      </p>
+                    )}
+                    {searchResults.map((result) => (
+                      <div key={result.id} className="p-[1px] rounded-[2rem] bg-white/[0.08]">
+                        <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] p-6 space-y-4 text-left">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="font-mono text-xs text-gray-400">{result.trackingNumber}</p>
+                              <p className="font-display font-semibold text-gray-900 text-lg">{result.clientName}</p>
+                            </div>
+                            <StatusBadge status={result.status} />
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <MapPin className="w-4 h-4 shrink-0" />
+                            {(result.originAddress || "Origin")} → {(result.destinationAddress || "Destination")}
+                          </div>
+                          <button
+                            onClick={() => navigate(`/track/${result.id}`)}
+                            className="rounded-full text-sm font-medium bg-gray-900 text-white inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] w-full justify-between"
+                          >
+                            <span>View detailed tracking</span>
+                            <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                              <ArrowRight className="w-4 h-4" />
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </>
+                )}
+
+                {notFoundNumbers.length > 0 && (
+                  <div className="p-[1px] rounded-[2rem] bg-white/[0.08]">
+                    <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] p-6 space-y-3 text-left">
+                      <p className="text-sm font-medium text-red-400">Numbers not found:</p>
+                      {notFoundNumbers.map((num) => (
+                        <p key={num} className="text-sm text-gray-400 font-mono">{num}</p>
+                      ))}
+                      <p className="text-xs text-gray-400">Check the spelling or contact your sender.</p>
+                    </div>
+                  </div>
+                )}
               </motion.div>
             )}
           </div>
         </div>
       </section>
 
-      {/* Services showcase */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-14">
-            <p className="text-accent font-medium text-sm uppercase tracking-wider mb-2">Our services</p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold">One partner, every mode of transport</h2>
-            <p className="text-muted-foreground mt-3 max-w-xl mx-auto">
+      {/* ─── Services — Asymmetrical Bento ─── */}
+      <section className="py-32 bg-gray-50">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <motion.div {...fadeUpBlur} className="text-center mb-16">
+            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-black/5 text-gray-600 mb-6">
+              Our services
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 tracking-tight leading-[1.05]">
+              One partner, every mode of transport
+            </h2>
+            <p className="text-gray-500 mt-4 max-w-2xl mx-auto text-lg leading-relaxed">
               From urgent air cargo to full container ocean freight, we design the route that fits your goods and your deadline.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((s, i) => (
-              <motion.div
-                key={s.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-              >
-                <Link to={s.to}>
-                  <Card className="overflow-hidden group h-full hover:shadow-xl transition-all border-border/50">
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img src={s.image} alt={s.title} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
-                      <div className="absolute top-3 left-3 w-10 h-10 rounded-lg gradient-accent flex items-center justify-center shadow-lg">
-                        <s.icon className="w-5 h-5 text-accent-foreground" />
+          <div className="grid grid-cols-4 gap-6">
+            {services.map((s, i) => {
+              const isWide = i === 0 || i === 3;
+              return (
+                <motion.div
+                  key={s.title}
+                  initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: i * 0.1, ease: springEase }}
+                  className={isWide ? "col-span-4 md:col-span-3" : "col-span-4 md:col-span-1"}
+                >
+                  <Link to={s.to}>
+                    <div className="p-[1px] rounded-[2rem] bg-black/[0.03] h-full group">
+                      <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] overflow-hidden h-full transition-all duration-700 ease-out-expo group-hover:shadow-[0_8px_60px_-16px_rgba(0,0,0,0.12)]">
+                        <div className="relative aspect-[16/9] overflow-hidden">
+                          <img src={s.image} alt={s.title} loading="lazy" className="w-full h-full object-cover transition-all duration-700 ease-out-expo group-hover:scale-105" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 via-gray-900/20 to-transparent" />
+                          <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                            <s.icon className="w-5 h-5 text-white" />
+                          </div>
+                        </div>
+                        <div className="p-7">
+                          <h3 className="font-display text-xl font-bold text-gray-900 mb-2">{s.title}</h3>
+                          <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+                          <div className="mt-5">
+                            <span className="rounded-full text-sm font-medium bg-gray-900 text-white inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo group-hover:bg-gray-800">
+                              <span>Learn more</span>
+                              <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                                <ArrowRight className="w-4 h-4" />
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <h3 className="absolute bottom-3 left-4 font-display text-xl font-bold text-primary-foreground">{s.title}</h3>
                     </div>
-                    <div className="p-5">
-                      <p className="text-sm text-muted-foreground">{s.desc}</p>
-                      <div className="flex items-center gap-1 text-sm text-accent font-medium mt-3 group-hover:gap-2 transition-all">
-                        Learn more <ArrowRight className="w-4 h-4" />
-                      </div>
-                    </div>
-                  </Card>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Split: image + why */}
-      <section className="py-24 bg-muted/40">
-        <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-2 gap-12 items-center">
+      {/* ─── Why TRACE ─── */}
+      <section className="py-32 bg-white">
+        <div className="container mx-auto px-6 max-w-7xl grid md:grid-cols-2 gap-16 items-center">
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
-            className="relative rounded-2xl overflow-hidden aspect-[4/3] shadow-2xl"
+            transition={{ duration: 0.7, ease: springEase }}
           >
-            <img src={seaImg.url} alt="Ocean freight container ship" className="w-full h-full object-cover" loading="lazy" />
+            <div className="p-[1px] rounded-[2rem] bg-black/[0.03]">
+              <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] overflow-hidden">
+                <img src={seaImg.url} alt="Ocean freight container ship" className="w-full h-full object-cover aspect-[4/3]" loading="lazy" />
+              </div>
+            </div>
           </motion.div>
+
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             viewport={{ once: true }}
-            className="space-y-5"
+            transition={{ duration: 0.7, delay: 0.15, ease: springEase }}
+            className="space-y-6"
           >
-            <p className="text-accent font-medium text-sm uppercase tracking-wider">Why TRACE</p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold">
+            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-black/5 text-gray-600">
+              Why TRACE
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-[1.05]">
               Old-school reliability, modern visibility
             </h2>
-            <p className="text-muted-foreground text-lg leading-relaxed">
+            <p className="text-gray-500 text-lg leading-relaxed">
               Fifteen years of freight-forwarding expertise combined with a tracking platform your team will actually enjoy using.
               No black-box shipments. No last-minute surprises.
             </p>
-            <ul className="space-y-3 pt-2">
+            <ul className="space-y-4 pt-2">
               {[
                 "98.6% on-time delivery across all lanes",
                 "Dedicated account manager per client",
                 "Customs clearance & duty advisory included",
                 "Real-time ETA with confidence scoring",
               ].map((b) => (
-                <li key={b} className="flex items-start gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                <li key={b} className="flex items-start gap-3 text-gray-700">
+                  <span className="w-6 h-6 rounded-full bg-black/5 flex items-center justify-center shrink-0 mt-0.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-gray-700" />
+                  </span>
                   <span>{b}</span>
                 </li>
               ))}
             </ul>
-            <Link to="/about" className="inline-block pt-2">
-              <Button variant="accent">About our company <ArrowRight className="w-4 h-4 ml-2" /></Button>
-            </Link>
+            <div className="pt-4">
+              <Link to="/about">
+                <span className="rounded-full text-sm font-medium bg-gray-900 text-white inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97]">
+                  <span>About our company</span>
+                  <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                </span>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Status Guide */}
-      <section className="py-16 bg-card border-b border-border">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <StatusGuide />
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="py-24 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-3xl md:text-4xl font-bold">
+      {/* ─── Features Bento ─── */}
+      <section className="py-32 bg-gray-50">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <motion.div {...fadeUpBlur} className="text-center mb-16">
+            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-black/5 text-gray-600 mb-6">
+              Platform
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-[1.05]">
               Everything you need
             </h2>
-            <p className="text-muted-foreground mt-3 max-w-md mx-auto">
+            <p className="text-gray-500 mt-4 max-w-md mx-auto text-lg leading-relaxed">
               A complete solution for tracking your shipments and vehicles.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto">
-            {features.map((f, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <Card className="p-6 h-full hover:shadow-lg transition-shadow border-border/50 group">
-                  <div className="w-12 h-12 rounded-xl gradient-accent flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                    <f.icon className="w-6 h-6 text-accent-foreground" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {features.map((f, i) => {
+              const isWide = i === 0 || i === 3;
+              return (
+                <motion.div
+                  key={f.title}
+                  initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+                  whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: i * 0.1, ease: springEase }}
+                  className={isWide ? "md:col-span-2" : "md:col-span-1"}
+                >
+                  <div className="p-[1px] rounded-[2rem] bg-black/[0.03] h-full group">
+                    <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] p-8 h-full transition-all duration-700 ease-out-expo group-hover:shadow-[0_8px_60px_-16px_rgba(0,0,0,0.12)]">
+                      <div className="w-12 h-12 rounded-full bg-black/5 flex items-center justify-center mb-5">
+                        <f.icon className="w-5 h-5 text-gray-700" />
+                      </div>
+                      <h3 className="font-display text-xl font-bold text-gray-900 mb-2">{f.title}</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed">{f.desc}</p>
+                    </div>
                   </div>
-                  <h3 className="font-display font-semibold mb-2">{f.title}</h3>
-                  <p className="text-sm text-muted-foreground">{f.desc}</p>
-                </Card>
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 bg-muted/40">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-12">
-            <p className="text-accent font-medium text-sm uppercase tracking-wider mb-2">Trusted worldwide</p>
-            <h2 className="font-display text-3xl md:text-4xl font-bold">What our clients say</h2>
-          </div>
+      {/* ─── Testimonials ─── */}
+      <section className="py-32 bg-white">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <motion.div {...fadeUpBlur} className="text-center mb-16">
+            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-black/5 text-gray-600 mb-6">
+              Trusted worldwide
+            </span>
+            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 tracking-tight leading-[1.05]">
+              What our clients say
+            </h2>
+          </motion.div>
+
           <div className="grid md:grid-cols-3 gap-6">
             {testimonials.map((t, i) => (
-              <motion.div key={t.name} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
-                <Card className="p-6 h-full">
-                  <Quote className="w-8 h-8 text-accent mb-3" />
-                  <p className="text-muted-foreground italic leading-relaxed">"{t.quote}"</p>
-                  <div className="mt-5 pt-4 border-t border-border">
-                    <p className="font-display font-semibold">{t.name}</p>
-                    <p className="text-sm text-muted-foreground">{t.role}</p>
+              <motion.div
+                key={t.name}
+                initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+                whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.1, ease: springEase }}
+              >
+                <div className="p-[1px] rounded-[2rem] bg-black/[0.03] h-full">
+                  <div className="rounded-[calc(2rem-1px)] bg-white shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] p-8 h-full flex flex-col">
+                    <Quote className="w-8 h-8 text-black/10 mb-5" />
+                    <p className="text-gray-600 leading-relaxed flex-1">"{t.quote}"</p>
+                    <div className="mt-6 pt-6 border-t border-black/[0.04]">
+                      <p className="font-display font-semibold text-gray-900">{t.name}</p>
+                      <p className="text-sm text-gray-500 mt-0.5">{t.role}</p>
+                    </div>
                   </div>
-                </Card>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20 gradient-primary">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="font-display text-3xl font-bold text-primary-foreground mb-4">
-            Ready to ship smarter?
-          </h2>
-          <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
-            Create your free account or talk to our team about your next shipment.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <Button variant="hero" size="lg" onClick={() => navigate("/register")}>
-              Create a free account
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button variant="hero-outline" size="lg" onClick={() => navigate("/contact")}>
-              Talk to us
-            </Button>
-          </div>
+      {/* ─── CTA ─── */}
+      <section className="py-32 bg-gray-900">
+        <div className="container mx-auto px-6 text-center max-w-3xl">
+          <motion.div
+            initial={{ opacity: 0, y: 64, filter: "blur(8px)" }}
+            whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: springEase }}
+            className="space-y-8"
+          >
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white tracking-tight leading-[1.05]">
+              Ready to ship smarter?
+            </h2>
+            <p className="text-white/50 text-lg max-w-lg mx-auto leading-relaxed">
+              Create your free account or talk to our team about your next shipment.
+            </p>
+            <div className="flex gap-4 justify-center flex-wrap pt-4">
+              <button
+                onClick={() => navigate("/register")}
+                className="rounded-full text-sm font-medium bg-white text-gray-900 inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo hover:bg-white/90 active:scale-[0.97]"
+              >
+                <span>Create a free account</span>
+                <span className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </button>
+              <button
+                onClick={() => navigate("/contact")}
+                className="rounded-full text-sm font-medium bg-white/10 text-white inline-flex items-center pl-6 pr-1 py-1 gap-3 transition-all duration-700 ease-out-expo hover:bg-white/20 active:scale-[0.97]"
+              >
+                <span>Talk to us</span>
+                <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                  <ArrowRight className="w-4 h-4" />
+                </span>
+              </button>
+            </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-card border-t border-border py-12">
-        <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-4 gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect width="32" height="32" rx="6" fill="#00b4d8"/>
-                <rect x="11" y="6" width="4" height="20" rx="1" fill="white"/>
-                <rect x="7" y="6" width="14" height="4" rx="1" fill="white"/>
-                <path d="M 13,12 Q 15,11 15,14 Q 15,16 13,17" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-                <circle cx="20" cy="18" r="2.5" fill="#ff6b6b"/>
-                <circle cx="20" cy="18" r="1" fill="white"/>
-              </svg>
-              <span className="font-display font-bold">TRACE</span>
+      {/* ─── Footer ─── */}
+      <footer className="bg-white border-t border-black/[0.04] py-16">
+        <div className="container mx-auto px-6 max-w-7xl">
+          <div className="grid md:grid-cols-4 gap-12">
+            <div className="space-y-4">
+              <img src="/trace-logo.svg" alt="TRACE" className="h-7 w-auto" />
+              <p className="text-sm text-gray-500 leading-relaxed">Enterprise tracking — everything in view.</p>
             </div>
-            <p className="text-sm text-muted-foreground">Enterprise tracking — everything in view.</p>
+            <div>
+              <p className="font-display font-semibold text-sm text-gray-900 mb-4">Services</p>
+              <ul className="space-y-3 text-sm text-gray-500">
+                <li><Link to="/services#air" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Air Freight</Link></li>
+                <li><Link to="/services#sea" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Sea Freight</Link></li>
+                <li><Link to="/services#road" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Road Freight</Link></li>
+                <li><Link to="/services#import-export" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Import & Export</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-display font-semibold text-sm text-gray-900 mb-4">Company</p>
+              <ul className="space-y-3 text-sm text-gray-500">
+                <li><Link to="/about" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">About</Link></li>
+                <li><Link to="/contact" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Contact</Link></li>
+                <li><Link to="/track" className="hover:text-gray-900 transition-all duration-700 ease-out-expo">Track Shipment</Link></li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-display font-semibold text-sm text-gray-900 mb-4">Get in touch</p>
+              <ul className="space-y-3 text-sm text-gray-500">
+                <li>{contactEmail}</li>
+                <li>{contactPhone}</li>
+                <li>Paris · Rotterdam · Lagos</li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <p className="font-display font-semibold mb-3 text-sm">Services</p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/services#air" className="hover:text-accent">Air Freight</Link></li>
-              <li><Link to="/services#sea" className="hover:text-accent">Sea Freight</Link></li>
-              <li><Link to="/services#road" className="hover:text-accent">Road Freight</Link></li>
-              <li><Link to="/services#import-export" className="hover:text-accent">Import & Export</Link></li>
-            </ul>
+          <div className="mt-12 pt-8 border-t border-black/[0.04] text-sm text-gray-400 text-center">
+            &copy; 2026 TRACE. All rights reserved.
           </div>
-          <div>
-            <p className="font-display font-semibold mb-3 text-sm">Company</p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/about" className="hover:text-accent">About</Link></li>
-              <li><Link to="/contact" className="hover:text-accent">Contact</Link></li>
-              <li><Link to="/track" className="hover:text-accent">Track Shipment</Link></li>
-            </ul>
-          </div>
-          <div>
-            <p className="font-display font-semibold mb-3 text-sm">Get in touch</p>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>{contactEmail}</li>
-              <li>{contactPhone}</li>
-              <li>Paris · Rotterdam · Lagos</li>
-            </ul>
-          </div>
-        </div>
-        <div className="container mx-auto px-4 mt-10 pt-6 border-t border-border text-sm text-muted-foreground text-center">
-          © 2026 TRACE. All rights reserved.
         </div>
       </footer>
     </div>

@@ -99,7 +99,7 @@ const MessagingPage = ({ role = "client" }: { role?: "client" | "operator" }) =>
                 <div className="flex items-center justify-between mb-1">
                   <span className="font-medium text-sm truncate">{conv.subject}</span>
                   {conv.unreadCount > 0 && (
-                    <Badge className="gradient-accent text-accent-foreground border-0 text-xs">{conv.unreadCount}</Badge>
+                    <Badge className="bg-black/5 text-gray-600 border-0 text-xs">{conv.unreadCount}</Badge>
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground font-mono">{conv.trackingNumber}</p>
@@ -124,7 +124,7 @@ const MessagingPage = ({ role = "client" }: { role?: "client" | "operator" }) =>
                     <h3 className="font-display font-semibold">{selectedConv.subject}</h3>
                     <p className="text-xs text-muted-foreground">{selectedConv.trackingNumber} • {selectedConv.clientName}</p>
                   </div>
-                  <Badge className="bg-accent text-accent-foreground border-0">Open</Badge>
+                  <Badge className="bg-black/5 text-gray-600 border-0">Open</Badge>
                 </div>
               </div>
               <div className="flex-1 min-h-0">

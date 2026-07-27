@@ -1,6 +1,4 @@
 import Navbar from "@/components/layout/Navbar";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Plane, Ship, Truck, Globe2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
@@ -74,24 +72,24 @@ const services = [
 
 const ServicesPage = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-white">
       <Navbar />
 
       {/* Header */}
-      <section className="gradient-hero pt-32 pb-20">
+      <section className="bg-gray-900 pt-32 pb-20">
         <div className="container mx-auto px-4 text-center max-w-3xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block bg-accent/20 border border-accent/30 rounded-full px-4 py-1.5 text-sm text-accent-foreground mb-6">
+            <span className="inline-block rounded-full px-3 py-1 text-[10px] uppercase tracking-[0.2em] font-medium bg-white/10 text-white/80 mb-6">
               Our Services
             </span>
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight">
-              Freight solutions <span className="text-gradient-accent">by land, sea and sky</span>
+            <h1 className="font-display text-4xl md:text-6xl font-bold text-white leading-tight tracking-tight">
+              Freight solutions <span className="text-white/60">by land, sea and sky</span>
             </h1>
-            <p className="text-lg text-primary-foreground/70 mt-6">
+            <p className="text-lg text-white/60 mt-6">
               Four core services, one unified platform. From urgent air cargo to full-container ocean freight,
               we design the route that fits your goods, your deadline and your budget.
             </p>
@@ -114,30 +112,32 @@ const ServicesPage = () => {
                 transition={{ duration: 0.6 }}
                 className={`grid md:grid-cols-2 gap-10 items-center ${reverse ? "md:[&>div:first-child]:order-2" : ""}`}
               >
-                <div className="relative overflow-hidden rounded-2xl shadow-xl aspect-[4/3]">
+                <div className="relative overflow-hidden rounded-[2rem] shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)] aspect-[4/3]">
                   <img src={s.image} alt={s.title} className="w-full h-full object-cover" loading="lazy" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/60 via-transparent to-transparent" />
-                  <div className="absolute top-4 left-4 w-12 h-12 rounded-xl gradient-accent flex items-center justify-center shadow-lg">
-                    <s.icon className="w-6 h-6 text-accent-foreground" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute top-4 left-4 w-12 h-12 rounded-full bg-black/5 flex items-center justify-center shadow-[0_2px_40px_-12px_rgba(0,0,0,0.06)]">
+                    <s.icon className="w-6 h-6 text-gray-700" />
                   </div>
                 </div>
                 <div className="space-y-5">
-                  <p className="text-accent font-medium text-sm uppercase tracking-wider">{s.tagline}</p>
-                  <h2 className="font-display text-3xl md:text-4xl font-bold">{s.title}</h2>
-                  <p className="text-muted-foreground text-lg leading-relaxed">{s.description}</p>
+                  <p className="text-gray-600 font-medium text-[10px] uppercase tracking-[0.2em]">{s.tagline}</p>
+                  <h2 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-gray-900">{s.title}</h2>
+                  <p className="text-gray-500 text-lg leading-relaxed">{s.description}</p>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
                     {s.bullets.map((b) => (
-                      <li key={b} className="flex items-start gap-2 text-sm">
-                        <CheckCircle2 className="w-5 h-5 text-accent shrink-0 mt-0.5" />
+                      <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
+                        <CheckCircle2 className="w-5 h-5 text-gray-700 shrink-0 mt-0.5" />
                         <span>{b}</span>
                       </li>
                     ))}
                   </ul>
                   <Link to="/contact">
-                    <Button variant="accent" className="mt-2">
-                      Request a quote
-                      <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
+                    <span className="inline-flex items-center gap-3 rounded-full bg-gray-900 text-white pl-6 pr-1 py-1 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] mt-2">
+                      <span>Request a quote</span>
+                      <span className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                        <ArrowRight className="w-4 h-4" />
+                      </span>
+                    </span>
                   </Link>
                 </div>
               </motion.div>
@@ -147,19 +147,21 @@ const ServicesPage = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-20 gradient-primary">
+      <section className="py-20 bg-gray-900">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-display text-3xl font-bold text-primary-foreground mb-4">
+          <h2 className="font-display text-3xl font-bold text-white mb-4 tracking-tight">
             Not sure which service you need?
           </h2>
-          <p className="text-primary-foreground/70 mb-8 max-w-md mx-auto">
+          <p className="text-white/60 mb-8 max-w-md mx-auto">
             Our logistics experts will design a custom multimodal route for your shipment.
           </p>
           <Link to="/contact">
-            <Button variant="hero" size="lg">
-              Talk to an expert
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
+            <span className="inline-flex items-center gap-3 rounded-full bg-white text-gray-900 pl-6 pr-1 py-1 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-white/90 active:scale-[0.97]">
+              <span>Talk to an expert</span>
+              <span className="w-8 h-8 rounded-full bg-black/5 flex items-center justify-center">
+                <ArrowRight className="w-4 h-4" />
+              </span>
+            </span>
           </Link>
         </div>
       </section>
