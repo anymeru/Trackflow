@@ -17,20 +17,19 @@ services:
 
   backend:
     build:
-      context: ./server
-      dockerfile: Dockerfile
+      context: ./backend
     depends_on:
       db:
         condition: service_healthy
     environment:
       DATABASE_URL: "postgresql://trackconnect:trackconnect@db:5432/track_connect?schema=public"
-      JWT_SECRET: "docker-secret-change-in-production"
+      JWT_SECRET: "tc-prod-jwt-secret-replace-with-random-64-char-string"
       PORT: "3001"
-      SMTP_HOST: "smtp.example.com"
+      SMTP_HOST: "smtp-relay.brevo.com"
       SMTP_PORT: "587"
-      SMTP_USER: ""
-      SMTP_PASS: ""
-      SMTP_FROM: "track-connect@example.com"
+      SMTP_USER: "b36f9a001@smtp-brevo.com"
+      SMTP_PASS: "xsmtpsib-9c7048a77553ca7acbac42585eca5684fec20bfa3863b79e0d17679cbc259fb2-yIL1r0hwHmjVedZJ"
+      SMTP_FROM: "noreply@trace-logistics.com"
       ADMIN_PHONE: "+237 XXX XXX XXX"
       ADMIN_TELEGRAM: "+237 XXX XXX XXX"
       NOMINATIM_BASE_URL: "https://nominatim.openstreetmap.org"
@@ -41,8 +40,7 @@ services:
 
   frontend:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ./frontend
     depends_on:
       - backend
     ports:
