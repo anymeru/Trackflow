@@ -7,11 +7,11 @@ import RecentTrackings, { addRecentTracking } from "@/components/tracking/Recent
 import { getPublicTracking, Tracking } from "@/api/trackings";
 import { Search, Truck, MapPin, Shield, ArrowRight, Clock, Globe, Plane, Ship, Globe2, CheckCircle2, Quote } from "lucide-react";
 import { motion } from "framer-motion";
-import heroImg from "@/assets/hero-freight.jpg.asset.json";
-import airImg from "@/assets/service-air.jpg.asset.json";
-import seaImg from "@/assets/service-sea.jpg.asset.json";
-import roadImg from "@/assets/service-road.jpg.asset.json";
-import ieImg from "@/assets/service-import-export.jpg.asset.json";
+const heroImg = { url: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?w=1920&q=80" };
+const airImg = { url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80" };
+const seaImg = { url: "https://images.unsplash.com/photo-1712578585447-2bab142270b0?w=800&q=80" };
+const roadImg = { url: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&q=80" };
+const ieImg = { url: "https://images.unsplash.com/photo-1759389003827-2a214e4c73b4?w=800&q=80" };
 
 const springEase = [0.32, 0.72, 0, 1] as const;
 

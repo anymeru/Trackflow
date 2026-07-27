@@ -2,7 +2,7 @@ import Navbar from "@/components/layout/Navbar";
 import { Link } from "react-router-dom";
 import { Target, Eye, Heart, Users, Globe2, Award, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import heroImg from "@/assets/hero-freight.jpg.asset.json";
+const heroImg = { url: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=1920&q=80" };
 
 const values = [
   { icon: Target, title: "Precision", desc: "Every shipment tracked to the minute, every document filed to the letter." },

@@ -2,10 +2,10 @@ import Navbar from "@/components/layout/Navbar";
 import { Link } from "react-router-dom";
 import { Plane, Ship, Truck, Globe2, ArrowRight, CheckCircle2 } from "lucide-react";
 import { motion } from "framer-motion";
-import airImg from "@/assets/service-air.jpg.asset.json";
-import seaImg from "@/assets/service-sea.jpg.asset.json";
-import roadImg from "@/assets/service-road.jpg.asset.json";
-import ieImg from "@/assets/service-import-export.jpg.asset.json";
+const airImg = { url: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&q=80" };
+const seaImg = { url: "https://images.unsplash.com/photo-1712578585447-2bab142270b0?w=800&q=80" };
+const roadImg = { url: "https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?w=800&q=80" };
+const ieImg = { url: "https://images.unsplash.com/photo-1759389003827-2a214e4c73b4?w=800&q=80" };
 
 const services = [
   {
