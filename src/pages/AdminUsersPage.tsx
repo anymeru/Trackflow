@@ -38,9 +38,9 @@ import {
 } from "lucide-react";
 
 const ROLE_BADGES: Record<string, string> = {
-  admin: "bg-destructive text-destructive-foreground",
-  operator: "bg-warning text-warning-foreground",
-  client: "bg-accent text-accent-foreground",
+  admin: "bg-[#ff6b6b]/10 text-[#ff6b6b] border-0",
+  operator: "bg-[#f59e0b]/10 text-warning border-0",
+  client: "bg-[#00b4d8]/10 text-[#00b4d8] border-0",
 };
 
 const ROLE_LABELS: Record<string, string> = {
@@ -112,13 +112,13 @@ export default function AdminUsersPage() {
   return (
     <DashboardLayout role="admin">
       <div className="p-6 space-y-6">
-        <div className="flex items-center justify-between">
-          <h1 className="font-display text-2xl font-bold flex items-center gap-2">
-            <Users className="w-6 h-6 text-accent" />
-            Users
-          </h1>
+        {/* Header */}
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">Users</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage administrators, operators, and clients</p>
         </div>
 
+        {/* Filters */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -142,23 +142,30 @@ export default function AdminUsersPage() {
           </Select>
         </div>
 
-        <Card>
-          <div className="divide-y divide-border">
+        {/* User list */}
+        <Card className="border-border/50 overflow-hidden">
+          <div className="divide-y divide-border/30">
+            {filtered.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                <UserCog className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                <p className="text-sm">No users found</p>
+              </div>
+            )}
             {filtered.map((user) => (
               <div
                 key={user.id}
-                className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors cursor-pointer"
+                className="px-5 py-3.5 flex items-center justify-between hover:bg-muted/20 transition-colors cursor-pointer"
                 onClick={() => { setSelectedUser(user); setDetailOpen(true); }}
               >
-                <div className="flex items-center gap-4 min-w-0">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
-                    <span className="font-display font-bold text-sm">
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="w-9 h-9 rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/50">
+                    <span className="font-display font-bold text-xs text-muted-foreground">
                       {user.name.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div className="min-w-0">
-                    <p className="font-medium text-sm truncate">{user.name}</p>
-                    <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
+                    <p className="text-sm font-medium truncate">{user.name}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
                       <span className="flex items-center gap-1">
                         <Mail className="w-3 h-3" />
                         {user.email}
@@ -169,23 +176,11 @@ export default function AdminUsersPage() {
                           {user.phone}
                         </span>
                       )}
-                      <span className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {new Date(user.createdAt).toLocaleDateString("fr-FR")}
-                      </span>
-                      {user._count && (
-                        <span className="flex items-center gap-1">
-                          <MessageSquare className="w-3 h-3" />
-                          {user._count.messages} messages
-                        </span>
-                      )}
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <Badge
-                    className={`${ROLE_BADGES[user.role] || "bg-muted text-muted-foreground"} border-0`}
-                  >
+                <div className="flex items-center gap-2 shrink-0 ml-3">
+                  <Badge className={ROLE_BADGES[user.role] || "bg-muted text-muted-foreground border-0"}>
                     {ROLE_LABELS[user.role] || user.role}
                   </Badge>
                   <Button
@@ -193,6 +188,7 @@ export default function AdminUsersPage() {
                     size="icon"
                     onClick={(e) => { e.stopPropagation(); handleEdit(user); }}
                     title="Change role"
+                    className="text-muted-foreground hover:text-foreground"
                   >
                     <Shield className="w-4 h-4" />
                   </Button>
@@ -200,7 +196,7 @@ export default function AdminUsersPage() {
                     variant="ghost"
                     size="icon"
                     onClick={(e) => { e.stopPropagation(); handleDelete(user); }}
-                    className="text-destructive hover:text-destructive"
+                    className="text-muted-foreground hover:text-destructive"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -208,12 +204,6 @@ export default function AdminUsersPage() {
                 </div>
               </div>
             ))}
-            {filtered.length === 0 && (
-              <div className="p-8 text-center text-muted-foreground">
-                <UserCog className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                <p>No users found</p>
-              </div>
-            )}
           </div>
         </Card>
       </div>
@@ -226,8 +216,8 @@ export default function AdminUsersPage() {
           {selectedUser && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center shrink-0">
-                  <span className="font-display font-bold text-xl">
+                <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center shrink-0 ring-1 ring-border/50">
+                  <span className="font-display font-bold text-xl text-muted-foreground">
                     {selectedUser.name.charAt(0).toUpperCase()}
                   </span>
                 </div>

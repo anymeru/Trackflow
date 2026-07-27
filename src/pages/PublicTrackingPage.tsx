@@ -5,8 +5,8 @@ import StatusBadge from "@/components/tracking/StatusBadge";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import TrackingTimeline from "@/components/tracking/TrackingTimeline";
 import ETABlock from "@/components/tracking/ETABlock";
-import { getPublicTracking } from "@/api/trackings";
-import { MapPin, Truck, Package } from "lucide-react";
+import { getPublicTracking, computeProgress } from "@/api/trackings";
+import { MapPin, Truck } from "lucide-react";
 
 const PublicTrackingPage = () => {
   const { id } = useParams();
@@ -42,10 +42,8 @@ const PublicTrackingPage = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-            <Package className="w-4 h-4 text-accent-foreground" />
-          </div>
-          <span className="font-display font-bold text-lg">TrackFlow</span>
+          <img src="/trace-logo.svg" alt="TRACE" className="h-8" />
+          <span className="font-display font-bold text-lg tracking-wide">TRACE</span>
         </div>
       </header>
 
@@ -62,6 +60,7 @@ const PublicTrackingPage = () => {
           <ETABlock
             eta={tracking.eta ?? null}
             status={tracking.status}
+            progressPercent={computeProgress(tracking)}
             originAddress={tracking.originAddress ?? undefined}
             destinationAddress={tracking.destinationAddress ?? undefined}
           />
@@ -98,7 +97,7 @@ const PublicTrackingPage = () => {
         </Card>
 
         <p className="text-xs text-center text-muted-foreground pb-4">
-          Tracking provided by TrackFlow • This link is valid for a limited time
+          Tracking provided by TRACE • This link is valid for a limited time
         </p>
       </main>
     </div>

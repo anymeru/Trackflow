@@ -25,7 +25,8 @@ import AdminMessagesPage from "./pages/AdminMessagesPage";
 import ClientTrackingsPage from "./pages/ClientTrackingsPage";
 import ProfilePage from "./pages/ProfilePage";
 import PublicTrackingPage from "./pages/PublicTrackingPage";
-import EmailPreviewPage from "./pages/EmailPreviewPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,7 +48,8 @@ const App = () => (
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/track" element={<TrackShipmentPage />} />
               <Route path="/track/:id" element={<PublicTrackingPage />} />
-              <Route path="/email-preview" element={<EmailPreviewPage />} />
+              <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
 
               <Route
                 path="/dashboard"

@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { getSettings } from "@/api/settings";
 import Navbar from "@/components/layout/Navbar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import StatusBadge from "@/components/tracking/StatusBadge";
 import StatusGuide from "@/components/tracking/StatusGuide";
 import RecentTrackings, { addRecentTracking } from "@/components/tracking/RecentTrackings";
 import { getPublicTracking, Tracking } from "@/api/trackings";
-import { Search, Package, Truck, MapPin, Shield, ArrowRight, Clock, Globe, Plane, Ship, Globe2, CheckCircle2, Quote } from "lucide-react";
+import { Search, Truck, MapPin, Shield, ArrowRight, Clock, Globe, Plane, Ship, Globe2, CheckCircle2, Quote } from "lucide-react";
 import { motion } from "framer-motion";
 import heroImg from "@/assets/hero-freight.jpg.asset.json";
 import airImg from "@/assets/service-air.jpg.asset.json";
@@ -22,7 +23,16 @@ const LandingPage = () => {
   const [notFoundNumbers, setNotFoundNumbers] = useState<string[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [searching, setSearching] = useState(false);
+  const [contactEmail, setContactEmail] = useState("hello@trace.tech");
+  const [contactPhone, setContactPhone] = useState("+33 1 84 88 42 00");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    getSettings().then((s) => {
+      if (s.supportEmail) setContactEmail(s.supportEmail);
+      if (s.supportPhone) setContactPhone(s.supportPhone);
+    }).catch(() => {});
+  }, []);
 
   const handleSearch = async () => {
     const numbers = trackingInput
@@ -80,7 +90,7 @@ const LandingPage = () => {
   ];
 
   const testimonials = [
-    { name: "Amélie Rousseau", role: "Head of Ops, Maison Verte", quote: "TrackFlow turned our shipping black box into a live dashboard. Support tickets dropped 60% in a month." },
+    { name: "Amélie Rousseau", role: "Head of Ops, Maison Verte", quote: "TRACE turned our shipping black box into a live dashboard. Support tickets dropped 60% in a month." },
     { name: "David Okonkwo", role: "Import Manager, Baobab Trading", quote: "Customs clearance used to be our worst headache. Their brokers handle everything — we just watch it move." },
     { name: "Yuki Tanaka", role: "Founder, Lumen Studio", quote: "The ETA accuracy is genuinely uncanny. Our clients trust us more because we finally trust our own timeline." },
   ];
@@ -273,7 +283,7 @@ const LandingPage = () => {
             viewport={{ once: true }}
             className="space-y-5"
           >
-            <p className="text-accent font-medium text-sm uppercase tracking-wider">Why TrackFlow</p>
+            <p className="text-accent font-medium text-sm uppercase tracking-wider">Why TRACE</p>
             <h2 className="font-display text-3xl md:text-4xl font-bold">
               Old-school reliability, modern visibility
             </h2>
@@ -392,12 +402,17 @@ const LandingPage = () => {
         <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg gradient-accent flex items-center justify-center">
-                <Package className="w-4 h-4 text-accent-foreground" />
-              </div>
-              <span className="font-display font-bold">TrackFlow</span>
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="32" height="32" rx="6" fill="#00b4d8"/>
+                <rect x="11" y="6" width="4" height="20" rx="1" fill="white"/>
+                <rect x="7" y="6" width="14" height="4" rx="1" fill="white"/>
+                <path d="M 13,12 Q 15,11 15,14 Q 15,16 13,17" stroke="#00b4d8" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                <circle cx="20" cy="18" r="2.5" fill="#ff6b6b"/>
+                <circle cx="20" cy="18" r="1" fill="white"/>
+              </svg>
+              <span className="font-display font-bold">TRACE</span>
             </div>
-            <p className="text-sm text-muted-foreground">Freight forwarding & live tracking, everywhere.</p>
+            <p className="text-sm text-muted-foreground">Enterprise tracking — everything in view.</p>
           </div>
           <div>
             <p className="font-display font-semibold mb-3 text-sm">Services</p>
@@ -419,14 +434,14 @@ const LandingPage = () => {
           <div>
             <p className="font-display font-semibold mb-3 text-sm">Get in touch</p>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>hello@trackflow.com</li>
-              <li>+33 1 84 88 42 00</li>
+              <li>{contactEmail}</li>
+              <li>{contactPhone}</li>
               <li>Paris · Rotterdam · Lagos</li>
             </ul>
           </div>
         </div>
         <div className="container mx-auto px-4 mt-10 pt-6 border-t border-border text-sm text-muted-foreground text-center">
-          © 2026 TrackFlow. All rights reserved.
+          © 2026 TRACE. All rights reserved.
         </div>
       </footer>
     </div>

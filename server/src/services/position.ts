@@ -4,41 +4,6 @@ import { sendStatusEmail } from "./email";
 import { getIO } from "../socket";
 import { isMovingStatus, isFreezingStatus, isTerminalStatus } from "./status";
 
-export async function advancePosition(
-  trackingId: string,
-  progressPercent: number
-): Promise<void> {
-  const tracking = await prisma.tracking.findUnique({ where: { id: trackingId } });
-  if (!tracking) return;
-
-  const frac = Math.min(Math.max(progressPercent / 100, 0), 1);
-
-  const newLat = tracking.originLat + (tracking.destLat - tracking.originLat) * frac;
-  const newLng = tracking.originLng + (tracking.destLng - tracking.originLng) * frac;
-
-  const { eta } = await calculateEta(
-    newLat,
-    newLng,
-    tracking.destLat,
-    tracking.destLng,
-    tracking.avgSpeedKmh
-  );
-
-  await prisma.tracking.update({
-    where: { id: trackingId },
-    data: { currentLat: newLat, currentLng: newLng, eta },
-  });
-
-  const io = getIO();
-  io.to(`tracking:${trackingId}`).emit("tracking:updated", {
-    trackingId,
-    status: tracking.status,
-    currentLat: newLat,
-    currentLng: newLng,
-    eta: eta.toISOString(),
-  });
-}
-
 let simulationInterval: ReturnType<typeof setInterval> | null = null;
 
 export function startPositionSimulation(intervalMs = 10000): void {

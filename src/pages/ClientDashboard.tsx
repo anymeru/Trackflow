@@ -13,10 +13,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import StatusBadge from "@/components/tracking/StatusBadge";
-import AnimatedStatCard from "@/components/tracking/AnimatedStatCard";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import { getTrackings } from "@/api/trackings";
-import { Package, Truck, CheckCircle, AlertTriangle, Eye, Search } from "lucide-react";
+import { Package, Truck, CheckCircle, AlertTriangle, Eye, Search, Activity, MapPin } from "lucide-react";
 
 export default function ClientDashboard() {
   const navigate = useNavigate();
@@ -48,43 +47,69 @@ export default function ClientDashboard() {
   return (
     <DashboardLayout role="client">
       <div className="p-6 space-y-6">
-        <h1 className="font-display text-2xl font-bold">Dashboard</h1>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <AnimatedStatCard
-            icon={<Package className="w-6 h-6" />}
-            value={trackings.length}
-            label="Total"
-            iconColor="text-info"
-            delay={0}
-          />
-          <AnimatedStatCard
-            icon={<Truck className="w-6 h-6" />}
-            value={inTransit}
-            label="In Transit"
-            iconColor="text-cyan-500"
-            delay={0.1}
-          />
-          <AnimatedStatCard
-            icon={<CheckCircle className="w-6 h-6" />}
-            value={delivered}
-            label="Delivered"
-            iconColor="text-success"
-            delay={0.2}
-          />
-          <AnimatedStatCard
-            icon={<AlertTriangle className="w-6 h-6" />}
-            value={delayed}
-            label="Attention"
-            iconColor="text-destructive"
-            delay={0.3}
-          />
+        {/* Header */}
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">Dashboard</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Your shipments at a glance</p>
         </div>
 
-        <Card className="overflow-hidden">
-          <div className="p-4 border-b border-border space-y-3">
+        {/* Stat cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/10 flex items-center justify-center">
+                <Activity className="w-5 h-5 text-[#00b4d8]" />
+              </div>
+              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Total</span>
+            </div>
+            <p className="text-2xl font-display font-bold tracking-tight">{trackings.length}</p>
+            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#00b4d8]/40" />
+            <p className="text-xs text-muted-foreground mt-2">Shipments</p>
+          </Card>
+          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-[#00b4d8]/10 flex items-center justify-center">
+                <Truck className="w-5 h-5 text-[#00b4d8]" />
+              </div>
+              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Active</span>
+            </div>
+            <p className="text-2xl font-display font-bold tracking-tight">{inTransit}</p>
+            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#00b4d8]/40" />
+            <p className="text-xs text-muted-foreground mt-2">In transit</p>
+          </Card>
+          <Card className="p-5 bg-card border-border/50 hover:border-accent/20 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-[#4ecdc4]/10 flex items-center justify-center">
+                <CheckCircle className="w-5 h-5 text-[#4ecdc4]" />
+              </div>
+              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Done</span>
+            </div>
+            <p className="text-2xl font-display font-bold tracking-tight">{delivered}</p>
+            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#4ecdc4]/40" />
+            <p className="text-xs text-muted-foreground mt-2">Delivered</p>
+          </Card>
+          <Card className="p-5 bg-card border-border/50 hover:border-destructive/20 transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-lg bg-[#ff6b6b]/10 flex items-center justify-center">
+                <AlertTriangle className="w-5 h-5 text-[#ff6b6b]" />
+              </div>
+              <span className="text-[10px] text-muted-foreground/50 tracking-wider uppercase">Alerts</span>
+            </div>
+            <p className="text-2xl font-display font-bold tracking-tight">{delayed}</p>
+            <div className="mt-1.5 w-8 h-0.5 rounded-full bg-[#ff6b6b]/40" />
+            <p className="text-xs text-muted-foreground mt-2">Needs attention</p>
+          </Card>
+        </div>
+
+        {/* Tracking list */}
+        <Card className="border-border/50 overflow-hidden">
+          <div className="px-5 py-4 border-b border-border/50 space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold">My Packages ({trackings.length})</h2>
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+                <h2 className="font-display font-semibold text-sm">My Shipments</h2>
+                <span className="text-xs text-muted-foreground">({trackings.length})</span>
+              </div>
             </div>
             <div className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
@@ -114,35 +139,42 @@ export default function ClientDashboard() {
               </Select>
             </div>
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border/30">
             {filtered.length === 0 && (
               <div className="p-8 text-center text-muted-foreground">
                 <Package className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                <p>No packages found</p>
+                <p className="text-sm">No packages found</p>
               </div>
             )}
-            {filtered.map((t) => (
+            {filtered.map((t, i) => (
               <div
                 key={t.id}
-                className="p-4 flex items-center justify-between hover:bg-muted/50 cursor-pointer transition-all duration-300 hover:shadow-md border-l-4 border-l-transparent hover:border-l-accent"
+                className="px-5 py-3.5 flex items-center justify-between hover:bg-muted/20 cursor-pointer transition-colors"
                 onClick={() => navigate(`/dashboard/tracking/${t.id}`)}
               >
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm truncate">{t.clientName}</p>
-                    <span className="text-xs text-muted-foreground font-mono">{t.trackingNumber}</span>
+                <div className="flex items-center gap-3 min-w-0 flex-1">
+                  <div className="flex flex-col items-center gap-0.5 shrink-0">
+                    <div className={`w-1.5 h-1.5 rounded-full ${i === 0 ? 'bg-[#00b4d8]' : 'bg-border'}`} />
+                    {i < filtered.length - 1 && <div className="w-px h-4 bg-border/30" />}
                   </div>
-                  <p className="text-xs text-muted-foreground truncate mt-0.5">
-                    {t.originAddress || ""}{t.originAddress && t.destinationAddress ? " → " : ""}{t.destinationAddress || ""}
-                    {t.eta ? ` • ETA: ${new Date(t.eta).toLocaleDateString("fr-FR")}` : ""}
-                  </p>
-                  {t.packageDescription && (
-                    <p className="text-xs text-muted-foreground mt-0.5">{t.packageDescription}{t.weight ? ` (${t.weight} kg)` : ""}</p>
-                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm font-medium truncate">{t.clientName}</p>
+                      <span className="text-xs text-muted-foreground font-mono shrink-0">{t.trackingNumber}</span>
+                    </div>
+                    <p className="text-xs text-muted-foreground truncate mt-0.5">
+                      <MapPin className="w-3 h-3 inline mr-0.5" />
+                      {t.originAddress || ""}{t.originAddress && t.destinationAddress ? " → " : ""}{t.destinationAddress || ""}
+                      {t.eta ? ` · ETA: ${new Date(t.eta).toLocaleDateString("fr-FR")}` : ""}
+                    </p>
+                    {t.packageDescription && (
+                      <p className="text-xs text-muted-foreground mt-0.5">{t.packageDescription}{t.weight ? ` (${t.weight} kg)` : ""}</p>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-4">
                   <StatusBadge status={t.status} />
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
                     <Eye className="w-4 h-4" />
                   </Button>
                 </div>
@@ -151,10 +183,14 @@ export default function ClientDashboard() {
           </div>
         </Card>
 
+        {/* Map */}
         {filtered.length > 0 && (
-          <Card className="overflow-hidden">
-            <div className="p-4 border-b border-border">
-              <h2 className="font-display font-semibold">Map</h2>
+          <Card className="border-border/50 overflow-hidden">
+            <div className="px-5 py-4 border-b border-border/50">
+              <div className="flex items-center gap-2">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+                <h2 className="font-display font-semibold text-sm">Map</h2>
+              </div>
             </div>
             <div className="h-[300px]">
               <TrackingMap items={filtered} showRoute={false} />

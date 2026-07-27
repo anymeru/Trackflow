@@ -5,16 +5,38 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Package } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", password: "", confirmPassword: "" });
   const [accepted, setAccepted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { register } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    navigate("/dashboard");
+    if (form.password !== form.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await register(form.email, form.password, form.name, form.phone);
+      toast.success("Account created successfully");
+      if (res.user.role === "admin") navigate("/admin");
+      else if (res.user.role === "operator") navigate("/operator");
+      else navigate("/dashboard");
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === "object" && "response" in err
+          ? (err as { response: { data: { error: string } } }).response?.data?.error
+          : "Registration error";
+      toast.error(msg || "Registration error");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -26,10 +48,8 @@ const RegisterPage = () => {
       <Card className="w-full max-w-md p-8 relative z-10 animate-slide-up">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center">
-              <Package className="w-5 h-5 text-accent-foreground" />
-            </div>
-            <span className="font-display text-2xl font-bold">TrackFlow</span>
+            <img src="/trace-logo.svg" alt="TRACE" className="h-10" />
+            <span className="font-display text-2xl font-bold tracking-wide">TRACE</span>
           </Link>
           <h1 className="font-display text-2xl font-bold">Create Account</h1>
           <p className="text-muted-foreground text-sm mt-1">Start tracking your shipments</p>
@@ -62,8 +82,8 @@ const RegisterPage = () => {
               I accept the <a href="#" className="text-accent hover:underline">terms and conditions</a>
             </label>
           </div>
-          <Button type="submit" variant="accent" className="w-full" size="lg" disabled={!accepted}>
-            Create my account
+          <Button type="submit" variant="accent" className="w-full" size="lg" disabled={!accepted || loading}>
+            {loading ? "Creating account..." : "Create my account"}
           </Button>
         </form>
 

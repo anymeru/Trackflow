@@ -121,6 +121,7 @@ export interface Conversation {
   unreadCount: number;
   clientName: string;
   messages: Message[];
+  type?: "support" | "dispute";
 }
 
 export interface User {
@@ -431,9 +432,9 @@ export const mockUsers: User[] = [
   { id: "user1", name: "Jean Dupont", email: "jean@example.com", phone: "+33 6 12 34 56 78", role: "client", active: true, createdAt: "2024-01-15" },
   { id: "user2", name: "Dr. Laurent", email: "laurent@hospital.fr", phone: "+33 6 98 76 54 32", role: "client", active: true, createdAt: "2024-02-20" },
   { id: "user3", name: "Sophie Martin", email: "sophie@example.com", role: "client", active: true, createdAt: "2024-03-01" },
-  { id: "op1", name: "Marie Support", email: "marie@trackflow.com", role: "operator", active: true, createdAt: "2023-12-01" },
-  { id: "op2", name: "Pierre Duval", email: "pierre@trackflow.com", role: "operator", active: true, createdAt: "2024-01-10" },
-  { id: "admin1", name: "Admin Principal", email: "admin@trackflow.com", role: "admin", active: true, createdAt: "2023-11-01" },
+  { id: "op1", name: "Marie Support", email: "marie@trace.tech", role: "operator", active: true, createdAt: "2023-12-01" },
+  { id: "op2", name: "Pierre Duval", email: "pierre@trace.tech", role: "operator", active: true, createdAt: "2024-01-10" },
+  { id: "admin1", name: "Admin Principal", email: "admin@trace.tech", role: "admin", active: true, createdAt: "2023-11-01" },
 ];
 
 export const mockIncidents: Incident[] = [

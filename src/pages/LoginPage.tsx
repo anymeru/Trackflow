@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Package, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
@@ -45,10 +45,8 @@ const LoginPage = () => {
       <Card className="w-full max-w-md p-8 relative z-10 animate-slide-up">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center">
-              <Package className="w-5 h-5 text-accent-foreground" />
-            </div>
-            <span className="font-display text-2xl font-bold">TrackFlow</span>
+            <img src="/trace-logo.svg" alt="TRACE" className="h-10" />
+            <span className="font-display text-2xl font-bold tracking-wide">TRACE</span>
           </Link>
           <h1 className="font-display text-2xl font-bold">Sign In</h1>
           <p className="text-muted-foreground text-sm mt-1">Access your tracking dashboard</p>

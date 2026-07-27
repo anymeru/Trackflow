@@ -8,6 +8,7 @@ import { param } from "../utils/params";
 import { geocodeAddress } from "../services/geocode";
 import { calculateEta } from "../services/eta";
 import { changeStatusAndNotify } from "../services/position";
+import { getIO } from "../socket";
 
 const router = Router();
 
@@ -37,7 +38,8 @@ router.get("/", auth, async (req: Request, res: Response) => {
 
   if (req.user!.role === "client") {
     const user = await prisma.user.findUnique({ where: { id: req.user!.userId } });
-    if (user) where.clientEmail = user.email;
+    if (!user) throw notFound("User not found");
+    where.clientEmail = user.email;
   }
 
   if (status && typeof status === "string") {
@@ -239,7 +241,7 @@ router.patch(
       data: { currentLat: newLat, currentLng: newLng, eta },
     });
 
-    const io = (await import("../socket")).getIO();
+    const io = getIO();
     io.to(`tracking:${id}`).emit("tracking:updated", {
       trackingId: id,
       status: tracking.status,

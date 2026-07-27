@@ -1,3 +1,4 @@
+import "express-async-errors";
 import express from "express";
 import cors from "cors";
 import http from "http";
@@ -15,11 +16,13 @@ import disputeRoutes from "./routes/disputes";
 import notificationRoutes from "./routes/notifications";
 import userRoutes from "./routes/users";
 import conversationRoutes from "./routes/conversations";
+import contactRoutes from "./routes/contact";
+import settingsRoutes from "./routes/settings";
 
 const app = express();
 const server = http.createServer(app);
 
-app.use(cors());
+app.use(cors({ origin: config.corsOrigin, credentials: true }));
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
@@ -31,6 +34,8 @@ app.use("/api/trackings/:id/disputes", disputeRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/conversations", conversationRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/settings", settingsRoutes);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

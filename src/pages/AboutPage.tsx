@@ -34,7 +34,7 @@ const AboutPage = () => {
         <div className="container mx-auto px-4 relative z-10 max-w-3xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="inline-block bg-accent/20 border border-accent/30 rounded-full px-4 py-1.5 text-sm text-accent-foreground mb-6">
-              About TrackFlow
+              About TRACE
             </span>
             <h1 className="font-display text-4xl md:text-6xl font-bold text-primary-foreground leading-tight">
               Moving what matters, <span className="text-gradient-accent">everywhere</span>
@@ -58,7 +58,7 @@ const AboutPage = () => {
           </div>
           <div className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              TrackFlow was born in 2010 out of a simple frustration: shippers were flying blind. Cargo would leave
+              TRACE was born in 2010 out of a simple frustration: shippers were flying blind. Cargo would leave
               a warehouse and reappear only when it arrived — or when something went wrong.
             </p>
             <p>

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import prisma from "../utils/prisma";
 import { auth } from "../middleware/auth";
+import { notFound } from "../utils/errors";
 
 const STATUS_LABELS: Record<string, string> = {
   in_transit: "In Transit",
@@ -83,7 +84,8 @@ router.patch("/read-all", auth, async (req: Request, res: Response) => {
 
   if (userRole === "client") {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (user) where.clientEmail = user.email;
+    if (!user) throw notFound("User not found");
+    where.clientEmail = user.email;
   }
 
   const trackings = await prisma.tracking.findMany({

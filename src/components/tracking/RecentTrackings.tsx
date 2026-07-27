@@ -10,7 +10,7 @@ export interface RecentTracking {
   timestamp: number;
 }
 
-const STORAGE_KEY = "trackflow_recent_trackings";
+const STORAGE_KEY = "trace_recent_trackings";
 const MAX_ITEMS = 5;
 
 export const addRecentTracking = (item: Omit<RecentTracking, "timestamp">) => {

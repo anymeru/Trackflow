@@ -3,10 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 import ChatBox from "@/components/messaging/ChatBox";
 import { getConversations, getMessages, sendMessage } from "@/api/conversations";
 import { markMessagesAsRead } from "@/api/messages";
-import { MessageSquare, Search } from "lucide-react";
+import { getDisputes, resolveDispute, Dispute } from "@/api/disputes";
+import { MessageSquare, Search, AlertTriangle, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 
 const priorityColors: Record<string, string> = {
@@ -33,6 +37,38 @@ export default function AdminMessagesPage() {
     queryFn: () => getMessages(selectedId!),
     enabled: !!selectedId,
     refetchInterval: 5000,
+  });
+
+  const [resolveResponse, setResolveResponse] = useState("");
+
+  const { data: trackingDisputes = [] } = useQuery({
+    queryKey: ["tracking-disputes", selectedConv?.trackingId],
+    queryFn: () => getDisputes(selectedConv!.trackingId),
+    enabled: !!selectedConv && selectedConv?.type === "dispute",
+  });
+
+  const openDispute: Dispute | undefined = trackingDisputes.find(
+    (d) => d.status === "open"
+  );
+
+  const resolveMutation = useMutation({
+    mutationFn: async () => {
+      if (!openDispute) return;
+      await resolveDispute(openDispute.id, resolveResponse);
+      await sendMessage(selectedId!, `✅ Dispute resolved: ${resolveResponse}`);
+    },
+    onSuccess: () => {
+      toast.success("Dispute resolved");
+      setResolveResponse("");
+      queryClient.invalidateQueries({
+        queryKey: ["tracking-disputes", selectedConv?.trackingId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["conversation-messages", selectedId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+    },
+    onError: () => toast.error("Failed to resolve dispute"),
   });
 
   const sendMutation = useMutation({
@@ -100,10 +136,16 @@ export default function AdminMessagesPage() {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground font-mono">{conv.trackingNumber}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-muted-foreground">{conv.clientName}</span>
-                  <Badge className={`${priorityColors[conv.priority]} border-0 text-[10px]`}>{conv.priority}</Badge>
-                </div>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-xs text-muted-foreground">{conv.clientName}</span>
+                    <Badge className={`${priorityColors[conv.priority]} border-0 text-[10px]`}>{conv.priority}</Badge>
+                    {conv.type === "dispute" && (
+                      <Badge className="bg-destructive/10 text-destructive border-0 text-[10px] flex items-center gap-1">
+                        <AlertTriangle className="w-3 h-3" />
+                        Dispute
+                      </Badge>
+                    )}
+                  </div>
                 <p className="text-xs text-muted-foreground truncate mt-1">{conv.lastMessage}</p>
               </button>
             ))}
@@ -124,6 +166,47 @@ export default function AdminMessagesPage() {
                   <Badge className="bg-accent text-accent-foreground border-0">Open</Badge>
                 </div>
               </div>
+
+              {selectedConv.type === "dispute" && (
+                <Card className="mx-4 mt-4 p-4 border-destructive/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <AlertTriangle className="w-4 h-4 text-destructive" />
+                    <h4 className="font-semibold text-sm">Open Dispute</h4>
+                  </div>
+                  {openDispute ? (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">{openDispute.reason}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {openDispute.description}
+                      </p>
+                      <Textarea
+                        placeholder="Resolve by explaining your decision..."
+                        value={resolveResponse}
+                        onChange={(e) => setResolveResponse(e.target.value)}
+                        rows={2}
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => resolveMutation.mutate()}
+                        disabled={
+                          !resolveResponse.trim() || resolveMutation.isPending
+                        }
+                        className="w-full"
+                      >
+                        {resolveMutation.isPending
+                          ? "Resolving..."
+                          : "Resolve Dispute"}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm text-success">
+                      <CheckCircle className="w-4 h-4" />
+                      This dispute has been resolved.
+                    </div>
+                  )}
+                </Card>
+              )}
+
               <div className="flex-1 min-h-0">
                 <ChatBox
                   messages={chatMessages}

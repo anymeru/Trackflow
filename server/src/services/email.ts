@@ -77,6 +77,8 @@ function buildStatusEmail(
   return { subject, html };
 }
 
+const FREEZE_LABELS = ["Bloqué en douane", "Frais en attente", "Perdu"];
+
 export async function sendStatusEmail(
   trackingId: string,
   recipientEmail: string,
@@ -84,10 +86,7 @@ export async function sendStatusEmail(
   statusLabel: string,
   reason?: string
 ): Promise<void> {
-  const includeContact =
-    statusLabel === "customs_hold" ||
-    statusLabel === "fees_pending" ||
-    statusLabel === "lost";
+  const includeContact = FREEZE_LABELS.includes(statusLabel);
 
   const { subject, html } = buildStatusEmail(trackingNumber, statusLabel, reason, includeContact);
 

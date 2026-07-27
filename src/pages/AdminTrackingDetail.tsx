@@ -93,7 +93,7 @@ function ChatPanel({
           <div
             key={msg.id}
             className={`p-2 rounded-lg text-sm ${
-              msg.senderRole === "admin"
+              msg.senderRole === "admin" || msg.senderRole === "operator"
                 ? "bg-primary/10 ml-4"
                 : "bg-muted mr-4"
             }`}
@@ -142,11 +142,16 @@ function DisputePanel({ trackingId }: { trackingId: string }) {
   });
 
   const resolve = useMutation({
-    mutationFn: (disputeId: string) => resolveDispute(disputeId, response),
+    mutationFn: async (disputeId: string) => {
+      const result = await resolveDispute(disputeId, response);
+      await sendMessage(trackingId, `✅ Dispute resolved: ${result.adminResponse}`);
+      return result;
+    },
     onSuccess: () => {
       toast.success("Dispute resolved");
       setResponse("");
       queryClient.invalidateQueries({ queryKey: ["disputes", trackingId] });
+      queryClient.invalidateQueries({ queryKey: ["messages", trackingId] });
     },
   });
 

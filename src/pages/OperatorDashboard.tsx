@@ -10,7 +10,7 @@ import OperatorFilters from "@/components/operator/OperatorFilters";
 import TrackingMap from "@/components/tracking/TrackingMap";
 import { getTrackings } from "@/api/trackings";
 import { getConversations } from "@/api/conversations";
-import { Package, MessageSquare, AlertTriangle, Eye, ChevronDown, ChevronUp, Flame, Clock, ShieldAlert } from "lucide-react";
+import { Package, MessageSquare, AlertTriangle, Eye, ChevronDown, ChevronUp, Flame, Clock, ShieldAlert, Activity, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 type PriorityLevel = "critical" | "at_risk" | "normal";
@@ -77,61 +77,91 @@ const OperatorDashboard = () => {
   return (
     <DashboardLayout role="operator">
       <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
-        <h1 className="font-display text-2xl font-bold">Operator Dashboard</h1>
+        {/* Header */}
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">Operations</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage active shipments and client support</p>
+        </div>
 
+        {/* Stat cards */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-          <Card className="p-4 flex items-center gap-3">
-            <Package className="w-7 h-7 text-accent" />
-            <div>
-              <p className="text-xl font-display font-bold">{activeCount}</p>
-              <p className="text-[11px] text-muted-foreground">Active</p>
+          <Card className="p-4 bg-card border-border/50 hover:border-accent/20 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#00b4d8]/10 flex items-center justify-center shrink-0">
+                <Activity className="w-4 h-4 text-[#00b4d8]" />
+              </div>
+              <div>
+                <p className="text-xl font-display font-bold tracking-tight">{activeCount}</p>
+                <p className="text-[11px] text-muted-foreground">Active</p>
+              </div>
             </div>
           </Card>
-          <Card className="p-4 flex items-center gap-3">
-            <MessageSquare className="w-7 h-7 text-info" />
-            <div>
-              <p className="text-xl font-display font-bold">{openConversations}</p>
-              <p className="text-[11px] text-muted-foreground">Conversations</p>
+          <Card className="p-4 bg-card border-border/50 hover:border-accent/20 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#4ecdc4]/10 flex items-center justify-center shrink-0">
+                <MessageSquare className="w-4 h-4 text-[#4ecdc4]" />
+              </div>
+              <div>
+                <p className="text-xl font-display font-bold tracking-tight">{openConversations}</p>
+                <p className="text-[11px] text-muted-foreground">Conversations</p>
+              </div>
             </div>
           </Card>
-          <Card className="p-4 flex items-center gap-3">
-            <AlertTriangle className="w-7 h-7 text-destructive" />
-            <div>
-              <p className="text-xl font-display font-bold">{delayedCount}</p>
-              <p className="text-[11px] text-muted-foreground">Delayed</p>
+          <Card className="p-4 bg-card border-border/50 hover:border-destructive/20 transition-colors">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#ff6b6b]/10 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-4 h-4 text-[#ff6b6b]" />
+              </div>
+              <div>
+                <p className="text-xl font-display font-bold tracking-tight">{delayedCount}</p>
+                <p className="text-[11px] text-muted-foreground">Delayed</p>
+              </div>
             </div>
           </Card>
-          <Card className="p-4 flex items-center gap-3 border-destructive/30">
-            <Flame className="w-7 h-7 text-destructive" />
-            <div>
-              <p className="text-xl font-display font-bold">{criticalCount}</p>
-              <p className="text-[11px] text-muted-foreground">Critical</p>
+          <Card className="p-4 bg-card border-border/50 border-destructive/20">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#ff6b6b]/15 flex items-center justify-center shrink-0">
+                <Flame className="w-4 h-4 text-[#ff6b6b]" />
+              </div>
+              <div>
+                <p className="text-xl font-display font-bold tracking-tight">{criticalCount}</p>
+                <p className="text-[11px] text-muted-foreground">Critical</p>
+              </div>
             </div>
           </Card>
-          <Card className="p-4 flex items-center gap-3 border-warning/30">
-            <ShieldAlert className="w-7 h-7 text-warning" />
-            <div>
-              <p className="text-xl font-display font-bold">{atRiskCount}</p>
-              <p className="text-[11px] text-muted-foreground">At Risk</p>
+          <Card className="p-4 bg-card border-border/50 border-warning/20">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-[#f59e0b]/10 flex items-center justify-center shrink-0">
+                <ShieldAlert className="w-4 h-4 text-warning" />
+              </div>
+              <div>
+                <p className="text-xl font-display font-bold tracking-tight">{atRiskCount}</p>
+                <p className="text-[11px] text-muted-foreground">At Risk</p>
+              </div>
             </div>
           </Card>
         </div>
 
-        <Card className="overflow-hidden">
-          <div className="p-4 border-b border-border">
-            <h2 className="font-display font-semibold">Global Map</h2>
+        {/* Map */}
+        <Card className="border-border/50 overflow-hidden">
+          <div className="px-5 py-4 border-b border-border/50">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+              <h2 className="font-display font-semibold text-sm">Live Map</h2>
+            </div>
           </div>
-          <div className="h-[350px]">
+          <div className="h-[300px]">
             <TrackingMap items={filteredTrackings} onSelect={(id) => navigate(`/dashboard/tracking/${id}`)} />
           </div>
         </Card>
 
-        <Card>
-          <div className="p-4 border-b border-border space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="font-display font-semibold">
-                All Items ({sortedTrackings.length})
-              </h2>
+        {/* Tracking list */}
+        <Card className="border-border/50 overflow-hidden">
+          <div className="px-5 py-4 border-b border-border/50 space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#00b4d8]" />
+              <h2 className="font-display font-semibold text-sm">All Items</h2>
+              <span className="text-xs text-muted-foreground">({sortedTrackings.length})</span>
             </div>
             <OperatorFilters
               statusFilter={statusFilter}
@@ -144,7 +174,7 @@ const OperatorDashboard = () => {
               carriers={carriers}
             />
           </div>
-          <div className="divide-y divide-border">
+          <div className="divide-y divide-border/30">
             {sortedTrackings.length === 0 && (
               <div className="p-8 text-center text-muted-foreground text-sm">
                 No trackings match the selected filters.
@@ -156,27 +186,29 @@ const OperatorDashboard = () => {
               const PIcon = pConf.icon;
               return (
                 <div key={t.id}>
-                  <div className="p-4 flex items-center justify-between hover:bg-muted/50 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <PIcon className={`w-4 h-4 ${priority === "critical" ? "text-destructive" : priority === "at_risk" ? "text-warning" : "text-muted-foreground"}`} />
-                      <div>
-                        <p className="font-medium text-sm">{t.clientName}</p>
-                        <p className="text-xs text-muted-foreground">{t.trackingNumber} {t.carrierRef ? `• ${t.carrierRef}` : ""}</p>
+                  <div className="px-5 py-3 flex items-center justify-between hover:bg-muted/20 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                      <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                        priority === "critical" ? "bg-[#ff6b6b]" : priority === "at_risk" ? "bg-warning" : "bg-border"
+                      }`} />
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{t.clientName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{t.trackingNumber} {t.carrierRef ? `· ${t.carrierRef}` : ""}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0 ml-3">
                       <Badge className={`${pConf.color} border-0 text-[10px]`}>{pConf.label}</Badge>
                       <StatusBadge status={t.status} />
-                      <Button variant="ghost" size="sm" onClick={() => setExpandedId(expandedId === t.id ? null : t.id)}>
+                      <Button variant="ghost" size="sm" onClick={() => setExpandedId(expandedId === t.id ? null : t.id)} className="text-muted-foreground hover:text-foreground">
                         {expandedId === t.id ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </Button>
-                      <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/tracking/${t.id}`)}>
+                      <Button variant="ghost" size="sm" onClick={() => navigate(`/dashboard/tracking/${t.id}`)} className="text-muted-foreground hover:text-foreground">
                         <Eye className="w-4 h-4" />
                       </Button>
                     </div>
                   </div>
                   {expandedId === t.id && (
-                    <div className="px-4 pb-4">
+                    <div className="px-5 pb-4 pt-1">
                       <StatusChanger currentStatus={t.status} trackingNumber={t.trackingNumber} />
                     </div>
                   )}

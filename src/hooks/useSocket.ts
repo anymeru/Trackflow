@@ -8,7 +8,10 @@ export function useSocket(trackingIds: string[]) {
 
   useEffect(() => {
     if (!socketRef.current) {
-      socketRef.current = io(SOCKET_URL);
+      const token = localStorage.getItem("token");
+      socketRef.current = io(SOCKET_URL, {
+        auth: { token },
+      });
     }
 
     const socket = socketRef.current;

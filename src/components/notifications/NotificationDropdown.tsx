@@ -9,6 +9,7 @@ import { getConversations, markAllConversationsRead, Conversation } from "@/api/
 
 const typeIcons: Record<string, React.ReactNode> = {
   message: <MessageSquare className="w-4 h-4 text-info" />,
+  dispute: <AlertTriangle className="w-4 h-4 text-destructive" />,
 };
 
 const NotificationDropdown = () => {
@@ -34,6 +35,7 @@ const NotificationDropdown = () => {
       time: c.lastMessageTime,
       link: `/${window.location.pathname.includes("operator") ? "operator" : window.location.pathname.includes("admin") ? "admin" : "dashboard"}/messages`,
       read: false,
+      type: c.type,
     }));
 
   const timeAgo = (date: string) => {
@@ -82,7 +84,7 @@ const NotificationDropdown = () => {
                 className="w-full text-left p-3 flex gap-3 hover:bg-muted/50 transition-colors border-b border-border/50 last:border-0 bg-accent/5"
               >
                 <div className="shrink-0 mt-0.5">
-                  <MessageSquare className="w-4 h-4 text-info" />
+                  {typeIcons[notif.type || "message"] || typeIcons.message}
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="text-sm font-medium">{notif.title}</p>

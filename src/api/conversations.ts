@@ -12,6 +12,7 @@ export interface Conversation {
   lastMessage: string;
   lastMessageTime: string;
   unreadCount: number;
+  type?: "support" | "dispute";
 }
 
 export async function getConversations(): Promise<Conversation[]> {

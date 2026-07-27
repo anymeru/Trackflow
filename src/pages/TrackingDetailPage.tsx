@@ -24,6 +24,9 @@ import ChatBox from "@/components/messaging/ChatBox";
 import { getTracking, Tracking, computeProgress } from "@/api/trackings";
 import { getMessages, sendMessage, markMessagesAsRead, Message } from "@/api/messages";
 import { getDisputes, openDispute, Dispute } from "@/api/disputes";
+import { useAuth } from "@/context/AuthContext";
+import { Conversation } from "@/api/conversations";
+import { getSettings } from "@/api/settings";
 import {
   ArrowLeft, MapPin, Truck, Calendar, MessageSquare,
   Phone, Send, AlertTriangle, Smartphone,
@@ -34,6 +37,21 @@ const MESSAGING_STATUSES = ["delayed", "customs_hold", "fees_pending", "lost"];
 const WHATSAPP_STATUSES = ["customs_hold", "fees_pending", "lost"];
 
 function WhatsAppModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+  const [phone, setPhone] = useState("");
+  const [telegram, setTelegram] = useState("");
+
+  useEffect(() => {
+    if (open) {
+      getSettings().then((s) => {
+        setPhone(s.supportPhone || "Not configured");
+        setTelegram(s.supportPhone || "Not configured");
+      }).catch(() => {
+        setPhone("Not configured");
+        setTelegram("Not configured");
+      });
+    }
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
@@ -41,9 +59,9 @@ function WhatsAppModal({ open, onOpenChange }: { open: boolean; onOpenChange: (v
           <DialogTitle>Contact Support</DialogTitle>
         </DialogHeader>
         <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-sm space-y-2">
-          <p className="font-medium">This would open WhatsApp/Telegram with the admin contact:</p>
-          <p> WhatsApp : +237 XXX XXX XXX</p>
-          <p> Telegram : +237 XXX XXX XXX</p>
+          <p className="font-medium">Contact admin support via:</p>
+          <p> WhatsApp : <span className="text-muted-foreground">{phone}</span></p>
+          <p> Telegram : <span className="text-muted-foreground">{telegram}</span></p>
         </div>
         <Button variant="outline" onClick={() => onOpenChange(false)}>Close</Button>
       </DialogContent>
@@ -65,13 +83,29 @@ function DisputeDialog({
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: () => openDispute(trackingId, { reason, description }),
+    mutationFn: async () => {
+      const dispute = await openDispute(trackingId, { reason, description });
+      await sendMessage(
+        trackingId,
+        `🚩 Dispute opened: ${reason}\n\n${description}`
+      );
+      return dispute;
+    },
     onSuccess: () => {
       toast.success("Dispute opened successfully");
       setReason("");
       setDescription("");
       onOpenChange(false);
       queryClient.invalidateQueries({ queryKey: ["disputes", trackingId] });
+      queryClient.invalidateQueries({ queryKey: ["messages", trackingId] });
+      queryClient.invalidateQueries({ queryKey: ["conversations"] });
+      queryClient.setQueriesData<Conversation[]>(
+        { queryKey: ["conversations"] },
+        (old) =>
+          old?.map((c) =>
+            c.trackingId === trackingId ? { ...c, type: "dispute" as const } : c
+          )
+      );
     },
   });
 
@@ -122,6 +156,7 @@ function DisputeDialog({
 export default function TrackingDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showContact, setShowContact] = useState(false);
   const [showDispute, setShowDispute] = useState(false);
   const [newMsg, setNewMsg] = useState("");
@@ -382,7 +417,7 @@ export default function TrackingDetailPage() {
                         timestamp: m.createdAt,
                         read: m.readAt !== null,
                       }))}
-                      currentUserId="user1"
+                      currentUserId={user?.id || ""}
                     />
                   </div>
                   <div className="p-4 border-t border-border flex gap-2">

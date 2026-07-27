@@ -4,13 +4,15 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import ChatBox from "@/components/messaging/ChatBox";
-import { getConversations, getMessages, sendMessage, Conversation, markAllConversationsRead } from "@/api/conversations";
+import { getConversations, getMessages, sendMessage, Conversation } from "@/api/conversations";
 import { markMessagesAsRead } from "@/api/messages";
 import { MessageSquare, Search } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 
 const MessagingPage = ({ role = "client" }: { role?: "client" | "operator" }) => {
-  const userId = role === "operator" ? "op1" : "user1";
+  const { user } = useAuth();
+  const userId = user?.id || "";
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const queryClient = useQueryClient();

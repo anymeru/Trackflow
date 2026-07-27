@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "@/components/layout/Navbar";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,25 +8,40 @@ import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
 import { toast } from "sonner";
 import { motion } from "framer-motion";
-
-const contactInfo = [
-  { icon: Mail, label: "Email", value: "hello@trackflow.com", href: "mailto:hello@trackflow.com" },
-  { icon: Phone, label: "Phone", value: "+33 1 84 88 42 00", href: "tel:+33184884200" },
-  { icon: MapPin, label: "Headquarters", value: "24 Rue de la Logistique, 75008 Paris, France" },
-  { icon: Clock, label: "Hours", value: "Mon – Fri · 08:00 – 19:00 CET" },
-];
+import client from "@/api/client";
+import { getSettings } from "@/api/settings";
 
 const ContactPage = () => {
+  const [settings, setSettings] = useState({ supportEmail: "hello@trace.tech", supportPhone: "+33 1 84 88 42 00" });
+
+  useEffect(() => {
+    getSettings().then((s) => {
+      if (s.supportEmail) setSettings((prev) => ({ ...prev, supportEmail: s.supportEmail }));
+      if (s.supportPhone) setSettings((prev) => ({ ...prev, supportPhone: s.supportPhone }));
+    }).catch(() => {});
+  }, []);
+
+  const contactInfo = [
+    { icon: Mail, label: "Email", value: settings.supportEmail, href: `mailto:${settings.supportEmail}` },
+    { icon: Phone, label: "Phone", value: settings.supportPhone, href: `tel:${settings.supportPhone.replace(/\s/g, "")}` },
+    { icon: MapPin, label: "Headquarters", value: "24 Rue de la Logistique, 75008 Paris, France" },
+    { icon: Clock, label: "Hours", value: "Mon – Fri · 08:00 – 19:00 CET" },
+  ];
   const [form, setForm] = useState({ name: "", email: "", company: "", subject: "", message: "" });
   const [sending, setSending] = useState(false);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSending(false);
-    toast.success("Message sent — we'll get back to you within 24h.");
-    setForm({ name: "", email: "", company: "", subject: "", message: "" });
+    try {
+      await client.post("/contact", form);
+      toast.success("Message sent — we'll get back to you within 24h.");
+      setForm({ name: "", email: "", company: "", subject: "", message: "" });
+    } catch {
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
