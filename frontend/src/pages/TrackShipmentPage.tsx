@@ -146,7 +146,7 @@ const TrackShipmentPage = () => {
                   </span>
                 </div>
                 <button
-                  onClick={() => navigate(`/track/${r.id}`)}
+                  onClick={() => navigate(`/track/${r.trackingNumber}`)}
                   className="inline-flex items-center justify-between gap-3 rounded-full bg-gray-900 text-white pl-6 pr-1 py-1 text-sm font-medium transition-all duration-700 ease-out-expo hover:bg-gray-800 active:scale-[0.97] w-full"
                 >
                   <span>View detailed tracking</span>

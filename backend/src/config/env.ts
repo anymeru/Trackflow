@@ -23,7 +23,7 @@ export const config = {
   port: parseInt(env("PORT", "3001"), 10),
   jwtSecret: autoJwtSecret(),
   databaseUrl: env("DATABASE_URL"),
-  corsOrigin: env("CORS_ORIGIN", "http://localhost:5173"),
+  corsOrigin: env("CORS_ORIGIN", "http://localhost:5173").replace(/\/+$/, ""),
   smtp: {
     host: env("SMTP_HOST"),
     port: parseInt(env("SMTP_PORT", "587"), 10),

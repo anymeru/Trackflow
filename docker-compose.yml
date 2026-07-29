@@ -22,7 +22,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "postgresql://trackconnect:trackconnect@db:5432/track_connect?schema=public"
+      DATABASE_URL: ""
       JWT_SECRET: "tc-prod-jwt-secret-replace-with-random-64-char-string"
       PORT: "3001"
       SMTP_HOST: "smtp-relay.brevo.com"

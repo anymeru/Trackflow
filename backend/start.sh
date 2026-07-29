@@ -17,4 +17,8 @@ until npx prisma migrate deploy 2>/dev/null; do
 done
 
 echo "Migrations applied successfully."
+
+echo "Seeding database..."
+npx prisma db seed 2>/dev/null && echo "Seed completed." || echo "Seed skipped or already applied."
+
 exec node dist/index.js
