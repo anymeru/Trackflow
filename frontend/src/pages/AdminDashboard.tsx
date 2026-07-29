@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import StatusBadge from "@/components/tracking/StatusBadge";
 import TrackingMap from "@/components/tracking/TrackingMap";
-import { getTrackings, createTracking } from "@/api/trackings";
+import { getTrackings, createTracking, getCarriers } from "@/api/trackings";
 import { getNotificationLog, getStats, DashboardStats } from "@/api/notifications";
 import { Package, BarChart3, Clock, AlertTriangle, Plus, Route, Activity, TrendingUp } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
@@ -65,6 +65,13 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
     refetchInterval: 10000,
   });
 
+  const queryClient = useQueryClient();
+
+  const { data: carriers = [] } = useQuery({
+    queryKey: ["carriers"],
+    queryFn: () => getCarriers(),
+  });
+
   const [createOpen, setCreateOpen] = useState(false);
   const [createForm, setCreateForm] = useState({
     clientName: "",
@@ -74,11 +81,12 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
     originAddress: "",
     destinationAddress: "",
     avgSpeedKmh: "60",
+    carrierRef: "",
   });
 
   const handleCreate = async () => {
     try {
-      await createTracking({
+      const tracking = await createTracking({
         clientName: createForm.clientName,
         clientEmail: createForm.clientEmail,
         packageDescription: createForm.packageDescription || undefined,
@@ -86,6 +94,7 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
         originAddress: createForm.originAddress,
         destinationAddress: createForm.destinationAddress,
         avgSpeedKmh: parseFloat(createForm.avgSpeedKmh),
+        carrierRef: createForm.carrierRef || undefined,
       });
       toast.success("Tracking created successfully");
       setCreateOpen(false);
@@ -97,7 +106,10 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
         originAddress: "",
         destinationAddress: "",
         avgSpeedKmh: "60",
+        carrierRef: "",
       });
+      queryClient.invalidateQueries({ queryKey: ["trackings"] });
+      navigate(`/admin/trackings/${tracking.id}`);
     } catch (err) {
       toast.error("Error during creation");
     }
@@ -175,6 +187,20 @@ export default function AdminDashboard({ initialTab = "analytics" }: AdminDashbo
                 <div>
                   <Label>Destination address</Label>
                   <Input value={createForm.destinationAddress} onChange={(e) => setCreateForm({ ...createForm, destinationAddress: e.target.value })} placeholder="Ex: Douala, Cameroun" />
+                </div>
+                <div>
+                  <Label>Carrier</Label>
+                  <Select value={createForm.carrierRef} onValueChange={(v) => setCreateForm({ ...createForm, carrierRef: v })}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a carrier" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">None</SelectItem>
+                      {carriers.map((c) => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <Button className="w-full rounded-full bg-gray-900 text-white hover:bg-gray-800" onClick={handleCreate} disabled={!createForm.clientName || !createForm.clientEmail || !createForm.originAddress || !createForm.destinationAddress}>
                   <Plus className="w-4 h-4 mr-2" />

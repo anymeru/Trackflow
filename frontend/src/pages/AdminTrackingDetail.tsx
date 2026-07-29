@@ -145,7 +145,7 @@ function DisputePanel({ trackingId }: { trackingId: string }) {
 
   const resolve = useMutation({
     mutationFn: async (disputeId: string) => {
-      const result = await resolveDispute(disputeId, response);
+      const result = await resolveDispute(trackingId, disputeId, response);
       await sendMessage(trackingId, `✅ Dispute resolved: ${result.adminResponse}`);
       return result;
     },
@@ -386,6 +386,10 @@ export default function AdminTrackingDetail() {
                 <div className="flex justify-between">
                   <span className="text-gray-500">Weight</span>
                   <span>{tracking.weight ? `${tracking.weight} kg` : "—"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Carrier</span>
+                  <span>{tracking.carrierRef || "—"}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-500">Speed</span>

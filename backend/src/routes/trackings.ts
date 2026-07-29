@@ -29,6 +29,7 @@ const createSchema = z.object({
   originAddress: z.string().min(1),
   destinationAddress: z.string().min(1),
   avgSpeedKmh: z.number().positive().optional(),
+  carrierRef: z.string().optional(),
 });
 
 router.get("/", auth, async (req: Request, res: Response) => {
@@ -111,6 +112,7 @@ router.post("/", auth, requireRole("admin"), async (req: Request, res: Response)
     originAddress,
     destinationAddress,
     avgSpeedKmh,
+    carrierRef,
   } = parsed.data;
 
   const originGeo = await geocodeAddress(originAddress);
@@ -146,6 +148,7 @@ router.post("/", auth, requireRole("admin"), async (req: Request, res: Response)
       currentLat: originGeo.lat,
       currentLng: originGeo.lng,
       status: "in_transit",
+      carrierRef: carrierRef || null,
       avgSpeedKmh: speed,
       eta,
       statusHistory: {

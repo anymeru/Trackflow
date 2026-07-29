@@ -1,4 +1,4 @@
-import client from "./client";
+import client, { publicClient } from "./client";
 
 export interface Dispute {
   id: string;
@@ -32,12 +32,29 @@ export async function openDispute(
   return data;
 }
 
+export async function openDisputePublic(
+  payload: {
+    trackingId: string;
+    reason: string;
+    description: string;
+    clientName?: string;
+    clientEmail?: string;
+  }
+): Promise<Dispute> {
+  const { data } = await publicClient.post<Dispute>(
+    `/public/disputes`,
+    payload
+  );
+  return data;
+}
+
 export async function resolveDispute(
+  trackingId: string,
   disputeId: string,
   adminResponse: string
 ): Promise<Dispute> {
   const { data } = await client.patch<Dispute>(
-    `/disputes/${disputeId}/resolve`,
+    `/trackings/${trackingId}/disputes/${disputeId}/resolve`,
     { adminResponse }
   );
   return data;

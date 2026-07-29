@@ -33,12 +33,12 @@ router.post("/", async (req: Request, res: Response) => {
       subject: `[Contact] ${subject}`,
       html: `<div style="font-family:sans-serif;padding:24px;">
         <h2>Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Company:</strong> ${company || "—"}</p>
-        <p><strong>Subject:</strong> ${subject}</p>
+        <p><strong>Name:</strong> ${name.replace(/</g, "&lt;")}</p>
+        <p><strong>Email:</strong> ${email.replace(/</g, "&lt;")}</p>
+        <p><strong>Company:</strong> ${(company || "—").replace(/</g, "&lt;")}</p>
+        <p><strong>Subject:</strong> ${subject.replace(/</g, "&lt;")}</p>
         <hr/>
-        <p>${message}</p>
+        <p>${message.replace(/</g, "&lt;")}</p>
       </div>`,
     });
   } catch (err) {

@@ -18,7 +18,7 @@ declare global {
   }
 }
 
-export function auth(req: Request, _res: Response, next: NextFunction) {
+export async function auth(req: Request, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   if (!header || !header.startsWith("Bearer ")) {
     throw unauthorized("Missing or invalid token");
@@ -27,17 +27,12 @@ export function auth(req: Request, _res: Response, next: NextFunction) {
   const token = header.slice(7);
   try {
     const payload = jwt.verify(token, config.jwtSecret) as AuthPayload;
-    prisma.user.findUnique({ where: { id: payload.userId }, select: { tokenVersion: true } })
-      .then((user) => {
-        if (!user || user.tokenVersion !== payload.tokenVersion) {
-          return next(unauthorized("Token revoked"));
-        }
-        req.user = payload;
-        next();
-      })
-      .catch(() => {
-        next(unauthorized("Token verification failed"));
-      });
+    const user = await prisma.user.findUnique({ where: { id: payload.userId }, select: { tokenVersion: true } });
+    if (!user || user.tokenVersion !== payload.tokenVersion) {
+      throw unauthorized("Token revoked");
+    }
+    req.user = payload;
+    next();
   } catch {
     throw unauthorized("Invalid or expired token");
   }

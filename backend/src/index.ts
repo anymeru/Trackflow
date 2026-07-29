@@ -1,6 +1,8 @@
 import "express-async-errors";
 import express from "express";
 import cors from "cors";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import http from "http";
 import { config } from "./config/env";
 import { errorHandler } from "./middleware/errorHandler";
@@ -18,12 +20,24 @@ import userRoutes from "./routes/users";
 import conversationRoutes from "./routes/conversations";
 import contactRoutes from "./routes/contact";
 import settingsRoutes from "./routes/settings";
+import publicRoutes from "./routes/public";
 
 const app = express();
 const server = http.createServer(app);
 
+app.use(helmet());
 app.use(cors({ origin: config.corsOrigin, credentials: true }));
-app.use(express.json());
+app.use(express.json({ limit: "1mb" }));
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: "Too many requests, please try again later" },
+});
+app.use("/api/auth/login", authLimiter);
+app.use("/api/auth/register", authLimiter);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/geocode", geocodeRoutes);
@@ -36,6 +50,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/conversations", conversationRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/settings", settingsRoutes);
+app.use("/api/public", publicRoutes);
 
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });

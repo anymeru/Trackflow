@@ -358,6 +358,11 @@ export default function TrackingDetailPage() {
                     <span className="text-gray-500">Weight:</span>
                     <span className="font-medium">{tracking.weight ? `${tracking.weight} kg` : "—"}</span>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-gray-500" />
+                    <span className="text-gray-500">Carrier:</span>
+                    <span className="font-medium">{tracking.carrierRef || "—"}</span>
+                  </div>
                 </div>
               </Card>
             </div>

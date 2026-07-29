@@ -113,6 +113,8 @@ router.post("/forgot-password", async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.error("Failed to send reset email:", err);
+    res.json({ message: "If that email exists, a reset link has been sent." });
+    return;
   }
   res.json({ message: "If that email exists, a reset link has been sent." });
 });

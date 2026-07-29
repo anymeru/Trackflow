@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+export function ThemeProvider({ children }: { children: ReactNode }) {
   return <>{children}</>;
-};
+}

@@ -56,6 +56,11 @@ export async function getPublicTracking(
   return data;
 }
 
+export async function getCarriers(): Promise<string[]> {
+  const { data } = await client.get<string[]>("/public/carriers");
+  return data;
+}
+
 export async function createTracking(payload: {
   clientName: string;
   clientEmail: string;
@@ -64,6 +69,7 @@ export async function createTracking(payload: {
   originAddress: string;
   destinationAddress: string;
   avgSpeedKmh?: number;
+  carrierRef?: string;
 }): Promise<Tracking> {
   const { data } = await client.post<Tracking>("/trackings", payload);
   return data;

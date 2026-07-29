@@ -104,13 +104,6 @@ const LoginPage = () => {
             <Link to="/register" className="text-gray-900 font-medium hover:underline">Create Account</Link>
           </p>
 
-          <div className="mt-6 pt-6 border-t border-black/[0.04]">
-            <p className="text-[11px] text-gray-400 uppercase tracking-[0.15em] text-center mb-3">Demo access</p>
-            <div className="space-y-1.5 text-xs text-gray-500 text-center">
-              <p>Admin: admin@track-connect.com / admin123</p>
-              <p>Client: client@example.com / client123</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

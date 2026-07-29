@@ -23,12 +23,12 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: ""
-      JWT_SECRET: "tc-prod-jwt-secret-replace-with-random-64-char-string"
-      PORT: "3001"
-      SMTP_HOST: "smtp-relay.brevo.com"
-      SMTP_PORT: "587"
-      SMTP_USER: "b36f9a001@smtp-brevo.com"
-      SMTP_PASS: "xsmtpsib-9c7048a77553ca7acbac42585eca5684fec20bfa3863b79e0d17679cbc259fb2-yIL1r0hwHmjVedZJ"
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-a-random-secret}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      SMTP_HOST: ${SMTP_HOST:-smtp-relay.brevo.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: "noreply@trace-logistics.com"
       ADMIN_PHONE: "+237 XXX XXX XXX"
       ADMIN_TELEGRAM: "+237 XXX XXX XXX"

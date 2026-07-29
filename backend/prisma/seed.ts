@@ -31,8 +31,10 @@ async function main() {
     },
   });
 
-  const tracking = await prisma.tracking.create({
-    data: {
+  const tracking = await prisma.tracking.upsert({
+    where: { trackingNumber: "TC-DEMO001" },
+    update: {},
+    create: {
       trackingNumber: "TC-DEMO001",
       clientName: "Jean Dupont",
       clientEmail: "client@example.com",
@@ -58,8 +60,10 @@ async function main() {
     },
   });
 
-  const tracking2 = await prisma.tracking.create({
-    data: {
+  const tracking2 = await prisma.tracking.upsert({
+    where: { trackingNumber: "TC-DEMO002" },
+    update: {},
+    create: {
       trackingNumber: "TC-DEMO002",
       clientName: "Marie Claire",
       clientEmail: "marie@example.com",
